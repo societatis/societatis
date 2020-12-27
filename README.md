@@ -12,8 +12,6 @@
     5. [Societatis for FreeBSD](#build-freebsd)
 3. [Downloads](#downloads)
 4. [Useful Links](#usefullinks)
-5. [Donate & Thanks](#donate)
-6. [Copyright / License](#copypasta)
 
 ## Installing <a name="installing"></a>
 We offer binary images of the latest releases here: https://releases.societatis.io
@@ -40,11 +38,11 @@ If you would like to compile yourself, read on.
 <tr><td>Premine</td><td>0.0 %</td></tr>
 <tr><td>Decimals</td><td>8 Digits</td></tr>
 <tr><td>Block Reward</td><td>Decrease by each block</td></tr>
-<tr><td>Max Coin Supply </td><td>184,467,440,737 SCTS</td></tr>
-<tr><td>P2P | RPC Port</td><td>8196 | 8197</td></tr>
+<tr><td>Max Coin Supply </td><td>xxx,xxx,xxx,xxx SCTS</td></tr>
+<tr><td>P2P | RPC Port</td><td>7294 | 7295</td></tr>
 </table>
 
-More information at [societatois.io](https://societatis.io/)
+More information at [societatis.io](https://societatis.io/)
 
 # How To Compile <a name="howtocompile"></a>
 
@@ -63,7 +61,7 @@ sudo apt-get install build-essential cmake git
 - After installing dependencies run simple script:
 ```
 git clone --recurse-submodules https://github.com/societatis/societatis
-cd ./qwertycoin
+cd ./societatis
 mkdir ./build
 cd ./build
 cmake -DBUILD_ALL:BOOL=TRUE ..
@@ -85,10 +83,11 @@ cmake --build . --config Release
 - And the run the following commands:
 ```
 git clone https://github.com/societatis/societatis
-cd qwertycoin
+cd societatis
 md build
 cd build
-cmake -G "Visual Studio 16 2019" -X x64 -DBUILD_WITH_TOOLS:BOOL=TRUE .. && cmake --build . --config Release --parallel 16
+cmake -G "Visual Studio 16 2019" -X x64 -DBUILD_WITH_TOOLS:BOOL=TRUE .. 
+cmake --build . --config Release
 ```
 - If all went well, it will complete successfully, and you will find all your binaries in the `.\build\src\Release` directory;
 - Additionally, a `.sln` file will have been created in the `build` directory. If you wish to open the project in Visual Studio with this, you can.
@@ -106,7 +105,7 @@ cmake -G "Visual Studio 16 2019" -X x64 -DBUILD_WITH_TOOLS:BOOL=TRUE .. && cmake
 - After installing dependencies run simple script:
 ```
 git clone https://github.com/societatis/societatis
-cd ./qwertycoin
+cd ./societatis
 mkdir ./build
 cd ./build
 cmake -DBUILD_ALL:BOOL=TRUE ..
@@ -136,7 +135,7 @@ export ANDROID_NDK_r18b="$HOME/.android/android-ndk-r18b"
 - After installing dependencies run simple script:
 ```
 git clone https://github.com/societatis/societatis
-cd ./qwertycoin
+cd ./societatis
 mkdir ./build
 cd ./build
 cmake -DCMAKE_TOOLCHAIN_FILE=cmake/polly/android-ndk-r18b-api-21-x86-clang-libcxx.cmake -DBUILD_ALL:BOOL=TRUE -DBUILD_WITH_TESTS:BOOL=FALSE -DSTATIC=ON -DBUILD_64=OFF -DANDROID=true -DBUILD_TAG="android" ..
@@ -159,62 +158,10 @@ sudo pkg install cmake git
 - After installing dependencies run simple script:
 ```
 git clone --recurse-submodules https://github.com/societatis/societatis
-cd ./qwertycoin
+cd ./societatis
 mkdir ./build
 cd ./build
 cmake -DBUILD_ALL:BOOL=TRUE ..
 cmake --build . --config Release
 ```
 - If all went well, it will complete successfully, and you will find all your binaries in the `./build/src` directory.
-
-## Donate <a name="donate"></a>
-
-```
-SCTS: SCTS1K6XEhCC1WsZzT9RRVpc1MLXXdHVKt2BUGSrsmkkXAvqh52sVnNc1pYmoF2TEXsAvZnyPaZu8MW3S8EWHNfAh7X2xa63P7Y
-```
-```
-BTC: 1DkocMNiqFkbjhCmG4sg9zYQbi4YuguFWw
-```
-```
-ETH: 0xA660Fb28C06542258bd740973c17F2632dff2517
-```
-```
-BCH: qz975ndvcechzywtz59xpkt2hhdzkzt3vvt8762yk9
-```
-```
-XMR: 47gmN4GMQ17Veur5YEpru7eCQc5A65DaWUThZa9z9bP6jNMYXPKAyjDcAW4RzNYbRChEwnKu1H3qt9FPW9CnpwZgNscKawX
-```
-```
-ETN: etnkJXJFqiH9FCt6Gq2HWHPeY92YFsmvKX7qaysvnV11M796Xmovo2nSu6EUCMnniqRqAhKX9AQp31GbG3M2DiVM3qRDSQ5Vwq
-```
-
-### Useful Links <a name="usefullinks"></a>
-<table>
-<tr><td>Website</td><td>https://societatis.io</td></tr>
-<tr><td>Bitcointalk ANN</td><td>https://bitcointalk.org/index.php?topic=2881418.0</td></tr>
-<tr><td>Explorer</td><td>https://explorer.societatis.io</td></tr>
-<tr><td>Pool Explorer</td><td>https://explorer.societatis.io/#network</td></tr>
-<tr><td>Node Map</td><td>https://nodes.societatis.io</td></tr>
-<tr><td>Wallets</td><td>https://releases.societatis.io</td></tr>
-<tr><td>Web Wallet</td><td>https://myqwertycoin.com</td></tr>
-<tr><td>Masternode Setup</td><td>https://github.com/societatis/societatis/wiki</td></tr>
-<tr><td>Blockfolio</td><td>https://blockfolio.com/#get-app</td></tr>
-<tr><td>CoinGecko</td><td>https://www.coingecko.com/en/coins/qwertycoin</td></tr>
-<tr><td>Delta</td><td>https://delta.app</td></tr>
-<tr><td>Discord</td><td>https://societatis.io/discord</td></tr>
-<tr><td>Twitter</td><td>https://twitter.com/Societatis_SCTS</td></tr>
-</table>
-
-#### Thanks <a name="thanks"></a>
-
-Cryptonote Developers, Bytecoin Developers, Monero Developers, Karbo Developers, Societatis Community
-
-### Copypasta for license when editing files  <a name="copypasta"></a>
-
-Hi Societatis contributor, thanks for forking and sending back Pull Requests. Extensive docs about contributing are in the works or elsewhere. For now this is the bit we need to get into all the files we touch. Please add it to the top of the files, see [src/config/CryptoNoteConfig.h](https://github.com/societatis/societatis/blob/master/src/config/CryptoNoteConfig.h) for an example.
-
-```
-# Copyright 2018-2020 (c) The Societatis Group.
-# Licensed under the GNU General Public License, Version 3.
-# See the file LICENSE from this package for details.
-```
