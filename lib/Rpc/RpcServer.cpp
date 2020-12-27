@@ -796,7 +796,7 @@ namespace CryptoNote {
 
 		if (amount != 0) {
 			logger(INFO) << "Masternode received relayed transaction fee: "
-						 << m_core.currency().formatAmount(amount) << " QWC";
+						 << m_core.currency().formatAmount(amount) << " SCTS";
 			return true;
 		}
 
@@ -1290,7 +1290,7 @@ namespace CryptoNote {
 	{
 		const std::string index_start =
 				R"(<html><head><meta http-equiv='refresh' content='60'/></head><body><p>)"
-				"<h1>Qwertycoin Masternode</h1>"
+				"<h1>Societatis Masternode</h1>"
 				R"( version
     )";
 		const std::string index_finish = " </p></body></html>";
@@ -2059,7 +2059,7 @@ namespace CryptoNote {
 			}
 		}
 
-		if (res.block.height >= CryptoNote::parameters::UPGRADE_HEIGHT_V6) {
+		if (res.block.height >= CryptoNote::parameters::UPGRADE_HEIGHT_V6TODO) {
 			m_core.getBlockHeight(blk.previousBlockHash, previousBlockHeight);
 			blockTarget = blk.timestamp - m_core.getBlockTimestamp(previousBlockHeight);
 		}

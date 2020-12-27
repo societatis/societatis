@@ -34,20 +34,17 @@ namespace CryptoNote {
 
 namespace parameters {
 
-const uint64_t DIFFICULTY_TARGET                              = 60; // seconds
+const uint64_t DIFFICULTY_TARGET                              = 120; // seconds
 const uint64_t CRYPTONOTE_MAX_BLOCK_NUMBER                    = 500000000;
 const size_t   CRYPTONOTE_MAX_BLOCK_BLOB_SIZE                 = 500000000;
 const size_t   CRYPTONOTE_MAX_TX_SIZE                         = 1000000000;
-const uint64_t CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX        = 0x199296;
+const uint64_t CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX        = 0x199296;//SCTS
 const size_t   CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW           = 60;
 const size_t   CRYPTONOTE_TX_SPENDABLE_AGE                    = 10;
 const size_t   CRYPTONOTE_SAFE_TX_SPENDABLE_AGE               = 1;
 
 const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT             = DIFFICULTY_TARGET * 60;
-const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V1          = DIFFICULTY_TARGET * 60;
-
 const size_t   BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW              = 60;
-const size_t   BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V1           = 60;
 
 // MONEY_SUPPLY - total number coins to be generated
 const uint64_t MONEY_SUPPLY                                   = 7834599855; //(uint64_t)(-1);
@@ -71,16 +68,6 @@ const size_t   CRYPTONOTE_DISPLAY_DECIMAL_POINT               = 8;
 const uint64_t MINIMUM_FEE                                    = UINT64_C(10000);
 const uint64_t MAXIMUM_FEE                                    = UINT64_C(10000);
 
-const uint64_t MINIMUM_FEE_V1                                 = UINT64_C(10000);
-const uint64_t MAXIMUM_FEE_V1                                 = UINT64_C(10000);
-
-const uint64_t MINIMUM_FEE_V2                                 = UINT64_C(10000);
-const uint64_t MAXIMUM_FEE_V2                                 = UINT64_C(10000);
-
-// TODO: Check fee Upgrade heights
-const uint32_t MINIMUM_FEE_V1_HEIGHT                          = 1000000;
-const uint32_t MINIMUM_FEE_V2_HEIGHT                          = 10000000;
-
 /* This section defines the fees are remote node will receive from the sender */
 const double   REMOTE_NODE_FEE_FACTOR                         = 0.25; // percent
 const uint64_t MAX_REMOTE_NODE_FEE                            = UINT64_C(10000000000); // this equals 1000 Coins
@@ -90,20 +77,6 @@ const uint64_t DEFAULT_DUST_THRESHOLD                         = UINT64_C(100000)
 /* This section defines our minimum and maximum mixin counts required for transactions */
 const uint64_t MIN_TX_MIXIN_SIZE                              = 0;
 const uint64_t MAX_TX_MIXIN_SIZE                              = 20;
-
-const uint64_t MIN_TX_MIXIN_SIZE_V1                           = 2;
-const uint64_t MAX_TX_MIXIN_SIZE_V1                           = 20;
-
-const uint64_t MIN_TX_MIXIN_SIZE_V2                           = 2;
-const uint64_t MAX_TX_MIXIN_SIZE_V2                           = 20;
-
-const uint64_t MIN_TX_MIXIN_SIZE_V3                           = 3;
-const uint64_t MAX_TX_MIXIN_SIZE_V3                           = 3;
-
-/* The heights to activate the mixin limits at */
-const uint32_t MIXIN_LIMITS_V1_HEIGHT                         = 200000;
-const uint32_t MIXIN_LIMITS_V2_HEIGHT                         = 1000000;
-const uint32_t MIXIN_LIMITS_V3_HEIGHT                         = 1200000;
 
 /* Maximum transaction size in byte */
 const uint64_t MAX_TRANSACTION_SIZE_LIMIT                     = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE / 2 - CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE;
@@ -140,12 +113,11 @@ const size_t   FUSION_TX_MAX_SIZE                             = CRYPTONOTE_BLOCK
 const size_t   FUSION_TX_MIN_INPUT_COUNT                      = 12;
 const size_t   FUSION_TX_MIN_IN_OUT_COUNT_RATIO               = 4;
 
-
 const uint32_t UPGRADE_HEIGHT_V2                              = 2;
 const uint32_t UPGRADE_HEIGHT_V3                              = 3;
 const uint32_t UPGRADE_HEIGHT_V4                              = 4;
 const uint32_t UPGRADE_HEIGHT_V5                              = 5;
-const uint32_t UPGRADE_HEIGHT_V6                              = 6;
+const uint32_t UPGRADE_HEIGHT_V6TODO                          = 6;
 
 const unsigned UPGRADE_VOTING_THRESHOLD                      = 90; // percent
 const uint32_t UPGRADE_VOTING_WINDOW                         = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
@@ -181,7 +153,7 @@ const uint8_t  BLOCK_MAJOR_VERSION_2                         =  2;
 const uint8_t  BLOCK_MAJOR_VERSION_3                         =  3;
 const uint8_t  BLOCK_MAJOR_VERSION_4                         =  4;
 const uint8_t  BLOCK_MAJOR_VERSION_5                         =  5;
-const uint8_t  BLOCK_MAJOR_VERSION_6                         =  6;
+const uint8_t  BLOCK_MAJOR_VERSION_6TODO                     =  6;
 
 const uint8_t  BLOCK_MINOR_VERSION_0                         =  0;
 const uint8_t  BLOCK_MINOR_VERSION_1                         =  1;

@@ -355,18 +355,6 @@ bool core::check_tx_mixin(const Transaction &tx, uint32_t height)
         assert(inputIndex < tx.signatures.size());
         if (txin.type() == typeid(KeyInput)) {
             uint64_t txMixin = boost::get<KeyInput>(txin).outputIndexes.size();
-            if ((height > CryptoNote::parameters::MIXIN_LIMITS_V1_HEIGHT
-                 && height < CryptoNote::parameters::MIXIN_LIMITS_V2_HEIGHT
-                 && txMixin > CryptoNote::parameters::MAX_TX_MIXIN_SIZE_V1)
-                || (height > CryptoNote::parameters::MIXIN_LIMITS_V2_HEIGHT
-                    && txMixin > CryptoNote::parameters::MAX_TX_MIXIN_SIZE_V2)
-                ) {
-                logger(ERROR)
-                    << "Transaction "
-                    << getObjectHash(tx)
-                    << " has too large mixIn count, rejected";
-                return false;
-            }
             if (getCurrentBlockMajorVersion() >= BLOCK_MAJOR_VERSION_4
                 && txMixin < m_currency.minMixin() && txMixin != 1) {
                 logger(ERROR)
@@ -420,14 +408,13 @@ bool core::check_tx_fee(
         if (!findTransactionExtraFieldByType(txExtraFields, ttl)) {
             ttl.ttl = 0;
 
-            // TODO: simplify overcomplicated expression.
-            if (height < CryptoNote::parameters::MINIMUM_FEE_V2_HEIGHT ? fee < CryptoNote::parameters::MINIMUM_FEE_V1 : (getBlockMajorVersionForHeight(height) < BLOCK_MAJOR_VERSION_6 ? fee < m_currency.minimumFee() : fee < getMinimalFeeForHeight(loose_check ? height - CryptoNote::parameters::EXPECTED_NUMBER_OF_BLOCKS_PER_DAY : height))) {
+            if (fee < m_currency.minimumFee()) {
                 logger(ERROR)
                     << "[Core] Transaction fee is not enough: "
                     << m_currency.formatAmount(fee)
                     << ", minimum fee: "
                     // TODO: simplify overcomplicated expression.
-                    << m_currency.formatAmount(getBlockMajorVersionForHeight(height) < BLOCK_MAJOR_VERSION_6 ? m_currency.minimumFee() : getMinimalFeeForHeight(loose_check ? height - CryptoNote::parameters::EXPECTED_NUMBER_OF_BLOCKS_PER_DAY : height));
+                    << m_currency.formatAmount(getBlockMajorVersionForHeight(height) < BLOCK_MAJOR_VERSION_6TODO ? m_currency.minimumFee() : getMinimalFeeForHeight(loose_check ? height - CryptoNote::parameters::EXPECTED_NUMBER_OF_BLOCKS_PER_DAY : height));
 
                 tvc.m_verification_failed = true;
                 tvc.m_tx_fee_too_small = true;
@@ -445,7 +432,7 @@ bool core::check_tx_unmixable(const Transaction &tx, uint32_t height)
 {
     for (const auto &out : tx.outputs) {
         if (!is_valid_decomposed_amount(out.amount)
-            && height >= CryptoNote::parameters::UPGRADE_HEIGHT_V6) {
+            && height >= CryptoNote::parameters::UPGRADE_HEIGHT_V6TODO) {
             logger(ERROR)
                 << "Invalid decomposed output amount "
                 << out.amount
@@ -652,7 +639,8 @@ bool core::get_block_template(
                 m_currency.upgradeHeight(BLOCK_MAJOR_VERSION_2) == UpgradeDetectorBase::UNDEF_HEIGHT
                 ? BLOCK_MINOR_VERSION_1
                 : BLOCK_MINOR_VERSION_0;
-        } else if (b.majorVersion==BLOCK_MAJOR_VERSION_2 || b.majorVersion==BLOCK_MAJOR_VERSION_3) {
+        }
+        else if (b.majorVersion==BLOCK_MAJOR_VERSION_2 || b.majorVersion==BLOCK_MAJOR_VERSION_3) {
             if(m_currency.upgradeHeight(BLOCK_MAJOR_VERSION_3)==UpgradeDetectorBase::UNDEF_HEIGHT){
                 b.minorVersion =
                     b.majorVersion == BLOCK_MAJOR_VERSION_2
@@ -673,19 +661,22 @@ bool core::get_block_template(
                     << "to extra of the parent block miner transaction";
                 return false;
             }
-        } else if (b.majorVersion == BLOCK_MAJOR_VERSION_4) {
+        }
+        else if (b.majorVersion == BLOCK_MAJOR_VERSION_4) {
             b.minorVersion =
                 m_currency.upgradeHeight(BLOCK_MAJOR_VERSION_4) == UpgradeDetectorBase::UNDEF_HEIGHT
                 ? BLOCK_MINOR_VERSION_1
                 : BLOCK_MINOR_VERSION_0;
-        } else if (b.majorVersion >= BLOCK_MAJOR_VERSION_5) {
+        }
+        else if (b.majorVersion >= BLOCK_MAJOR_VERSION_5) {
             b.minorVersion =
                 m_currency.upgradeHeight(BLOCK_MAJOR_VERSION_5) == UpgradeDetectorBase::UNDEF_HEIGHT
                 ? BLOCK_MINOR_VERSION_1
                 : BLOCK_MINOR_VERSION_0;
-        } else if (b.majorVersion >= BLOCK_MAJOR_VERSION_6) {
+        }
+        else if (b.majorVersion >= BLOCK_MAJOR_VERSION_6TODO) {
             b.minorVersion =
-                m_currency.upgradeHeight(BLOCK_MAJOR_VERSION_6) == UpgradeDetectorBase::UNDEF_HEIGHT
+                m_currency.upgradeHeight(BLOCK_MAJOR_VERSION_6TODO) == UpgradeDetectorBase::UNDEF_HEIGHT
                 ? BLOCK_MINOR_VERSION_1
                 : BLOCK_MINOR_VERSION_0;
         }
@@ -737,7 +728,7 @@ bool core::get_block_template(
     uint32_t previousBlockHeight = 0;
     uint64_t blockTarget = CryptoNote::parameters::DIFFICULTY_TARGET;
 
-    if (height >= CryptoNote::parameters::UPGRADE_HEIGHT_V6) {
+    if (height >= CryptoNote::parameters::UPGRADE_HEIGHT_V6TODO) {
         getBlockHeight(b.previousBlockHash, previousBlockHeight);
         uint64_t prev_timestamp = getBlockTimestamp(previousBlockHeight);
         if(prev_timestamp >= b.timestamp) {
@@ -1846,7 +1837,7 @@ bool core::fillBlockDetails(const Block &block, BlockDetails2 &blockDetails)
         }
     }
 
-    if (blockDetails.height >= CryptoNote::parameters::UPGRADE_HEIGHT_V6) {
+    if (blockDetails.height >= CryptoNote::parameters::UPGRADE_HEIGHT_V6TODO) {
         getBlockHeight(block.previousBlockHash, previousBlockHeight);
         blockTarget = block.timestamp - getBlockTimestamp(previousBlockHeight);
     }

@@ -1,5 +1,6 @@
 # Qwertycoin: C++ client, tools and libraries.
 # Copyright 2019 (c) The Qwertycoin Group.
+# Copyright 2020 (c) Societatis.io
 # Licensed under the GNU General Public License, Version 3.
 # See the file LICENSE from this package for details.
 
@@ -73,13 +74,13 @@ if(GIT_FOUND)
     endif()
 endif()
 
-set(PROJECT_DISPLAY_NAME "Qwertycoin")
-set(PROJECT_SHORT_NAME "qwcc")
-set(PROJECT_NAME "qwertycoin")
-set(PROJECT_DESCRIPTION "Safe. Simple. Seamless. Secure.")
+set(PROJECT_DISPLAY_NAME "Societatis")
+set(PROJECT_SHORT_NAME "sctsc")
+set(PROJECT_NAME "societatis")
+set(PROJECT_DESCRIPTION "One World. One Society. One Currency")
 set(PROJECT_VERSION "${PROJECT_GIT_TAG}")
-set(PROJECT_COPYRIGHT "Copyright (c) 2018-2020, The Qwertycoin Group.")
-set(PROJECT_VENDOR_NAME "The Qwertycoin Group")
+set(PROJECT_COPYRIGHT "Copyright (c) 2020, Societatis.io")
+set(PROJECT_VENDOR_NAME "Societatis Inc")
 set(PROJECT_VENDOR_URL "https://societatis.io")
 set(PROJECT_VENDOR_DOMAIN_REVERSED "io.socetatis")
 project(${PROJECT_NAME} VERSION ${PROJECT_VERSION} LANGUAGES C CXX)

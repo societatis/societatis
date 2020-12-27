@@ -1,26 +1,26 @@
-set(QwertycoinTests_INCLUDE_DIRS
-    ${QwertycoinFramework_INCLUDE_DIRS}
+set(SocietatisTests_INCLUDE_DIRS
+    ${SocietatisFramework_INCLUDE_DIRS}
     "${CMAKE_CURRENT_LIST_DIR}"
 )
 
-# QwertycoinTests
+# SocietatisTests
 
-add_custom_target(QwertycoinTests)
-add_dependencies(QwertycoinTests
-    QwertycoinTests::CoreTests
-    QwertycoinTests::CryptoTests
-    QwertycoinTests::DifficultyTests
-    QwertycoinTests::HashTargetTests
-    QwertycoinTests::HashTests
-    QwertycoinTests::NodeRpcProxyTests
-    QwertycoinTests::PerformanceTests
-    QwertycoinTests::SystemTests
-    QwertycoinTests::UnitTests
+add_custom_target(SocietatisTests)
+add_dependencies(SocietatisTests
+    SocietatisTests::CoreTests
+    SocietatisTests::CryptoTests
+    SocietatisTests::DifficultyTests
+    SocietatisTests::HashTargetTests
+    SocietatisTests::HashTests
+    SocietatisTests::NodeRpcProxyTests
+    SocietatisTests::PerformanceTests
+    SocietatisTests::SystemTests
+    SocietatisTests::UnitTests
 )
 
-# QwertycoinTests::CoreTests
+# SocietatisTests::CoreTests
 
-set(QwertycoinTests_CoreTests_SOURCES
+set(SocietatisTests_CoreTests_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/CoreTests/AccountBoostSerialization.h"
     "${CMAKE_CURRENT_LIST_DIR}/CoreTests/BlockReward.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/CoreTests/BlockReward.h"
@@ -58,34 +58,34 @@ set(QwertycoinTests_CoreTests_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/CoreTests/double_spend.inl"
 )
 
-set(QwertycoinTests_CoreTests_LIBS
+set(SocietatisTests_CoreTests_LIBS
     Boost::date_time
     Boost::program_options
     Boost::serialization
     codecov
-    QwertycoinFramework::Common
-    QwertycoinFramework::CryptoNoteCore
-    QwertycoinFramework::InProcessNode
-    QwertycoinFramework::Logging
-    QwertycoinFramework::Serialization
-    QwertycoinFramework::System
-    QwertycoinTests::TestGenerator
+    SocietatisFramework::Common
+    SocietatisFramework::CryptoNoteCore
+    SocietatisFramework::InProcessNode
+    SocietatisFramework::Logging
+    SocietatisFramework::Serialization
+    SocietatisFramework::System
+    SocietatisTests::TestGenerator
 )
 
-add_executable(QwertycoinTests_CoreTests ${QwertycoinTests_CoreTests_SOURCES})
-add_executable(QwertycoinTests::CoreTests ALIAS QwertycoinTests_CoreTests)
-target_include_directories(QwertycoinTests_CoreTests PRIVATE ${QwertycoinTests_INCLUDE_DIRS})
-target_link_libraries(QwertycoinTests_CoreTests PRIVATE ${QwertycoinTests_CoreTests_LIBS})
-set_target_properties(QwertycoinTests_CoreTests PROPERTIES OUTPUT_NAME "core_tests")
+add_executable(SocietatisTests_CoreTests ${SocietatisTests_CoreTests_SOURCES})
+add_executable(SocietatisTests::CoreTests ALIAS SocietatisTests_CoreTests)
+target_include_directories(SocietatisTests_CoreTests PRIVATE ${SocietatisTests_INCLUDE_DIRS})
+target_link_libraries(SocietatisTests_CoreTests PRIVATE ${SocietatisTests_CoreTests_LIBS})
+set_target_properties(SocietatisTests_CoreTests PROPERTIES OUTPUT_NAME "core_tests")
 
 add_test(
     NAME CoreTests
-    COMMAND $<TARGET_FILE:QwertycoinTests_CoreTests> --generate_and_play_test_data
+    COMMAND $<TARGET_FILE:SocietatisTests_CoreTests> --generate_and_play_test_data
 )
 
-# QwertycoinTests::CryptoTests
+# SocietatisTests::CryptoTests
 
-set(QwertycoinTests_CryptoTests_SOURCES
+set(SocietatisTests_CryptoTests_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/CryptoTests/crypto-ops-data.c"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoTests/crypto-ops.c"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoTests/crypto-tests.h"
@@ -95,119 +95,119 @@ set(QwertycoinTests_CryptoTests_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/CryptoTests/random.c"
 )
 
-set(QwertycoinTests_CryptoTests_LIBS codecov)
+set(SocietatisTests_CryptoTests_LIBS codecov)
 
-add_executable(QwertycoinTests_CryptoTests ${QwertycoinTests_CryptoTests_SOURCES})
-add_executable(QwertycoinTests::CryptoTests ALIAS QwertycoinTests_CryptoTests)
-target_include_directories(QwertycoinTests_CryptoTests PRIVATE ${QwertycoinTests_INCLUDE_DIRS})
-target_link_libraries(QwertycoinTests_CryptoTests PRIVATE ${QwertycoinTests_CryptoTests_LIBS})
-set_target_properties(QwertycoinTests_CryptoTests PROPERTIES OUTPUT_NAME "crypto_tests")
+add_executable(SocietatisTests_CryptoTests ${SocietatisTests_CryptoTests_SOURCES})
+add_executable(SocietatisTests::CryptoTests ALIAS SocietatisTests_CryptoTests)
+target_include_directories(SocietatisTests_CryptoTests PRIVATE ${SocietatisTests_INCLUDE_DIRS})
+target_link_libraries(SocietatisTests_CryptoTests PRIVATE ${SocietatisTests_CryptoTests_LIBS})
+set_target_properties(SocietatisTests_CryptoTests PROPERTIES OUTPUT_NAME "crypto_tests")
 
 add_test(
     NAME CryptoTests
-    COMMAND $<TARGET_FILE:QwertycoinTests_CryptoTests> ${CMAKE_CURRENT_LIST_DIR}/CryptoTests/tests.txt
+    COMMAND $<TARGET_FILE:SocietatisTests_CryptoTests> ${CMAKE_CURRENT_LIST_DIR}/CryptoTests/tests.txt
 )
 
-# QwertycoinTests::Data (skipped, not a library or executable target)
+# SocietatisTests::Data (skipped, not a library or executable target)
 
-# QwertycoinTests::DifficultyTests
+# SocietatisTests::DifficultyTests
 
-set(QwertycoinTests_DifficultyTests_SOURCES
+set(SocietatisTests_DifficultyTests_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/DifficultyTests/Difficulty.cpp"
 )
 
-set(QwertycoinTests_DifficultyTests_LIBS
+set(SocietatisTests_DifficultyTests_LIBS
     codecov
-    QwertycoinFramework::Logging
-    QwertycoinFramework::CryptoNoteCore
+    SocietatisFramework::Logging
+    SocietatisFramework::CryptoNoteCore
 )
 
-add_executable(QwertycoinTests_DifficultyTests ${QwertycoinTests_DifficultyTests_SOURCES})
-add_executable(QwertycoinTests::DifficultyTests ALIAS QwertycoinTests_DifficultyTests)
-target_include_directories(QwertycoinTests_DifficultyTests PRIVATE ${QwertycoinTests_INCLUDE_DIRS})
-target_link_libraries(QwertycoinTests_DifficultyTests PRIVATE ${QwertycoinTests_DifficultyTests_LIBS})
-set_target_properties(QwertycoinTests_DifficultyTests PROPERTIES OUTPUT_NAME "difficulty_tests")
+add_executable(SocietatisTests_DifficultyTests ${SocietatisTests_DifficultyTests_SOURCES})
+add_executable(SocietatisTests::DifficultyTests ALIAS SocietatisTests_DifficultyTests)
+target_include_directories(SocietatisTests_DifficultyTests PRIVATE ${SocietatisTests_INCLUDE_DIRS})
+target_link_libraries(SocietatisTests_DifficultyTests PRIVATE ${SocietatisTests_DifficultyTests_LIBS})
+set_target_properties(SocietatisTests_DifficultyTests PROPERTIES OUTPUT_NAME "difficulty_tests")
 
 add_test(
     NAME DifficultyTests
-    COMMAND $<TARGET_FILE:QwertycoinTests_DifficultyTests> ${CMAKE_CURRENT_LIST_DIR}/DifficultyTests/data.txt
+    COMMAND $<TARGET_FILE:SocietatisTests_DifficultyTests> ${CMAKE_CURRENT_LIST_DIR}/DifficultyTests/data.txt
 )
 
-# QwertycoinTests::HashTargetTests
+# SocietatisTests::HashTargetTests
 
-set(QwertycoinTests_HashTargetTests_SOURCES
+set(SocietatisTests_HashTargetTests_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/HashTargetTests/HashTarget.cpp"
 )
 
-set(QwertycoinTests_HashTargetTests_LIBS
+set(SocietatisTests_HashTargetTests_LIBS
     codecov
-    QwertycoinFramework::CryptoNoteCore
+    SocietatisFramework::CryptoNoteCore
 )
 
-add_executable(QwertycoinTests_HashTargetTests ${QwertycoinTests_HashTargetTests_SOURCES})
-add_executable(QwertycoinTests::HashTargetTests ALIAS QwertycoinTests_HashTargetTests)
-target_include_directories(QwertycoinTests_HashTargetTests PRIVATE ${QwertycoinTests_INCLUDE_DIRS})
-target_link_libraries(QwertycoinTests_HashTargetTests PRIVATE ${QwertycoinTests_HashTargetTests_LIBS})
-set_target_properties(QwertycoinTests_HashTargetTests PROPERTIES OUTPUT_NAME "hash_target_tests")
+add_executable(SocietatisTests_HashTargetTests ${SocietatisTests_HashTargetTests_SOURCES})
+add_executable(SocietatisTests::HashTargetTests ALIAS SocietatisTests_HashTargetTests)
+target_include_directories(SocietatisTests_HashTargetTests PRIVATE ${SocietatisTests_INCLUDE_DIRS})
+target_link_libraries(SocietatisTests_HashTargetTests PRIVATE ${SocietatisTests_HashTargetTests_LIBS})
+set_target_properties(SocietatisTests_HashTargetTests PROPERTIES OUTPUT_NAME "hash_target_tests")
 
 add_test(
     NAME HashTargetTests
-    COMMAND $<TARGET_FILE:QwertycoinTests_HashTargetTests>
+    COMMAND $<TARGET_FILE:SocietatisTests_HashTargetTests>
 )
 
-# QwertycoinTests::HashTests
+# SocietatisTests::HashTests
 
-set(QwertycoinTests_HashTests_SOURCES
+set(SocietatisTests_HashTests_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/HashTests/main.cpp"
 )
 
-set(QwertycoinTests_HashTests_LIBS
+set(SocietatisTests_HashTests_LIBS
     codecov
-    QwertycoinFramework::Crypto
+    SocietatisFramework::Crypto
 )
 
-add_executable(QwertycoinTests_HashTests ${QwertycoinTests_HashTests_SOURCES})
-add_executable(QwertycoinTests::HashTests ALIAS QwertycoinTests_HashTests)
-target_include_directories(QwertycoinTests_HashTests PRIVATE ${QwertycoinTests_INCLUDE_DIRS})
-target_link_libraries(QwertycoinTests_HashTests PRIVATE ${QwertycoinTests_HashTests_LIBS})
-set_target_properties(QwertycoinTests_HashTests PROPERTIES OUTPUT_NAME "hash_tests")
+add_executable(SocietatisTests_HashTests ${SocietatisTests_HashTests_SOURCES})
+add_executable(SocietatisTests::HashTests ALIAS SocietatisTests_HashTests)
+target_include_directories(SocietatisTests_HashTests PRIVATE ${SocietatisTests_INCLUDE_DIRS})
+target_link_libraries(SocietatisTests_HashTests PRIVATE ${SocietatisTests_HashTests_LIBS})
+set_target_properties(SocietatisTests_HashTests PROPERTIES OUTPUT_NAME "hash_tests")
 
 foreach(hash IN ITEMS extra-blake extra-groestl extra-jh extra-skein fast slow tree)
     add_test(
         NAME HashTests-${hash}
-        COMMAND $<TARGET_FILE:QwertycoinTests_HashTests> ${hash} ${CMAKE_CURRENT_LIST_DIR}/HashTests/tests-${hash}.txt
+        COMMAND $<TARGET_FILE:SocietatisTests_HashTests> ${hash} ${CMAKE_CURRENT_LIST_DIR}/HashTests/tests-${hash}.txt
     )
 endforeach()
 
-# QwertycoinTests::NodeRpcProxyTests
+# SocietatisTests::NodeRpcProxyTests
 
-set(QwertycoinTests_NodeRpcProxyTests_SOURCES
+set(SocietatisTests_NodeRpcProxyTests_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/NodeRpcProxyTests/NodeRpcProxyTests.cpp"
 )
 
-set(QwertycoinTests_NodeRpcProxyTests_LIBS
+set(SocietatisTests_NodeRpcProxyTests_LIBS
     codecov
-    QwertycoinFramework::Common
-    QwertycoinFramework::Logging
-    QwertycoinFramework::NodeRpcProxy
-    QwertycoinFramework::Rpc
-    QwertycoinFramework::Serialization
+    SocietatisFramework::Common
+    SocietatisFramework::Logging
+    SocietatisFramework::NodeRpcProxy
+    SocietatisFramework::Rpc
+    SocietatisFramework::Serialization
 )
 
-add_executable(QwertycoinTests_NodeRpcProxyTests ${QwertycoinTests_NodeRpcProxyTests_SOURCES})
-add_executable(QwertycoinTests::NodeRpcProxyTests ALIAS QwertycoinTests_NodeRpcProxyTests)
-target_include_directories(QwertycoinTests_NodeRpcProxyTests PRIVATE ${QwertycoinTests_INCLUDE_DIRS})
-target_link_libraries(QwertycoinTests_NodeRpcProxyTests PRIVATE ${QwertycoinTests_NodeRpcProxyTests_LIBS})
-set_target_properties(QwertycoinTests_NodeRpcProxyTests PROPERTIES OUTPUT_NAME "node_rpc_proxy_tests")
+add_executable(SocietatisTests_NodeRpcProxyTests ${SocietatisTests_NodeRpcProxyTests_SOURCES})
+add_executable(SocietatisTests::NodeRpcProxyTests ALIAS SocietatisTests_NodeRpcProxyTests)
+target_include_directories(SocietatisTests_NodeRpcProxyTests PRIVATE ${SocietatisTests_INCLUDE_DIRS})
+target_link_libraries(SocietatisTests_NodeRpcProxyTests PRIVATE ${SocietatisTests_NodeRpcProxyTests_LIBS})
+set_target_properties(SocietatisTests_NodeRpcProxyTests PROPERTIES OUTPUT_NAME "node_rpc_proxy_tests")
 
 add_test(
     NAME NodeRpcProxyTests
-    COMMAND $<TARGET_FILE:QwertycoinTests_NodeRpcProxyTests>
+    COMMAND $<TARGET_FILE:SocietatisTests_NodeRpcProxyTests>
 )
 
-# QwertycoinTests::PerformanceTests
+# SocietatisTests::PerformanceTests
 
-set(QwertycoinTests_PerformanceTests_SOURCES
+set(SocietatisTests_PerformanceTests_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/PerformanceTests/CheckRingSignature.h"
     "${CMAKE_CURRENT_LIST_DIR}/PerformanceTests/ConstructTransaction.h"
     "${CMAKE_CURRENT_LIST_DIR}/PerformanceTests/CryptoNoteSlowHash.h"
@@ -224,27 +224,27 @@ set(QwertycoinTests_PerformanceTests_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/PerformanceTests/main.cpp"
 )
 
-set(QwertycoinTests_PerformanceTests_LIBS
+set(SocietatisTests_PerformanceTests_LIBS
     Boost::chrono
     codecov
-    QwertycoinFramework::CryptoNoteCore
-    QwertycoinFramework::Logging
+    SocietatisFramework::CryptoNoteCore
+    SocietatisFramework::Logging
 )
 
-add_executable(QwertycoinTests_PerformanceTests ${QwertycoinTests_PerformanceTests_SOURCES})
-add_executable(QwertycoinTests::PerformanceTests ALIAS QwertycoinTests_PerformanceTests)
-target_include_directories(QwertycoinTests_PerformanceTests PRIVATE ${QwertycoinTests_INCLUDE_DIRS})
-target_link_libraries(QwertycoinTests_PerformanceTests PRIVATE ${QwertycoinTests_PerformanceTests_LIBS})
-set_target_properties(QwertycoinTests_PerformanceTests PROPERTIES OUTPUT_NAME "performance_tests")
+add_executable(SocietatisTests_PerformanceTests ${SocietatisTests_PerformanceTests_SOURCES})
+add_executable(SocietatisTests::PerformanceTests ALIAS SocietatisTests_PerformanceTests)
+target_include_directories(SocietatisTests_PerformanceTests PRIVATE ${SocietatisTests_INCLUDE_DIRS})
+target_link_libraries(SocietatisTests_PerformanceTests PRIVATE ${SocietatisTests_PerformanceTests_LIBS})
+set_target_properties(SocietatisTests_PerformanceTests PROPERTIES OUTPUT_NAME "performance_tests")
 
 add_test(
     NAME PerformanceTests
-    COMMAND $<TARGET_FILE:QwertycoinTests_PerformanceTests>
+    COMMAND $<TARGET_FILE:SocietatisTests_PerformanceTests>
 )
 
-# QwertycoinTests::SystemTests
+# SocietatisTests::SystemTests
 
-set(QwertycoinTests_SystemTests_SOURCES
+set(SocietatisTests_SystemTests_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/SystemTests/ContextGroupTests.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/SystemTests/ContextGroupTimeoutTests.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/SystemTests/ContextTests.cpp"
@@ -263,40 +263,40 @@ set(QwertycoinTests_SystemTests_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/SystemTests/main.cpp"
 )
 
-set(QwertycoinTests_SystemTests_LIBS
+set(SocietatisTests_SystemTests_LIBS
     codecov
     GTest::gtest_main
-    QwertycoinFramework::System
+    SocietatisFramework::System
 )
 
-add_executable(QwertycoinTests_SystemTests ${QwertycoinTests_SystemTests_SOURCES})
-add_executable(QwertycoinTests::SystemTests ALIAS QwertycoinTests_SystemTests)
-target_include_directories(QwertycoinTests_SystemTests PRIVATE ${QwertycoinTests_INCLUDE_DIRS})
-target_link_libraries(QwertycoinTests_SystemTests PRIVATE ${QwertycoinTests_SystemTests_LIBS})
-set_target_properties(QwertycoinTests_SystemTests PROPERTIES OUTPUT_NAME "system_tests")
+add_executable(SocietatisTests_SystemTests ${SocietatisTests_SystemTests_SOURCES})
+add_executable(SocietatisTests::SystemTests ALIAS SocietatisTests_SystemTests)
+target_include_directories(SocietatisTests_SystemTests PRIVATE ${SocietatisTests_INCLUDE_DIRS})
+target_link_libraries(SocietatisTests_SystemTests PRIVATE ${SocietatisTests_SystemTests_LIBS})
+set_target_properties(SocietatisTests_SystemTests PROPERTIES OUTPUT_NAME "system_tests")
 
 add_test(
     NAME SystemTests
-    COMMAND $<TARGET_FILE:QwertycoinTests_SystemTests>
+    COMMAND $<TARGET_FILE:SocietatisTests_SystemTests>
 )
 
-# QwertycoinTests::TestGenerator
+# SocietatisTests::TestGenerator
 
-set(QwertycoinTests_TestGenerator_SOURCES
+set(SocietatisTests_TestGenerator_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/TestGenerator/TestGenerator.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/TestGenerator/TestGenerator.h"
 )
 
-set(QwertycoinTests_TestGenerator_LIBS codecov)
+set(SocietatisTests_TestGenerator_LIBS codecov)
 
-add_library(QwertycoinTests_TestGenerator ${QwertycoinTests_TestGenerator_SOURCES})
-add_library(QwertycoinTests::TestGenerator ALIAS QwertycoinTests_TestGenerator)
-target_include_directories(QwertycoinTests_TestGenerator PRIVATE ${QwertycoinTests_INCLUDE_DIRS})
-target_link_libraries(QwertycoinTests_TestGenerator PRIVATE ${QwertycoinTests_TestGenerator_LIBS})
+add_library(SocietatisTests_TestGenerator ${SocietatisTests_TestGenerator_SOURCES})
+add_library(SocietatisTests::TestGenerator ALIAS SocietatisTests_TestGenerator)
+target_include_directories(SocietatisTests_TestGenerator PRIVATE ${SocietatisTests_INCLUDE_DIRS})
+target_link_libraries(SocietatisTests_TestGenerator PRIVATE ${SocietatisTests_TestGenerator_LIBS})
 
-# QwertycoinTests::UnitTests
+# SocietatisTests::UnitTests
 
-set(QwertycoinTests_UnitTests_SOURCES
+set(SocietatisTests_UnitTests_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/UnitTests/ArrayRefTests.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/UnitTests/ArrayViewTests.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/UnitTests/Base58.cpp"
@@ -354,26 +354,26 @@ set(QwertycoinTests_UnitTests_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/UnitTests/main.cpp"
 )
 
-set(QwertycoinTests_UnitTests_LIBS
+set(SocietatisTests_UnitTests_LIBS
     codecov
     GTest::gtest_main
-    QwertycoinFramework::CryptoNoteCore
-    QwertycoinFramework::CryptoNoteProtocol
-    QwertycoinFramework::Http
-    QwertycoinFramework::InProcessNode
-    QwertycoinFramework::Logging
-    QwertycoinFramework::Rpc
-    QwertycoinFramework::Wallet
-    QwertycoinTests::TestGenerator
+    SocietatisFramework::CryptoNoteCore
+    SocietatisFramework::CryptoNoteProtocol
+    SocietatisFramework::Http
+    SocietatisFramework::InProcessNode
+    SocietatisFramework::Logging
+    SocietatisFramework::Rpc
+    SocietatisFramework::Wallet
+    SocietatisTests::TestGenerator
 )
 
-add_executable(QwertycoinTests_UnitTests ${QwertycoinTests_UnitTests_SOURCES})
-add_executable(QwertycoinTests::UnitTests ALIAS QwertycoinTests_UnitTests)
-target_include_directories(QwertycoinTests_UnitTests PRIVATE ${QwertycoinTests_INCLUDE_DIRS})
-target_link_libraries(QwertycoinTests_UnitTests PRIVATE ${QwertycoinTests_UnitTests_LIBS})
-set_target_properties(QwertycoinTests_UnitTests PROPERTIES OUTPUT_NAME "unit_tests")
+add_executable(SocietatisTests_UnitTests ${SocietatisTests_UnitTests_SOURCES})
+add_executable(SocietatisTests::UnitTests ALIAS SocietatisTests_UnitTests)
+target_include_directories(SocietatisTests_UnitTests PRIVATE ${SocietatisTests_INCLUDE_DIRS})
+target_link_libraries(SocietatisTests_UnitTests PRIVATE ${SocietatisTests_UnitTests_LIBS})
+set_target_properties(SocietatisTests_UnitTests PROPERTIES OUTPUT_NAME "unit_tests")
 
 add_test(
     NAME UnitTests
-    COMMAND $<TARGET_FILE:QwertycoinTests_UnitTests>
+    COMMAND $<TARGET_FILE:SocietatisTests_UnitTests>
 )

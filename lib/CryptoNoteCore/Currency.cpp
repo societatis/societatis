@@ -123,7 +123,7 @@ size_t Currency::blockGrantedFullRewardZoneByBlockVersion(uint8_t blockMajorVers
 
 uint32_t Currency::upgradeHeight(uint8_t majorVersion) const
 {
-    if (majorVersion == BLOCK_MAJOR_VERSION_6) {
+    if (majorVersion == BLOCK_MAJOR_VERSION_6TODO) {
         return m_upgradeHeightV6;
     } else if (majorVersion == BLOCK_MAJOR_VERSION_5) {
         return m_upgradeHeightV5;
@@ -155,7 +155,7 @@ bool Currency::getBlockReward(
     // Consistency
     double consistency = 1.0;
     double exponent = 0.25; 
-    if (height >= CryptoNote::parameters::UPGRADE_HEIGHT_V6 && difficultyTarget() != 0) {
+    if (height >= CryptoNote::parameters::UPGRADE_HEIGHT_V6TODO && difficultyTarget() != 0) {
         // blockTarget is (Timestamp of New Block - Timestamp of Previous Block)
         consistency = (double) blockTarget / (double) difficultyTarget();
 
@@ -675,22 +675,7 @@ uint64_t Currency::getMinimalFee(
     uint64_t medianHistoricalReward,
     uint32_t height) const
 {
-    const uint64_t blocksInTwoYears = parameters::EXPECTED_NUMBER_OF_BLOCKS_PER_DAY * 365 * 2;
-    const double gauge = double(0.25);
-    uint64_t minimumFee(0);
-    double dailyDifficultyMoore = dailyDifficulty
-                                  / pow(2, static_cast<double>(height)
-                                  / static_cast<double>(blocksInTwoYears));
-    double minFee = gauge * parameters::COIN * static_cast<double>(avgHistoricalDifficulty)
-                    / dailyDifficultyMoore * static_cast<double>(reward)
-                    / static_cast<double>(medianHistoricalReward);
-    if (minFee == 0 || !std::isfinite(minFee)) {
-        return CryptoNote::parameters::MAXIMUM_FEE; // zero test
-    }
-    minimumFee = static_cast<uint64_t>(minFee);
-
-    // TODO: return std::min<uint64_t>(CryptoNote::parameters::MAXIMUM_FEE, minimumFee);
-    return CryptoNote::parameters::MINIMUM_FEE_V1;
+    return CryptoNote::parameters::MINIMUM_FEE;
 }
 
 uint64_t Currency::roundUpMinFee(uint64_t minimalFee, int digits) const
@@ -732,7 +717,7 @@ difficulty_type Currency::nextDifficulty(uint32_t height,
     if (!timestamps.empty()) {
         last_timestamp = timestamps.back();
     }
-    if ((blockMajorVersion >= BLOCK_MAJOR_VERSION_6) &&
+    if ((blockMajorVersion >= BLOCK_MAJOR_VERSION_6TODO) &&
             (nextBlockTime > last_timestamp + CryptoNote::parameters::CRYPTONOTE_CLIF_THRESHOLD)) {
         size_t array_size = cumulativeDifficulties.size();
         difficulty_type last_difficulty = 1;
@@ -745,7 +730,7 @@ difficulty_type Currency::nextDifficulty(uint32_t height,
                                currentSolveTime, lazy_stat_cb);
     }
 
-    if (blockMajorVersion >= BLOCK_MAJOR_VERSION_6) {
+    if (blockMajorVersion >= BLOCK_MAJOR_VERSION_6TODO) {
         return nextDifficultyV6(blockMajorVersion, timestamps, cumulativeDifficulties, height);
     }
     else if (blockMajorVersion >= BLOCK_MAJOR_VERSION_5) {
@@ -1025,7 +1010,7 @@ difficulty_type Currency::nextDifficultyV6(uint8_t blockMajorVersion,
     // Consider this as a service or trial period.
     // With EPoW reward algo in place, we don't really need to worry about attackers
     // or large miners taking advanatage of our system.
-    if (height < CryptoNote::parameters::UPGRADE_HEIGHT_V6 + diffWindow) {
+    if (height < CryptoNote::parameters::UPGRADE_HEIGHT_V6TODO + diffWindow) {
         return nextDiffV6;
     }
 
@@ -1265,7 +1250,7 @@ bool Currency::checkProofOfWork(
         // fall through
     case BLOCK_MAJOR_VERSION_5:
         // fall through
-    case BLOCK_MAJOR_VERSION_6:
+    case BLOCK_MAJOR_VERSION_6TODO:
         return checkProofOfWorkV1(context, block, currentDiffic, proofOfWork);
     case BLOCK_MAJOR_VERSION_2:
         // fall through
@@ -1330,9 +1315,7 @@ CurrencyBuilder::CurrencyBuilder(Logging::ILogger &log)
     expectedNumberOfBlocksPerDay(parameters::EXPECTED_NUMBER_OF_BLOCKS_PER_DAY);
 
     timestampCheckWindow(parameters::BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW);
-    timestampCheckWindow_v1(parameters::BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V1);
     blockFutureTimeLimit(parameters::CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT);
-    blockFutureTimeLimit_v1(parameters::CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V1);
 
     moneySupply(parameters::MONEY_SUPPLY);
     emissionSpeedFactor(parameters::EMISSION_SPEED_FACTOR);
@@ -1381,7 +1364,7 @@ CurrencyBuilder::CurrencyBuilder(Logging::ILogger &log)
     upgradeHeightV3(parameters::UPGRADE_HEIGHT_V3);
     upgradeHeightV4(parameters::UPGRADE_HEIGHT_V4);
     upgradeHeightV5(parameters::UPGRADE_HEIGHT_V5);
-    upgradeHeightV6(parameters::UPGRADE_HEIGHT_V6);
+    upgradeHeightV6(parameters::UPGRADE_HEIGHT_V6TODO);
     upgradeVotingThreshold(parameters::UPGRADE_VOTING_THRESHOLD);
     upgradeVotingWindow(parameters::UPGRADE_VOTING_WINDOW);
     upgradeWindow(parameters::UPGRADE_WINDOW);

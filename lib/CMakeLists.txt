@@ -6,7 +6,7 @@ configure_file(
 )
 message(STATUS "Generated version.h header: ${CMAKE_CURRENT_BINARY_DIR}/version.h")
 
-set(QwertycoinFramework_INCLUDE_DIRS
+set(SocietatisFramework_INCLUDE_DIRS
     "${Boost_INCLUDE_DIRS}"
     "${Breakpad_INCLUDE_DIRS}"
     "${MINIUPNP_INCLUDE_DIRS}"
@@ -17,55 +17,55 @@ set(QwertycoinFramework_INCLUDE_DIRS
 )
 
 if(MSVC)
-    list(APPEND QwertycoinFramework_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/Platform/Windows")
-    list(APPEND QwertycoinFramework_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/Platform/msc")
+    list(APPEND SocietatisFramework_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/Platform/Windows")
+    list(APPEND SocietatisFramework_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/Platform/msc")
 elseif(APPLE)
-    list(APPEND QwertycoinFramework_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/Platform/OSX")
-    list(APPEND QwertycoinFramework_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/Platform/Posix")
+    list(APPEND SocietatisFramework_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/Platform/OSX")
+    list(APPEND SocietatisFramework_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/Platform/Posix")
 elseif(ANDROID)
-    list(APPEND QwertycoinFramework_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/Platform/Android")
-    list(APPEND QwertycoinFramework_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/Platform/Posix")
+    list(APPEND SocietatisFramework_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/Platform/Android")
+    list(APPEND SocietatisFramework_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/Platform/Posix")
 elseif(FREEBSD)
-    list(APPEND QwertycoinFramework_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/Platform/FreeBSD")
-    list(APPEND QwertycoinFramework_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/Platform/Posix")
+    list(APPEND SocietatisFramework_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/Platform/FreeBSD")
+    list(APPEND SocietatisFramework_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/Platform/Posix")
 else()
-    list(APPEND QwertycoinFramework_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/Platform/Linux")
-    list(APPEND QwertycoinFramework_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/Platform/Posix")
+    list(APPEND SocietatisFramework_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/Platform/Linux")
+    list(APPEND SocietatisFramework_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/Platform/Posix")
 endif()
 
-set(QwertycoinFramework_INCLUDE_DIRS ${QwertycoinFramework_INCLUDE_DIRS} PARENT_SCOPE)
+set(SocietatisFramework_INCLUDE_DIRS ${SocietatisFramework_INCLUDE_DIRS} PARENT_SCOPE)
 
-# QwertycoinFramework
+# SocietatisFramework
 
-set(QwertycoinFramework_LIBS
-    QwertycoinFramework_BlockchainExplorer
-    QwertycoinFramework_Breakpad
-    QwertycoinFramework_Common
-    QwertycoinFramework_Crypto
-    QwertycoinFramework_CryptoNoteCore
-    QwertycoinFramework_CryptoNoteProtocol
-    QwertycoinFramework_Global
-    QwertycoinFramework_Http
-    QwertycoinFramework_InProcessNode
-    QwertycoinFramework_JsonRpcServer
-    QwertycoinFramework_Logging
-    QwertycoinFramework_Mnemonics
-    QwertycoinFramework_NodeRpcProxy
-    QwertycoinFramework_P2p
-    QwertycoinFramework_PaymentGate
-    QwertycoinFramework_Rpc
-    QwertycoinFramework_Serialization
-    QwertycoinFramework_System
-    QwertycoinFramework_Transfers
-    QwertycoinFramework_Wallet
+set(SocietatisFramework_LIBS
+    SocietatisFramework_BlockchainExplorer
+    SocietatisFramework_Breakpad
+    SocietatisFramework_Common
+    SocietatisFramework_Crypto
+    SocietatisFramework_CryptoNoteCore
+    SocietatisFramework_CryptoNoteProtocol
+    SocietatisFramework_Global
+    SocietatisFramework_Http
+    SocietatisFramework_InProcessNode
+    SocietatisFramework_JsonRpcServer
+    SocietatisFramework_Logging
+    SocietatisFramework_Mnemonics
+    SocietatisFramework_NodeRpcProxy
+    SocietatisFramework_P2p
+    SocietatisFramework_PaymentGate
+    SocietatisFramework_Rpc
+    SocietatisFramework_Serialization
+    SocietatisFramework_System
+    SocietatisFramework_Transfers
+    SocietatisFramework_Wallet
 )
 
-add_custom_target(QwertycoinFramework)
-add_dependencies(QwertycoinFramework ${QwertycoinFramework_LIBS})
+add_custom_target(SocietatisFramework)
+add_dependencies(SocietatisFramework ${SocietatisFramework_LIBS})
 
-# QwertycoinFramework::BlockchainExplorer
+# SocietatisFramework::BlockchainExplorer
 
-set(QwertycoinFramework_BlockchainExplorer_SOURCES
+set(SocietatisFramework_BlockchainExplorer_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/BlockchainExplorer/BlockchainExplorer.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/BlockchainExplorer/BlockchainExplorer.h"
     "${CMAKE_CURRENT_LIST_DIR}/BlockchainExplorer/BlockchainExplorerData.h"
@@ -77,50 +77,50 @@ set(QwertycoinFramework_BlockchainExplorer_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/BlockchainExplorer/IBlockchainObserver.h"
 )
 
-set(QwertycoinFramework_BlockchainExplorer_LIBS
-    QwertycoinFramework::Global
+set(SocietatisFramework_BlockchainExplorer_LIBS
+    SocietatisFramework::Global
 )
 
-add_library(QwertycoinFramework_BlockchainExplorer STATIC ${QwertycoinFramework_BlockchainExplorer_SOURCES})
-add_library(QwertycoinFramework::BlockchainExplorer ALIAS QwertycoinFramework_BlockchainExplorer)
-target_include_directories(QwertycoinFramework_BlockchainExplorer PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
-target_link_libraries(QwertycoinFramework_BlockchainExplorer PRIVATE ${QwertycoinFramework_BlockchainExplorer_LIBS})
+add_library(SocietatisFramework_BlockchainExplorer STATIC ${SocietatisFramework_BlockchainExplorer_SOURCES})
+add_library(SocietatisFramework::BlockchainExplorer ALIAS SocietatisFramework_BlockchainExplorer)
+target_include_directories(SocietatisFramework_BlockchainExplorer PRIVATE ${SocietatisFramework_INCLUDE_DIRS})
+target_link_libraries(SocietatisFramework_BlockchainExplorer PRIVATE ${SocietatisFramework_BlockchainExplorer_LIBS})
 
-# QwertycoinFramework::Breakpad
+# SocietatisFramework::Breakpad
 
-set(QwertycoinFramework_Breakpad_SOURCES
+set(SocietatisFramework_Breakpad_SOURCES
     ${Breakpad_SOURCES} # Compile Google Brekapad sources as part of this lib
     "${CMAKE_CURRENT_LIST_DIR}/Breakpad/Breakpad.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Breakpad/Breakpad.h"
 )
 
-set(QwertycoinFramework_Breakpad_LIBS
-    QwertycoinFramework::Global
+set(SocietatisFramework_Breakpad_LIBS
+    SocietatisFramework::Global
 )
 
 if(APPLE)
     find_library(CoreFoundationLibrary CoreFoundation)
     find_library(CFNetworkLibrary CFNetwork)
-    set(QwertycoinFramework_Breakpad_LIBS
-        ${QwertycoinFramework_Breakpad_LIBS}
+    set(SocietatisFramework_Breakpad_LIBS
+        ${SocietatisFramework_Breakpad_LIBS}
         ${CoreFoundationLibrary}
         ${CFNetworkLibrary}
     )
 endif()
 
-add_library(QwertycoinFramework_Breakpad STATIC ${QwertycoinFramework_Breakpad_SOURCES})
-add_library(QwertycoinFramework::Breakpad ALIAS QwertycoinFramework_Breakpad)
-target_include_directories(QwertycoinFramework_Breakpad PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
-target_link_libraries(QwertycoinFramework_Breakpad PRIVATE ${QwertycoinFramework_Breakpad_LIBS})
+add_library(SocietatisFramework_Breakpad STATIC ${SocietatisFramework_Breakpad_SOURCES})
+add_library(SocietatisFramework::Breakpad ALIAS SocietatisFramework_Breakpad)
+target_include_directories(SocietatisFramework_Breakpad PRIVATE ${SocietatisFramework_INCLUDE_DIRS})
+target_link_libraries(SocietatisFramework_Breakpad PRIVATE ${SocietatisFramework_Breakpad_LIBS})
 
 if(WIN32)
     # Fix for "cannot convert argument 1 from 'const wchar_t *' to 'LPCSTR'" and similar issues
-    target_compile_definitions(QwertycoinFramework_Breakpad PRIVATE -DUNICODE -D_UNICODE)
+    target_compile_definitions(SocietatisFramework_Breakpad PRIVATE -DUNICODE -D_UNICODE)
 endif()
 
-# QwertycoinFramework::Common
+# SocietatisFramework::Common
 
-set(QwertycoinFramework_Common_SOURCES
+set(SocietatisFramework_Common_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/Common/ArrayRef.h"
     "${CMAKE_CURRENT_LIST_DIR}/Common/ArrayView.h"
     "${CMAKE_CURRENT_LIST_DIR}/Common/Base58.cpp"
@@ -180,24 +180,24 @@ set(QwertycoinFramework_Common_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/Common/HardwareInfo.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Common/HardwareInfo.h")
 
-set(QwertycoinFramework_Common_LIBS
+set(SocietatisFramework_Common_LIBS
     Threads::Threads
-    QwertycoinFramework::Crypto
-    QwertycoinFramework::Global
+    SocietatisFramework::Crypto
+    SocietatisFramework::Global
 )
 
-add_library(QwertycoinFramework_Common STATIC ${QwertycoinFramework_Common_SOURCES})
-add_library(QwertycoinFramework::Common ALIAS QwertycoinFramework_Common)
-target_include_directories(QwertycoinFramework_Common PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
-target_link_libraries(QwertycoinFramework_Common PRIVATE ${QwertycoinFramework_Common_LIBS})
+add_library(SocietatisFramework_Common STATIC ${SocietatisFramework_Common_SOURCES})
+add_library(SocietatisFramework::Common ALIAS SocietatisFramework_Common)
+target_include_directories(SocietatisFramework_Common PRIVATE ${SocietatisFramework_INCLUDE_DIRS})
+target_link_libraries(SocietatisFramework_Common PRIVATE ${SocietatisFramework_Common_LIBS})
 
 if(UNIX AND NOT ANDROID)
-    target_link_libraries(QwertycoinFramework_Common PUBLIC -lresolv)
+    target_link_libraries(SocietatisFramework_Common PUBLIC -lresolv)
 endif()
 
-# QwertycoinFramework::Crypto
+# SocietatisFramework::Crypto
 
-set(QwertycoinFramework_Crypto_SOURCES
+set(SocietatisFramework_Crypto_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/crypto/aesb.c"
     "${CMAKE_CURRENT_LIST_DIR}/crypto/aesb.h"
     "${CMAKE_CURRENT_LIST_DIR}/crypto/blake256.c"
@@ -243,20 +243,20 @@ set(QwertycoinFramework_Crypto_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/crypto/tree-hash.c"
 )
 
-add_library(QwertycoinFramework_Crypto STATIC ${QwertycoinFramework_Crypto_SOURCES})
-add_library(QwertycoinFramework::Crypto ALIAS QwertycoinFramework_Crypto)
-target_include_directories(QwertycoinFramework_Crypto PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
+add_library(SocietatisFramework_Crypto STATIC ${SocietatisFramework_Crypto_SOURCES})
+add_library(SocietatisFramework::Crypto ALIAS SocietatisFramework_Crypto)
+target_include_directories(SocietatisFramework_Crypto PRIVATE ${SocietatisFramework_INCLUDE_DIRS})
 
 if(NOT WIN32 AND NOT ARM AND NOT PPC64LE)
-    message(STATUS "[QwertycoinFramework::Crypto] AES support enabled.")
-    target_compile_options(QwertycoinFramework_Crypto PRIVATE -maes)
+    message(STATUS "[SocietatisFramework::Crypto] AES support enabled.")
+    target_compile_options(SocietatisFramework_Crypto PRIVATE -maes)
 elseif(PPC64LE)
-    message(STATUS "[QwertycoinFramework::Crypto] AES support disabled.")
+    message(STATUS "[SocietatisFramework::Crypto] AES support disabled.")
 endif()
 
-# QwertycoinFramework::CryptoNoteCore
+# SocietatisFramework::CryptoNoteCore
 
-set(QwertycoinFramework_CryptoNoteCore_SOURCES
+set(SocietatisFramework_CryptoNoteCore_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Account.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/Account.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/BlockIndex.cpp"
@@ -320,26 +320,26 @@ set(QwertycoinFramework_CryptoNoteCore_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteCore/VerificationContext.h"
 )
 
-set(QwertycoinFramework_CryptoNoteCore_LIBS
+set(SocietatisFramework_CryptoNoteCore_LIBS
     Boost::filesystem
     Boost::program_options
     sparsehash::sparsehash
-    QwertycoinFramework::BlockchainExplorer
-    QwertycoinFramework::Common
-    QwertycoinFramework::Crypto
-    QwertycoinFramework::Global
-    QwertycoinFramework::Logging
-    QwertycoinFramework::Serialization
+    SocietatisFramework::BlockchainExplorer
+    SocietatisFramework::Common
+    SocietatisFramework::Crypto
+    SocietatisFramework::Global
+    SocietatisFramework::Logging
+    SocietatisFramework::Serialization
 )
 
-add_library(QwertycoinFramework_CryptoNoteCore STATIC ${QwertycoinFramework_CryptoNoteCore_SOURCES})
-add_library(QwertycoinFramework::CryptoNoteCore ALIAS QwertycoinFramework_CryptoNoteCore)
-target_include_directories(QwertycoinFramework_CryptoNoteCore PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
-target_link_libraries(QwertycoinFramework_CryptoNoteCore PRIVATE ${QwertycoinFramework_CryptoNoteCore_LIBS})
+add_library(SocietatisFramework_CryptoNoteCore STATIC ${SocietatisFramework_CryptoNoteCore_SOURCES})
+add_library(SocietatisFramework::CryptoNoteCore ALIAS SocietatisFramework_CryptoNoteCore)
+target_include_directories(SocietatisFramework_CryptoNoteCore PRIVATE ${SocietatisFramework_INCLUDE_DIRS})
+target_link_libraries(SocietatisFramework_CryptoNoteCore PRIVATE ${SocietatisFramework_CryptoNoteCore_LIBS})
 
-# QwertycoinFramework::CryptoNoteProtocol
+# SocietatisFramework::CryptoNoteProtocol
 
-set(QwertycoinFramework_CryptoNoteProtocol_SOURCES
+set(SocietatisFramework_CryptoNoteProtocol_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteProtocol/CryptoNoteProtocolDefinitions.h"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteProtocol/CryptoNoteProtocolHandler.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteProtocol/CryptoNoteProtocolHandler.h"
@@ -348,31 +348,31 @@ set(QwertycoinFramework_CryptoNoteProtocol_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/CryptoNoteProtocol/ICryptoNoteProtocolQuery.h"
 )
 
-set(QwertycoinFramework_CryptoNoteProtocol_LIBS
-    QwertycoinFramework::Global
+set(SocietatisFramework_CryptoNoteProtocol_LIBS
+    SocietatisFramework::Global
 )
 
-add_library(QwertycoinFramework_CryptoNoteProtocol STATIC ${QwertycoinFramework_CryptoNoteProtocol_SOURCES})
-add_library(QwertycoinFramework::CryptoNoteProtocol ALIAS QwertycoinFramework_CryptoNoteProtocol)
-target_include_directories(QwertycoinFramework_CryptoNoteProtocol PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
-target_link_libraries(QwertycoinFramework_CryptoNoteProtocol PRIVATE ${QwertycoinFramework_CryptoNoteProtocol_LIBS})
+add_library(SocietatisFramework_CryptoNoteProtocol STATIC ${SocietatisFramework_CryptoNoteProtocol_SOURCES})
+add_library(SocietatisFramework::CryptoNoteProtocol ALIAS SocietatisFramework_CryptoNoteProtocol)
+target_include_directories(SocietatisFramework_CryptoNoteProtocol PRIVATE ${SocietatisFramework_INCLUDE_DIRS})
+target_link_libraries(SocietatisFramework_CryptoNoteProtocol PRIVATE ${SocietatisFramework_CryptoNoteProtocol_LIBS})
 
-# QwertycoinFramework::Global
+# SocietatisFramework::Global
 
-set(QwertycoinFramework_Global_SOURCES
+set(SocietatisFramework_Global_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/Global/Checkpoints.h"
     "${CMAKE_CURRENT_LIST_DIR}/Global/Constants.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Global/Constants.h"
     "${CMAKE_CURRENT_LIST_DIR}/Global/CryptoNoteConfig.h"
 )
 
-add_library(QwertycoinFramework_Global STATIC ${QwertycoinFramework_Global_SOURCES})
-add_library(QwertycoinFramework::Global ALIAS QwertycoinFramework_Global)
-target_include_directories(QwertycoinFramework_Global PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
+add_library(SocietatisFramework_Global STATIC ${SocietatisFramework_Global_SOURCES})
+add_library(SocietatisFramework::Global ALIAS SocietatisFramework_Global)
+target_include_directories(SocietatisFramework_Global PRIVATE ${SocietatisFramework_INCLUDE_DIRS})
 
-# QwertycoinFramework::Http
+# SocietatisFramework::Http
 
-set(QwertycoinFramework_Http_SOURCES
+set(SocietatisFramework_Http_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/Http/HttpParser.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Http/HttpParser.h"
     "${CMAKE_CURRENT_LIST_DIR}/Http/HttpParserErrorCodes.cpp"
@@ -383,42 +383,42 @@ set(QwertycoinFramework_Http_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/Http/HttpResponse.h"
 )
 
-add_library(QwertycoinFramework_Http STATIC ${QwertycoinFramework_Http_SOURCES})
-add_library(QwertycoinFramework::Http ALIAS QwertycoinFramework_Http)
-target_include_directories(QwertycoinFramework_Http PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
+add_library(SocietatisFramework_Http STATIC ${SocietatisFramework_Http_SOURCES})
+add_library(SocietatisFramework::Http ALIAS SocietatisFramework_Http)
+target_include_directories(SocietatisFramework_Http PRIVATE ${SocietatisFramework_INCLUDE_DIRS})
 
-# QwertycoinFramework::InProcessNode
+# SocietatisFramework::InProcessNode
 
-set(QwertycoinFramework_InProcessNode_SOURCES
+set(SocietatisFramework_InProcessNode_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/InProcessNode/InProcessNode.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/InProcessNode/InProcessNode.h"
     "${CMAKE_CURRENT_LIST_DIR}/InProcessNode/InProcessNodeErrors.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/InProcessNode/InProcessNodeErrors.h"
 )
 
-set(QwertycoinFramework_InProcessNode_LIBS
-    QwertycoinFramework::Global
+set(SocietatisFramework_InProcessNode_LIBS
+    SocietatisFramework::Global
 )
 
-add_library(QwertycoinFramework_InProcessNode STATIC ${QwertycoinFramework_InProcessNode_SOURCES})
-add_library(QwertycoinFramework::InProcessNode ALIAS QwertycoinFramework_InProcessNode)
-target_include_directories(QwertycoinFramework_InProcessNode PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
-target_link_libraries(QwertycoinFramework_InProcessNode PRIVATE ${QwertycoinFramework_InProcessNode_LIBS})
+add_library(SocietatisFramework_InProcessNode STATIC ${SocietatisFramework_InProcessNode_SOURCES})
+add_library(SocietatisFramework::InProcessNode ALIAS SocietatisFramework_InProcessNode)
+target_include_directories(SocietatisFramework_InProcessNode PRIVATE ${SocietatisFramework_INCLUDE_DIRS})
+target_link_libraries(SocietatisFramework_InProcessNode PRIVATE ${SocietatisFramework_InProcessNode_LIBS})
 
-# QwertycoinFramework::JsonRpcServer
+# SocietatisFramework::JsonRpcServer
 
-set(QwertycoinFramework_JsonRpcServer_SOURCES
+set(SocietatisFramework_JsonRpcServer_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/JsonRpcServer/JsonRpcServer.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/JsonRpcServer/JsonRpcServer.h"
 )
 
-add_library(QwertycoinFramework_JsonRpcServer STATIC ${QwertycoinFramework_JsonRpcServer_SOURCES})
-add_library(QwertycoinFramework::JsonRpcServer ALIAS QwertycoinFramework_JsonRpcServer)
-target_include_directories(QwertycoinFramework_JsonRpcServer PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
+add_library(SocietatisFramework_JsonRpcServer STATIC ${SocietatisFramework_JsonRpcServer_SOURCES})
+add_library(SocietatisFramework::JsonRpcServer ALIAS SocietatisFramework_JsonRpcServer)
+target_include_directories(SocietatisFramework_JsonRpcServer PRIVATE ${SocietatisFramework_INCLUDE_DIRS})
 
-# QwertycoinFramework::Logging
+# SocietatisFramework::Logging
 
-set(QwertycoinFramework_Logging_SOURCES
+set(SocietatisFramework_Logging_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/Logging/CommonLogger.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Logging/CommonLogger.h"
     "${CMAKE_CURRENT_LIST_DIR}/Logging/ConsoleLogger.cpp"
@@ -439,13 +439,13 @@ set(QwertycoinFramework_Logging_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/Logging/StreamLogger.h"
 )
 
-add_library(QwertycoinFramework_Logging STATIC ${QwertycoinFramework_Logging_SOURCES})
-add_library(QwertycoinFramework::Logging ALIAS QwertycoinFramework_Logging)
-target_include_directories(QwertycoinFramework_Logging PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
+add_library(SocietatisFramework_Logging STATIC ${SocietatisFramework_Logging_SOURCES})
+add_library(SocietatisFramework::Logging ALIAS SocietatisFramework_Logging)
+target_include_directories(SocietatisFramework_Logging PRIVATE ${SocietatisFramework_INCLUDE_DIRS})
 
-# QwertycoinFramework::Mnemonics
+# SocietatisFramework::Mnemonics
 
-set(QwertycoinFramework_Mnemonics_SOURCES
+set(SocietatisFramework_Mnemonics_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/Mnemonics/chinese_simplified.h"
     "${CMAKE_CURRENT_LIST_DIR}/Mnemonics/dutch.h"
     "${CMAKE_CURRENT_LIST_DIR}/Mnemonics/electrum-words.cpp"
@@ -464,34 +464,34 @@ set(QwertycoinFramework_Mnemonics_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/Mnemonics/ukrainian.h"
 )
 
-add_library(QwertycoinFramework_Mnemonics STATIC ${QwertycoinFramework_Mnemonics_SOURCES})
-add_library(QwertycoinFramework::Mnemonics ALIAS QwertycoinFramework_Mnemonics)
-target_include_directories(QwertycoinFramework_Mnemonics PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
+add_library(SocietatisFramework_Mnemonics STATIC ${SocietatisFramework_Mnemonics_SOURCES})
+add_library(SocietatisFramework::Mnemonics ALIAS SocietatisFramework_Mnemonics)
+target_include_directories(SocietatisFramework_Mnemonics PRIVATE ${SocietatisFramework_INCLUDE_DIRS})
 
-# QwertycoinFramework::NodeRpcProxy
+# SocietatisFramework::NodeRpcProxy
 
-set(QwertycoinFramework_NodeRpcProxy_SOURCES
+set(SocietatisFramework_NodeRpcProxy_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/NodeRpcProxy/NodeErrors.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/NodeRpcProxy/NodeErrors.h"
     "${CMAKE_CURRENT_LIST_DIR}/NodeRpcProxy/NodeRpcProxy.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/NodeRpcProxy/NodeRpcProxy.h"
 )
 
-set(QwertycoinFramework_NodeRpcProxy_LIBS
-    QwertycoinFramework::Global
-    QwertycoinFramework::Http
-    QwertycoinFramework::Rpc
-    QwertycoinFramework::System
+set(SocietatisFramework_NodeRpcProxy_LIBS
+    SocietatisFramework::Global
+    SocietatisFramework::Http
+    SocietatisFramework::Rpc
+    SocietatisFramework::System
 )
 
-add_library(QwertycoinFramework_NodeRpcProxy STATIC ${QwertycoinFramework_NodeRpcProxy_SOURCES})
-add_library(QwertycoinFramework::NodeRpcProxy ALIAS QwertycoinFramework_NodeRpcProxy)
-target_include_directories(QwertycoinFramework_NodeRpcProxy PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
-target_link_libraries(QwertycoinFramework_NodeRpcProxy PRIVATE ${QwertycoinFramework_NodeRpcProxy_LIBS})
+add_library(SocietatisFramework_NodeRpcProxy STATIC ${SocietatisFramework_NodeRpcProxy_SOURCES})
+add_library(SocietatisFramework::NodeRpcProxy ALIAS SocietatisFramework_NodeRpcProxy)
+target_include_directories(SocietatisFramework_NodeRpcProxy PRIVATE ${SocietatisFramework_INCLUDE_DIRS})
+target_link_libraries(SocietatisFramework_NodeRpcProxy PRIVATE ${SocietatisFramework_NodeRpcProxy_LIBS})
 
-# QwertycoinFramework::P2p
+# SocietatisFramework::P2p
 
-set(QwertycoinFramework_P2p_SOURCES
+set(SocietatisFramework_P2p_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/P2p/ConnectionContext.h"
     "${CMAKE_CURRENT_LIST_DIR}/P2p/IP2pNodeInternal.h"
     "${CMAKE_CURRENT_LIST_DIR}/P2p/LevinProtocol.cpp"
@@ -519,24 +519,24 @@ set(QwertycoinFramework_P2p_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/P2p/PeerListManager.h"
 )
 
-set(QwertycoinFramework_P2p_LIBS
+set(SocietatisFramework_P2p_LIBS
     MiniUPnP::miniupnpc
-    QwertycoinFramework::CryptoNoteProtocol
-    QwertycoinFramework::Global
+    SocietatisFramework::CryptoNoteProtocol
+    SocietatisFramework::Global
 )
 
 if(WIN32 AND MSVC)
-    list(APPEND QwertycoinFramework_P2p_LIBS Bcrypt)
+    list(APPEND SocietatisFramework_P2p_LIBS Bcrypt)
 endif()
 
-add_library(QwertycoinFramework_P2p STATIC ${QwertycoinFramework_P2p_SOURCES})
-add_library(QwertycoinFramework::P2p ALIAS QwertycoinFramework_P2p)
-target_include_directories(QwertycoinFramework_P2p PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
-target_link_libraries(QwertycoinFramework_P2p PRIVATE ${QwertycoinFramework_P2p_LIBS})
+add_library(SocietatisFramework_P2p STATIC ${SocietatisFramework_P2p_SOURCES})
+add_library(SocietatisFramework::P2p ALIAS SocietatisFramework_P2p)
+target_include_directories(SocietatisFramework_P2p PRIVATE ${SocietatisFramework_INCLUDE_DIRS})
+target_link_libraries(SocietatisFramework_P2p PRIVATE ${SocietatisFramework_P2p_LIBS})
 
-# QwertycoinFramework::PaymentGate
+# SocietatisFramework::PaymentGate
 
-set(QwertycoinFramework_PaymentGate_SOURCES
+set(SocietatisFramework_PaymentGate_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/PaymentGate/NodeFactory.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/PaymentGate/NodeFactory.h"
     "${CMAKE_CURRENT_LIST_DIR}/PaymentGate/PaymentServiceJsonRpcMessages.cpp"
@@ -549,23 +549,23 @@ set(QwertycoinFramework_PaymentGate_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/PaymentGate/WalletServiceErrorCategory.h"
 )
 
-set(QwertycoinFramework_PaymentGate_LIBS
-    QwertycoinFramework::JsonRpcServer
-    QwertycoinFramework::NodeRpcProxy
-    QwertycoinFramework::System
-    QwertycoinFramework::Wallet
+set(SocietatisFramework_PaymentGate_LIBS
+    SocietatisFramework::JsonRpcServer
+    SocietatisFramework::NodeRpcProxy
+    SocietatisFramework::System
+    SocietatisFramework::Wallet
 )
 
-add_library(QwertycoinFramework_PaymentGate STATIC ${QwertycoinFramework_PaymentGate_SOURCES})
-add_library(QwertycoinFramework::PaymentGate ALIAS QwertycoinFramework_PaymentGate)
-target_include_directories(QwertycoinFramework_PaymentGate PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
-target_link_libraries(QwertycoinFramework_PaymentGate PRIVATE ${QwertycoinFramework_PaymentGate_LIBS})
+add_library(SocietatisFramework_PaymentGate STATIC ${SocietatisFramework_PaymentGate_SOURCES})
+add_library(SocietatisFramework::PaymentGate ALIAS SocietatisFramework_PaymentGate)
+target_include_directories(SocietatisFramework_PaymentGate PRIVATE ${SocietatisFramework_INCLUDE_DIRS})
+target_link_libraries(SocietatisFramework_PaymentGate PRIVATE ${SocietatisFramework_PaymentGate_LIBS})
 
-# QwertycoinFramework::Platform # TODO: Merge this target into QwertycoinFramework::System
+# SocietatisFramework::Platform # TODO: Merge this target into SocietatisFramework::System
 
-# QwertycoinFramework::Rpc
+# SocietatisFramework::Rpc
 
-set(QwertycoinFramework_Rpc_SOURCES
+set(SocietatisFramework_Rpc_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/Rpc/CoreRpcServerCommandsDefinitions.h"
     "${CMAKE_CURRENT_LIST_DIR}/Rpc/CoreRpcServerErrorCodes.h"
     "${CMAKE_CURRENT_LIST_DIR}/Rpc/HttpClient.cpp"
@@ -580,25 +580,25 @@ set(QwertycoinFramework_Rpc_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/Rpc/RpcServerConfig.h"
 )
 
-set(QwertycoinFramework_Rpc_LIBS
-    QwertycoinFramework::BlockchainExplorer
-    QwertycoinFramework::CryptoNoteCore
-    QwertycoinFramework::Global
-    QwertycoinFramework::P2p
-    QwertycoinFramework::PaymentGate
-    QwertycoinFramework::Serialization
-    QwertycoinFramework::System
-    QwertycoinFramework::Http
+set(SocietatisFramework_Rpc_LIBS
+    SocietatisFramework::BlockchainExplorer
+    SocietatisFramework::CryptoNoteCore
+    SocietatisFramework::Global
+    SocietatisFramework::P2p
+    SocietatisFramework::PaymentGate
+    SocietatisFramework::Serialization
+    SocietatisFramework::System
+    SocietatisFramework::Http
 )
 
-add_library(QwertycoinFramework_Rpc STATIC ${QwertycoinFramework_Rpc_SOURCES})
-add_library(QwertycoinFramework::Rpc ALIAS QwertycoinFramework_Rpc)
-target_include_directories(QwertycoinFramework_Rpc PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
-target_link_libraries(QwertycoinFramework_Rpc PRIVATE ${QwertycoinFramework_Rpc_LIBS})
+add_library(SocietatisFramework_Rpc STATIC ${SocietatisFramework_Rpc_SOURCES})
+add_library(SocietatisFramework::Rpc ALIAS SocietatisFramework_Rpc)
+target_include_directories(SocietatisFramework_Rpc PRIVATE ${SocietatisFramework_INCLUDE_DIRS})
+target_link_libraries(SocietatisFramework_Rpc PRIVATE ${SocietatisFramework_Rpc_LIBS})
 
-# QwertycoinFramework::Serialization
+# SocietatisFramework::Serialization
 
-set(QwertycoinFramework_Serialization_SOURCES
+set(SocietatisFramework_Serialization_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/Serialization/BinaryInputStreamSerializer.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Serialization/BinaryInputStreamSerializer.h"
     "${CMAKE_CURRENT_LIST_DIR}/Serialization/BinaryOutputStreamSerializer.cpp"
@@ -625,14 +625,14 @@ set(QwertycoinFramework_Serialization_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/Serialization/SerializationTools.h"
 )
 
-add_library(QwertycoinFramework_Serialization STATIC ${QwertycoinFramework_Serialization_SOURCES})
-add_library(QwertycoinFramework::Serialization ALIAS QwertycoinFramework_Serialization)
-target_include_directories(QwertycoinFramework_Serialization PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
-target_link_libraries(QwertycoinFramework_Serialization PRIVATE QwertycoinFramework::Common)
+add_library(SocietatisFramework_Serialization STATIC ${SocietatisFramework_Serialization_SOURCES})
+add_library(SocietatisFramework::Serialization ALIAS SocietatisFramework_Serialization)
+target_include_directories(SocietatisFramework_Serialization PRIVATE ${SocietatisFramework_INCLUDE_DIRS})
+target_link_libraries(SocietatisFramework_Serialization PRIVATE SocietatisFramework::Common)
 
-# QwertycoinFramework::System
+# SocietatisFramework::System
 
-set(QwertycoinFramework_System_SOURCES
+set(SocietatisFramework_System_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/System/Context.h"
     "${CMAKE_CURRENT_LIST_DIR}/System/ContextGroup.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/System/ContextGroup.h"
@@ -654,7 +654,7 @@ set(QwertycoinFramework_System_SOURCES
 )
 
 if(MSVC)
-    list(APPEND QwertycoinFramework_System_SOURCES
+    list(APPEND SocietatisFramework_System_SOURCES
         "${CMAKE_CURRENT_LIST_DIR}/Platform/Windows/System/Dispatcher.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/Platform/Windows/System/Dispatcher.h"
         "${CMAKE_CURRENT_LIST_DIR}/Platform/Windows/System/ErrorMessage.cpp"
@@ -674,7 +674,7 @@ if(MSVC)
         "${CMAKE_CURRENT_LIST_DIR}/Platform/Windows/System/Timer.h"
     )
 elseif(APPLE)
-    list(APPEND QwertycoinFramework_System_SOURCES
+    list(APPEND SocietatisFramework_System_SOURCES
         "${CMAKE_CURRENT_LIST_DIR}/Platform/OSX/System/Context.c"
         "${CMAKE_CURRENT_LIST_DIR}/Platform/OSX/System/Context.h"
         "${CMAKE_CURRENT_LIST_DIR}/Platform/OSX/System/Dispatcher.cpp"
@@ -697,7 +697,7 @@ elseif(APPLE)
         "${CMAKE_CURRENT_LIST_DIR}/Platform/Posix/System/MemoryMappedFile.h"
     )
 elseif(ANDROID)
-    list(APPEND QwertycoinFramework_System_SOURCES
+    list(APPEND SocietatisFramework_System_SOURCES
         "${CMAKE_CURRENT_LIST_DIR}/Platform/Android/System/Context.h"
         "${CMAKE_CURRENT_LIST_DIR}/Platform/Android/System/Dispatcher.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/Platform/Android/System/Dispatcher.h"
@@ -718,7 +718,7 @@ elseif(ANDROID)
         "${CMAKE_CURRENT_LIST_DIR}/Platform/Posix/System/MemoryMappedFile.h"
     )
 elseif(FREEBSD)
-    list(APPEND QwertycoinFramework_System_SOURCES
+    list(APPEND SocietatisFramework_System_SOURCES
         "${CMAKE_CURRENT_LIST_DIR}/Platform/FreeBSD/System/Context.h"
         "${CMAKE_CURRENT_LIST_DIR}/Platform/FreeBSD/System/Dispatcher.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/Platform/FreeBSD/System/Dispatcher.h"
@@ -739,7 +739,7 @@ elseif(FREEBSD)
         "${CMAKE_CURRENT_LIST_DIR}/Platform/Posix/System/MemoryMappedFile.h"
     )
 else()
-    list(APPEND QwertycoinFramework_System_SOURCES
+    list(APPEND SocietatisFramework_System_SOURCES
         "${CMAKE_CURRENT_LIST_DIR}/Platform/Linux/System/Dispatcher.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/Platform/Linux/System/Dispatcher.h"
         "${CMAKE_CURRENT_LIST_DIR}/Platform/Linux/System/ErrorMessage.cpp"
@@ -760,17 +760,17 @@ else()
     )
 endif()
 
-add_library(QwertycoinFramework_System STATIC ${QwertycoinFramework_System_SOURCES})
-add_library(QwertycoinFramework::System ALIAS QwertycoinFramework_System)
-target_include_directories(QwertycoinFramework_System PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
+add_library(SocietatisFramework_System STATIC ${SocietatisFramework_System_SOURCES})
+add_library(SocietatisFramework::System ALIAS SocietatisFramework_System)
+target_include_directories(SocietatisFramework_System PRIVATE ${SocietatisFramework_INCLUDE_DIRS})
 
 if(WIN32)
-    target_link_libraries(QwertycoinFramework_System PRIVATE ws2_32)
+    target_link_libraries(SocietatisFramework_System PRIVATE ws2_32)
 endif()
 
-# QwertycoinFramework::Transfers
+# SocietatisFramework::Transfers
 
-set(QwertycoinFramework_Transfers_SOURCES
+set(SocietatisFramework_Transfers_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/Transfers/BlockchainSynchronizer.cpp"
     "${CMAKE_CURRENT_LIST_DIR}/Transfers/BlockchainSynchronizer.h"
     "${CMAKE_CURRENT_LIST_DIR}/Transfers/CommonTypes.h"
@@ -789,19 +789,19 @@ set(QwertycoinFramework_Transfers_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/Transfers/TypeHelpers.h"
 )
 
-set(QwertycoinFramework_Transfers_LIBS
-    QwertycoinFramework::CryptoNoteCore
-    QwertycoinFramework::Global
+set(SocietatisFramework_Transfers_LIBS
+    SocietatisFramework::CryptoNoteCore
+    SocietatisFramework::Global
 )
 
-add_library(QwertycoinFramework_Transfers STATIC ${QwertycoinFramework_Transfers_SOURCES})
-add_library(QwertycoinFramework::Transfers ALIAS QwertycoinFramework_Transfers)
-target_include_directories(QwertycoinFramework_Transfers PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
-target_link_libraries(QwertycoinFramework_Transfers PRIVATE ${QwertycoinFramework_Transfers_LIBS})
+add_library(SocietatisFramework_Transfers STATIC ${SocietatisFramework_Transfers_SOURCES})
+add_library(SocietatisFramework::Transfers ALIAS SocietatisFramework_Transfers)
+target_include_directories(SocietatisFramework_Transfers PRIVATE ${SocietatisFramework_INCLUDE_DIRS})
+target_link_libraries(SocietatisFramework_Transfers PRIVATE ${SocietatisFramework_Transfers_LIBS})
 
-# QwertycoinFramework::Wallet
+# SocietatisFramework::Wallet
 
-set(QwertycoinFramework_Wallet_SOURCES
+set(SocietatisFramework_Wallet_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/Wallet/IFusionManager.h"
     "${CMAKE_CURRENT_LIST_DIR}/Wallet/IWallet.h"
     "${CMAKE_CURRENT_LIST_DIR}/Wallet/LegacyKeysImporter.cpp"
@@ -846,54 +846,54 @@ set(QwertycoinFramework_Wallet_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/WalletLegacy/WalletUtils.h"
 )
 
-set(QwertycoinFramework_Wallet_LIBS
+set(SocietatisFramework_Wallet_LIBS
     Boost::filesystem
-    QwertycoinFramework::Common
-    QwertycoinFramework::Crypto
-    QwertycoinFramework::CryptoNoteCore
-    QwertycoinFramework::Global
-    QwertycoinFramework::Logging
-    QwertycoinFramework::Mnemonics
-    QwertycoinFramework::Rpc
-    QwertycoinFramework::Transfers
+    SocietatisFramework::Common
+    SocietatisFramework::Crypto
+    SocietatisFramework::CryptoNoteCore
+    SocietatisFramework::Global
+    SocietatisFramework::Logging
+    SocietatisFramework::Mnemonics
+    SocietatisFramework::Rpc
+    SocietatisFramework::Transfers
 )
 
-add_library(QwertycoinFramework_Wallet STATIC ${QwertycoinFramework_Wallet_SOURCES})
-add_library(QwertycoinFramework::Wallet ALIAS QwertycoinFramework_Wallet)
-target_include_directories(QwertycoinFramework_Wallet PRIVATE ${QwertycoinFramework_INCLUDE_DIRS})
-target_link_libraries(QwertycoinFramework_Wallet PRIVATE ${QwertycoinFramework_Wallet_LIBS})
+add_library(SocietatisFramework_Wallet STATIC ${SocietatisFramework_Wallet_SOURCES})
+add_library(SocietatisFramework::Wallet ALIAS SocietatisFramework_Wallet)
+target_include_directories(SocietatisFramework_Wallet PRIVATE ${SocietatisFramework_INCLUDE_DIRS})
+target_link_libraries(SocietatisFramework_Wallet PRIVATE ${SocietatisFramework_Wallet_LIBS})
 
-# QwertycoinFramework::WalletLegacy # TODO: Merge this target into QwertycoinFramework::Wallet
+# SocietatisFramework::WalletLegacy # TODO: Merge this target into SocietatisFramework::Wallet
 
 if(BUILD_WITH_COVERAGE AND (${CMAKE_BUILD_TYPE} MATCHES Debug))
     message(STATUS "Included code-coverage settings.")
     message(STATUS "NOTE: Code-coverage is enabled by default when CMAKE_BUILD_TYPE=Debug.")
 
     # Enable code-coverage settings for each library
-    foreach(lib ${QwertycoinFramework_LIBS})
+    foreach(lib ${SocietatisFramework_LIBS})
         target_link_libraries(${lib} PUBLIC codecov)
     endforeach()
 endif()
 
 install(TARGETS
-            QwertycoinFramework_BlockchainExplorer
-            QwertycoinFramework_Common
-            QwertycoinFramework_Crypto
-            QwertycoinFramework_CryptoNoteCore
-            QwertycoinFramework_CryptoNoteProtocol
-            QwertycoinFramework_Http
-            QwertycoinFramework_InProcessNode
-            QwertycoinFramework_JsonRpcServer
-            QwertycoinFramework_Logging
-            QwertycoinFramework_Mnemonics
-            QwertycoinFramework_NodeRpcProxy
-            QwertycoinFramework_P2p
-            QwertycoinFramework_PaymentGate
-            QwertycoinFramework_Rpc
-            QwertycoinFramework_Serialization
-            QwertycoinFramework_System
-            QwertycoinFramework_Transfers
-            QwertycoinFramework_Wallet
+            SocietatisFramework_BlockchainExplorer
+            SocietatisFramework_Common
+            SocietatisFramework_Crypto
+            SocietatisFramework_CryptoNoteCore
+            SocietatisFramework_CryptoNoteProtocol
+            SocietatisFramework_Http
+            SocietatisFramework_InProcessNode
+            SocietatisFramework_JsonRpcServer
+            SocietatisFramework_Logging
+            SocietatisFramework_Mnemonics
+            SocietatisFramework_NodeRpcProxy
+            SocietatisFramework_P2p
+            SocietatisFramework_PaymentGate
+            SocietatisFramework_Rpc
+            SocietatisFramework_Serialization
+            SocietatisFramework_System
+            SocietatisFramework_Transfers
+            SocietatisFramework_Wallet
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib/static

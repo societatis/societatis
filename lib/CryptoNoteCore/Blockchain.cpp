@@ -371,7 +371,7 @@ Blockchain::Blockchain(
       m_upgradeDetectorV3(currency, m_blocks, BLOCK_MAJOR_VERSION_3, logger),
       m_upgradeDetectorV4(currency, m_blocks, BLOCK_MAJOR_VERSION_4, logger),
       m_upgradeDetectorV5(currency, m_blocks, BLOCK_MAJOR_VERSION_5, logger),
-      m_upgradeDetectorV6(currency, m_blocks, BLOCK_MAJOR_VERSION_6, logger),
+      m_upgradeDetectorV6(currency, m_blocks, BLOCK_MAJOR_VERSION_6TODO, logger),
       m_checkpoints(logger),
       m_paymentIdIndex(blockchainIndexesEnabled),
       m_timestampIndex(blockchainIndexesEnabled),
@@ -845,7 +845,7 @@ difficulty_type Blockchain::getDifficultyForNextBlock(uint64_t nextBlockTime)
     }
     CryptoNote::Currency::lazy_stat_callback_type cb([&](IMinerHandler::stat_period p, uint64_t next_time)
     {
-        uint32_t min_height = CryptoNote::parameters::UPGRADE_HEIGHT_V6 +
+        uint32_t min_height = CryptoNote::parameters::UPGRADE_HEIGHT_V6TODO +
                 CryptoNote::parameters::EXPECTED_NUMBER_OF_BLOCKS_PER_DAY / 24;
         uint64_t time_window = 0;
         switch (p) {
@@ -899,11 +899,11 @@ bool Blockchain::getDifficultyStat(uint32_t height,
                                    difficulty_type& min_diff,
                                    difficulty_type& max_diff)
 {
-    uint32_t min_height = CryptoNote::parameters::UPGRADE_HEIGHT_V6 +
+    uint32_t min_height = CryptoNote::parameters::UPGRADE_HEIGHT_V6TODO +
             CryptoNote::parameters::EXPECTED_NUMBER_OF_BLOCKS_PER_DAY / 24;
     if (height < min_height) {
         logger (WARNING) << "Can't get difficulty stat for height less than " <<
-                            CryptoNote::parameters::UPGRADE_HEIGHT_V6 +
+                            CryptoNote::parameters::UPGRADE_HEIGHT_V6TODO +
                             CryptoNote::parameters::EXPECTED_NUMBER_OF_BLOCKS_PER_DAY / 24;
         return false;
     }
@@ -989,55 +989,7 @@ uint64_t Blockchain::getBlockTimestamp(uint32_t height)
 
 uint64_t Blockchain::getMinimalFee(uint32_t height)
 {
-    std::lock_guard<decltype(m_blockchain_lock)> lk(m_blockchain_lock);
-
-    if (height == 0 || m_blocks.size() <= 1) {
-        return 0;
-    }
-
-    if (height > m_blocks.size() - 1) {
-        height = m_blocks.size() - 1;
-    }
-    if (height < 3) {
-        height = 3;
-    }
-    size_t window = std::min(
-        height,
-        std::min<uint32_t>(m_blocks.size(), m_currency.expectedNumberOfBlocksPerDay())
-    );
-    if (window == 0) {
-        ++window;
-    }
-    size_t offset = height - window;
-    if (offset == 0) {
-        ++offset;
-    }
-
-    // calculate average difficulty for ~last month
-    uint64_t avgDifficultyCurrent = getAvgDifficultyForHeight(height, window * 7 * 4);
-
-    // historical reference moving average difficulty
-    uint64_t avgDifficultyHistorical = m_blocks[height].cumulative_difficulty / height;
-
-    /*
-    * Total reward with transaction fees is used as the level of usage metric
-    * to take into account transaction volume and cost of space in blockchain.
-    */
-
-    // calculate average reward for ~last day
-    std::vector<uint64_t> rewards;
-    rewards.reserve(window);
-    for (; offset < height; offset++) {
-        rewards.push_back(get_outs_money_amount(m_blocks[offset].bl.baseTransaction));
-    }
-    uint64_t avgRewardCurrent = std::accumulate(rewards.begin(), rewards.end(), 0ULL) / rewards.size();
-    rewards.shrink_to_fit();
-
-    // historical reference moving average reward
-    uint64_t avgRewardHistorical = m_blocks[height].already_generated_coins / height;
-
-    // TODO: return m_currency.getMinimalFee(avgDifficultyCurrent, avgRewardCurrent, avgDifficultyHistorical, avgRewardHistorical, height);
-    return CryptoNote::parameters::MINIMUM_FEE_V1;
+    return CryptoNote::parameters::MINIMUM_FEE;
 }
 
 uint64_t Blockchain::getCoinsInCirculation()
@@ -1054,15 +1006,20 @@ uint8_t Blockchain::getBlockMajorVersionForHeight(uint32_t height) const
 {
     if (height > m_upgradeDetectorV6.upgradeHeight()) {
         return m_upgradeDetectorV6.targetVersion();
-    } else if (height > m_upgradeDetectorV5.upgradeHeight()) {
+    }
+    else if (height > m_upgradeDetectorV5.upgradeHeight()) {
         return m_upgradeDetectorV5.targetVersion();
-    } else if (height > m_upgradeDetectorV4.upgradeHeight()) {
+    }
+    else if (height > m_upgradeDetectorV4.upgradeHeight()) {
         return m_upgradeDetectorV4.targetVersion();
-    } else if (height > m_upgradeDetectorV3.upgradeHeight()) {
+    }
+    else if (height > m_upgradeDetectorV3.upgradeHeight()) {
         return m_upgradeDetectorV3.targetVersion();
-    } else if (height > m_upgradeDetectorV2.upgradeHeight()) {
+    }
+    else if (height > m_upgradeDetectorV2.upgradeHeight()) {
         return m_upgradeDetectorV2.targetVersion();
-    } else {
+    }
+    else {
         return BLOCK_MAJOR_VERSION_1;
     }
 }
@@ -1131,7 +1088,7 @@ bool Blockchain::switch_to_alternative_blockchain(
             }
         }
 
-        uint64_t block_ftl = CryptoNote::parameters::CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V1;
+        uint64_t block_ftl = CryptoNote::parameters::CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT;
         // This would fail later anyway
         if (high_timestamp > get_adjusted_time() + block_ftl) {
             logger(ERROR, BRIGHT_RED)
@@ -1370,7 +1327,7 @@ difficulty_type Blockchain::get_next_difficulty_for_alternative_chain(
 
     CryptoNote::Currency::lazy_stat_callback_type cb([&](IMinerHandler::stat_period p, uint64_t next_time)
     {
-        uint32_t min_height = CryptoNote::parameters::UPGRADE_HEIGHT_V6 +
+        uint32_t min_height = CryptoNote::parameters::UPGRADE_HEIGHT_V6TODO +
                 CryptoNote::parameters::EXPECTED_NUMBER_OF_BLOCKS_PER_DAY / 24;
         uint64_t time_window = 0;
         switch (p) {
@@ -1497,7 +1454,7 @@ bool Blockchain::validate_miner_transaction(
     uint32_t previousBlockHeight = 0;
     uint64_t blockTarget = CryptoNote::parameters::DIFFICULTY_TARGET;
 
-    if (height >= CryptoNote::parameters::UPGRADE_HEIGHT_V6) {
+    if (height >= CryptoNote::parameters::UPGRADE_HEIGHT_V6TODO) {
         getBlockHeight(b.previousBlockHash, previousBlockHeight);
         blockTarget = b.timestamp - getBlockTimestamp(previousBlockHeight);
     }
@@ -1740,7 +1697,7 @@ bool Blockchain::handle_alternative_block(
         // Disable merged mining
         TransactionExtraMergeMiningTag mmTag;
         if (getMergeMiningTagFromExtra(bei.bl.baseTransaction.extra, mmTag)
-            && bei.bl.majorVersion >= CryptoNote::BLOCK_MAJOR_VERSION_6) {
+            && bei.bl.majorVersion >= CryptoNote::BLOCK_MAJOR_VERSION_6TODO) {
             logger(ERROR, BRIGHT_RED) << "Merge mining tag was found in extra of miner transaction";
             return false;
         }
@@ -2788,7 +2745,7 @@ bool Blockchain::pushBlock(
     // Disable merged mining
     TransactionExtraMergeMiningTag mmTag;
     if (getMergeMiningTagFromExtra(blockData.baseTransaction.extra, mmTag)
-        && blockData.majorVersion >= CryptoNote::BLOCK_MAJOR_VERSION_6) {
+        && blockData.majorVersion >= CryptoNote::BLOCK_MAJOR_VERSION_6TODO) {
         logger(ERROR, BRIGHT_RED) << "Merge mining tag was found in extra of miner transaction";
         return false;
     }
