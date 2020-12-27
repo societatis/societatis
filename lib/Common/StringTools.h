@@ -1,21 +1,22 @@
 // Copyright (c) 2012-2017, The CryptoNote developers, The Bytecoin developers
 // Copyright (c) 2016-2018, The Karbowanec developers
 // Copyright (c) 2018-2020, The Qwertycoin Group.
+// Copyright (c) 2020, Societatis.io
 //
-// This file is part of Qwertycoin.
+// This file is part of Societatis.
 //
-// Qwertycoin is free software: you can redistribute it and/or modify
+// Societatis is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Qwertycoin is distributed in the hope that it will be useful,
+// Societatis is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
-// along with Qwertycoin.  If not, see <http://www.gnu.org/licenses/>.
+// along with Societatis.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
@@ -75,6 +76,38 @@ template<class T>
 std::string podToHex(const T &s)
 {
     return toHex(&s, sizeof(s));
+}
+
+bool starts_with(const std::string &str1, const std::string &str2);
+bool ends_with(const std::string &str1, const std::string &str2);
+
+inline bool split_string_helper(
+    const std::string &str,
+    size_t pos,
+    const std::string &, std::string &head)
+{
+    head = str.substr(pos);
+    return true;
+}
+
+template<class... Parts>
+inline bool split_string_helper(
+    const std::string &str,
+    size_t pos,
+    const std::string &separator,
+    std::string &head,
+    Parts &... parts)
+{
+    size_t pos2 = str.find(separator, pos);
+    if (pos2 == std::string::npos)
+    return false;
+    head = str.substr(pos, pos2 - pos);
+    return split_string_helper(str, pos2 + 1, separator, parts...);
+}
+
+template<class... Parts>
+inline bool split_string(const std::string &str, const std::string &separator, Parts &... parts) {
+return split_string_helper(str, 0, separator, parts...);
 }
 
 std::string extract(std::string &text, char delimiter);

@@ -1,20 +1,21 @@
 // Copyright (c) 2012-2017, The CryptoNote developers, The Bytecoin developers
 // Copyright (c) 2018-2020, The Qwertycoin Group.
+// Copyright (c) 2020, Societatis.io
 //
-// This file is part of Qwertycoin.
+// This file is part of Societatis.
 //
-// Qwertycoin is free software: you can redistribute it and/or modify
+// Societatis is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Qwertycoin is distributed in the hope that it will be useful,
+// Societatis is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
-// along with Qwertycoin.  If not, see <http://www.gnu.org/licenses/>.
+// along with Societatis.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <Common/StringTools.h>
 #include <CryptoNoteCore/CryptoNoteTools.h>
@@ -262,10 +263,10 @@ bool MinerManager::submitBlock(
     try {
         HttpClient client(m_dispatcher, daemonHost, daemonPort);
 
-        COMMAND_RPC_SUBMITBLOCK::request request;
+        COMMAND_RPC_SUBMIT_BLOCK::request request;
         request.emplace_back(Common::toHex(toBinaryArray(minedBlock)));
 
-        COMMAND_RPC_SUBMITBLOCK::response response;
+        COMMAND_RPC_SUBMIT_BLOCK::response response;
 
         System::EventLock lk(m_httpEvent);
         JsonRpc::invokeJsonRpcCommand(client, "submitblock", request, response);
@@ -292,11 +293,11 @@ BlockMiningParameters MinerManager::requestMiningParameters(
     try {
         HttpClient client(dispatcher, daemonHost, daemonPort);
 
-        COMMAND_RPC_GETBLOCKTEMPLATE::request request;
+        COMMAND_RPC_GET_BLOCK_TEMPLATE::request request;
         request.wallet_address = miningAddress;
         request.reserve_size = 0;
 
-        COMMAND_RPC_GETBLOCKTEMPLATE::response response;
+        COMMAND_RPC_GET_BLOCK_TEMPLATE::response response;
 
         System::EventLock lk(m_httpEvent);
         JsonRpc::invokeJsonRpcCommand(client, "getblocktemplate", request, response);

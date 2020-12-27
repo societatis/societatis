@@ -1,20 +1,21 @@
 // Copyright (c) 2012-2017, The CryptoNote developers, The Bytecoin developers
 // Copyright (c) 2018-2020, The Qwertycoin Group.
+// Copyright (c) 2020, Societatis.io
 //
-// This file is part of Qwertycoin.
+// This file is part of Societatis.
 //
-// Qwertycoin is free software: you can redistribute it and/or modify
+// Societatis is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Qwertycoin is distributed in the hope that it will be useful,
+// Societatis is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
-// along with Qwertycoin.  If not, see <http://www.gnu.org/licenses/>.
+// along with Societatis.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
@@ -233,6 +234,10 @@ public:
         std::list<Transaction> &txs,
         std::list<Crypto::Hash> &missed_txs,
         bool checkTxPool = false) override;
+    bool getTransactionsWithOutputGlobalIndexes(const std::vector<Crypto::Hash> &txsIds,
+												std::list<Crypto::Hash> &missedTxs,
+												std::vector<std::pair<Transaction,
+																	  std::vector<uint32_t>>> &txs) override;
     bool getBlockByHash(const Crypto::Hash &h, Block &blk) override;
     bool getBlockHeight(const Crypto::Hash &blockId, uint32_t &blockHeight) override;
 
@@ -263,6 +268,8 @@ public:
     void update_block_template_and_resume_mining() override;
 
     Blockchain &get_blockchain_storage() { return m_blockchain; }
+
+    std::string getConfigFolder() { return m_config_folder; }
 
     // debug functions
     void print_blockchain(uint32_t start_index, uint32_t end_index);
@@ -349,7 +356,6 @@ private:
 
     size_t median(std::vector<size_t> &v);
 
-private:
     const Currency &m_currency;
     Logging::LoggerRef logger;
     CryptoNote::RealTimeProvider m_timeProvider;

@@ -1,21 +1,22 @@
 // Copyright (c) 2012-2017, The CryptoNote developers, The Bytecoin developers
 // Copyright (c) 2016, The Karbowanec developers
 // Copyright (c) 2018-2020, The Qwertycoin Group.
+// Copyright (c) 2020, Societatis.io
 //
-// This file is part of Qwertycoin.
+// This file is part of Societatis.
 //
-// Qwertycoin is free software: you can redistribute it and/or modify
+// Societatis is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Qwertycoin is distributed in the hope that it will be useful,
+// Societatis is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
-// along with Qwertycoin.  If not, see <http://www.gnu.org/licenses/>.
+// along with Societatis.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
@@ -81,6 +82,10 @@ public:
     void setCheckpoints(Checkpoints &&chk_pts) { m_checkpoints = chk_pts; }
     bool getBlocks(uint32_t start_offset, uint32_t count, std::list<Block> &blocks, std::list<Transaction> &txs);
     bool getBlocks(uint32_t start_offset, uint32_t count, std::list<Block> &blocks);
+    bool getTransactionsWithOutputGlobalIndexes(const std::vector<Crypto::Hash> &txsIds,
+							  					std::list<Crypto::Hash> &missedTxs,
+							  					std::vector<std::pair<Transaction,
+							  										  std::vector<uint32_t>>> &txs);
     bool getAlternativeBlocks(std::list<Block> &blocks);
     uint32_t getAlternativeBlocksCount();
     Crypto::Hash getBlockIdByHeight(uint32_t height);

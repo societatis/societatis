@@ -12,7 +12,7 @@
 #include <Global/CryptoNoteConfig.h>
 #include <version.h>
 
-namespace Qwertycoin {
+namespace Societatis {
 
 const Crypto::Hash NULL_HASH = boost::value_initialized<Crypto::Hash>();
 const Crypto::PublicKey NULL_PUBLIC_KEY = boost::value_initialized<Crypto::PublicKey>();
@@ -69,38 +69,14 @@ const uint8_t TX_EXTRA_PUBKEY_IDENTIFIER = 0x01;
 */
 const uint8_t TX_EXTRA_NONCE_IDENTIFIER = 0x02;
 
-const std::string windowsAsciiArt =
-        "\n                                                              \n"
-        "                         _                   _                  \n"
-        "                        | |                 (_)                 \n"
-        "  __ ___      _____ _ __| |_ _   _  ___ ___  _ _ __             \n"
-        " / _` \\ \\ /\\ / / _ \\ '__| __| | | |/ __/ _ \\| | '_  \\     \n"
-        "| (_| |\\ V  V /  __/ |  | |_| |_| | (_| (_) | | | | |          \n"
-        " \\__, | \\_/\\_/ \\___|_|   \\__|\\__, |\\___\\___/|_|_| |_|   \n"
-        "    | |                       __/ |                             \n"
-        "    |_|                      |___/                              \n"
-        "                                                                \n";
-
-const std::string nonWindowsAsciiArt =
-        "\n                                                                                 \n"
-        " ██████╗ ██╗    ██╗███████╗██████╗ ████████╗██╗   ██╗ ██████╗ ██████╗ ██╗███╗   ██╗\n"
-        "██╔═══██╗██║    ██║██╔════╝██╔══██╗╚══██╔══╝╚██╗ ██╔╝██╔════╝██╔═══██╗██║████╗  ██║\n"
-        "██║   ██║██║ █╗ ██║█████╗  ██████╔╝   ██║    ╚████╔╝ ██║     ██║   ██║██║██╔██╗ ██║\n"
-        "██║▄▄ ██║██║███╗██║██╔══╝  ██╔══██╗   ██║     ╚██╔╝  ██║     ██║   ██║██║██║╚██╗██║\n"
-        "╚██████╔╝╚███╔███╔╝███████╗██║  ██║   ██║      ██║   ╚██████╗╚██████╔╝██║██║ ╚████║\n"
-        " ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═╝   ╚═╝      ╚═╝    ╚═════╝ ╚═════╝ ╚═╝╚═╝  ╚═══╝\n"
-        "                                                                                   \n";
-
-/*!
-    Windows has some characters it won't display in a terminal. If your ascii
-    art works fine on Windows and Linux terminals, just replace 'asciiArt' with
-    the art itself, and remove these two #ifdefs and above ascii arts.
-*/
-#ifdef _WIN32
-    const std::string asciiArt = windowsAsciiArt;
-#else
-    const std::string asciiArt = nonWindowsAsciiArt;
-#endif
+const std::string asciiArt =
+    "\n _____  _____ _____ _____ _____ _____ ___ _____ _____ _____          \n"
+    "/  ___||  _  /  __ \\_   _|  ___|_   _/ _ \\_   _|_   _/  ___|         \n"
+    "\\ `--. | | | | /  \\/ | | | |__   | |/ /_\\ \\| |   | | \\ `--.       \n"
+    " `--. \\| | | | |     | | |  __|  | ||  _  || |   | |  `--. \\         \n"
+    "/\\__/ /\\ \\_/ / \\__/\\_| |_| |___  | || | | || |  _| |_/\\__/ /     \n"
+    "\\____/  \\___/ \\____/\\___/\\____/  \\_/\\_| |_/\\_/  \\___/\\____/  \n"
+    "                                                                       \n";
 
 } // namespace Constants
 
@@ -112,12 +88,12 @@ namespace WalletConfig {
 /*!
     The prefix your coins address starts with
 */
-const uint64_t addressPrefix = 0x14820c;
+const uint64_t addressPrefix = CryptoNote::parameters::CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX;
 
 /*!
     Your coins 'Ticker', e.g. Monero = XMR, Bitcoin = BTC
 */
-const std::string ticker = "QWC";
+const std::string ticker = "SCTS";
 
 /*!
     The filename to output the CSV to in save_csv
@@ -133,7 +109,7 @@ const std::string addressBookFilename = ".addressBook.json";
 /*!
     The name of your deamon
 */
-const std::string daemonName = "qwertycoind";
+const std::string daemonName = "societatisd";
 
 /*!
     The name to call this wallet
@@ -143,7 +119,7 @@ const std::string walletName = "simplewallet";
 /*!
     The name of service/walletd, the programmatic rpc interface to a wallet
 */
-const std::string walletdName = "qwertycoin-service";
+const std::string walletdName = "societatis-service";
 
 /*!
     The full name of your crypto
@@ -153,7 +129,7 @@ const std::string coinName = std::string(CryptoNote::CRYPTONOTE_NAME);
 /*!
     Where can your users contact you for support? E.g. discord
 */
-const std::string contactLink = "http://chat.qwertycoin.org";
+const std::string contactLink = "http://chat.societatis.io";
 
 /*!
     The number of decimals your coin has
@@ -246,4 +222,4 @@ inline std::string getProjectCLIHeader()
     return programHeader.str();
 }
 
-} // namespace Qwertycoin
+} // namespace Societatis

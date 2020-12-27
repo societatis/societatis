@@ -3,21 +3,22 @@
 // Copyright (c) 2018, The TurtleCoin developers
 // Copyright (c) 2016-2018, The Karbo developers
 // Copyright (c) 2018-2020, The Qwertycoin Group.
+// Copyright (c) 2020, Societatis.io
 //
-// This file is part of Qwertycoin.
+// This file is part of Societatis.
 //
-// Qwertycoin is free software: you can redistribute it and/or modify
+// Societatis is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Qwertycoin is distributed in the hope that it will be useful,
+// Societatis is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
-// along with Qwertycoin.  If not, see <http://www.gnu.org/licenses/>.
+// along with Societatis.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
@@ -49,7 +50,7 @@
 using Common::JsonValue;
 using namespace CryptoNote;
 using namespace Logging;
-using namespace Qwertycoin;
+using namespace Societatis;
 
 namespace po = boost::program_options;
 
@@ -213,7 +214,7 @@ int main(int argc, char *argv[])
     _CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
 #endif
 
-    Qwertycoin::Breakpad::ExceptionHandler exceptionHandler;
+    Societatis::Breakpad::ExceptionHandler exceptionHandler;
 
     LoggerManager logManager;
     LoggerRef logger(logManager, "daemon");

@@ -1,21 +1,22 @@
 // Copyright (c) 2012-2017, The CryptoNote developers, The Bytecoin developers
 // Copyright (c) 2018-2019, The Karbowanec developers
 // Copyright (c) 2018-2020, The Qwertycoin Group.
+// Copyright (c) 2020, Societatis.io
 //
-// This file is part of Qwertycoin.
+// This file is part of Societatis.
 //
-// Qwertycoin is free software: you can redistribute it and/or modify
+// Societatis is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Qwertycoin is distributed in the hope that it will be useful,
+// Societatis is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
-// along with Qwertycoin.  If not, see <http://www.gnu.org/licenses/>.
+// along with Societatis.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <sstream>
 #include <unordered_set>
@@ -43,7 +44,7 @@
 
 using namespace Logging;
 using namespace  Common;
-using namespace Qwertycoin;
+using namespace Societatis;
 
 namespace CryptoNote {
 
@@ -163,6 +164,13 @@ void core::getTransactions(
     bool checkTxPool)
 {
     m_blockchain.getTransactions(txs_ids, txs, missed_txs, checkTxPool);
+}
+
+bool core::getTransactionsWithOutputGlobalIndexes(const std::vector<Crypto::Hash> &txsIds,
+												  std::list<Crypto::Hash> &missedTxs,
+												  std::vector<std::pair<Transaction, std::vector<uint32_t>>> &txs)
+{
+	return m_blockchain.getTransactionsWithOutputGlobalIndexes(txsIds, missedTxs, txs);
 }
 
 bool core::get_alternative_blocks(std::list<Block> &blocks)
@@ -414,23 +422,17 @@ bool core::check_tx_fee(
 
             // TODO: simplify overcomplicated expression.
             if (height < CryptoNote::parameters::MINIMUM_FEE_V2_HEIGHT ? fee < CryptoNote::parameters::MINIMUM_FEE_V1 : (getBlockMajorVersionForHeight(height) < BLOCK_MAJOR_VERSION_6 ? fee < m_currency.minimumFee() : fee < getMinimalFeeForHeight(loose_check ? height - CryptoNote::parameters::EXPECTED_NUMBER_OF_BLOCKS_PER_DAY : height))) {
-                if (height < CryptoNote::parameters::MINIMUM_FEE_V0_HEIGHT) {
-                    // We changed the minimum fee to a higher one (0.01 -> 1 QWC in the past to fix some floods)
-                    // Now we have to fix this in a future PR with a proper fee check
-                    return true;
-                } else {
-                    logger(ERROR)
-                        << "[Core] Transaction fee is not enough: "
-                        << m_currency.formatAmount(fee)
-                        << ", minimum fee: "
-                        // TODO: simplify overcomplicated expression.
-                        << m_currency.formatAmount(getBlockMajorVersionForHeight(height) < BLOCK_MAJOR_VERSION_6 ? m_currency.minimumFee() : getMinimalFeeForHeight(loose_check ? height - CryptoNote::parameters::EXPECTED_NUMBER_OF_BLOCKS_PER_DAY : height));
+                logger(ERROR)
+                    << "[Core] Transaction fee is not enough: "
+                    << m_currency.formatAmount(fee)
+                    << ", minimum fee: "
+                    // TODO: simplify overcomplicated expression.
+                    << m_currency.formatAmount(getBlockMajorVersionForHeight(height) < BLOCK_MAJOR_VERSION_6 ? m_currency.minimumFee() : getMinimalFeeForHeight(loose_check ? height - CryptoNote::parameters::EXPECTED_NUMBER_OF_BLOCKS_PER_DAY : height));
 
-                    tvc.m_verification_failed = true;
-                    tvc.m_tx_fee_too_small = true;
+                tvc.m_verification_failed = true;
+                tvc.m_tx_fee_too_small = true;
 
-                    return false;
-                }
+                return false;
             }
         } else {
             return true;

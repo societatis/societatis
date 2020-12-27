@@ -1,6 +1,7 @@
 // Copyright (c) 2019 Helder Garcia <helder.garcia@gmail.com>
 // Copyright (c) 2019, The Karbo developers
 // Copyright (c) 2018-2020, The Qwertycoin Group.
+// Copyright (c) 2020, Societatis.io
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
@@ -39,7 +40,7 @@ using Common::JsonValue;
 using namespace Logging;
 using namespace CryptoNote;
 using namespace PaymentService;
-using namespace Qwertycoin;
+using namespace Societatis;
 
 #ifndef ENDL
 #define ENDL std::endl
@@ -336,7 +337,7 @@ bool run_optimizer(po::variables_map &vm)
 
 int main(int argc, char *argv[])
 {
-    Qwertycoin::Breakpad::ExceptionHandler exceptionHandler;
+    Societatis::Breakpad::ExceptionHandler exceptionHandler;
 
     po::options_description desc_general("General options");
     command_line::add_arg(desc_general, command_line::arg_help);

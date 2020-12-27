@@ -4,21 +4,22 @@
 // Copyright (c) 2017-2019, The Iridium developers
 // Copyright (c) 2016-2019, The Karbowanec developers
 // Copyright (c) 2018-2020, The Qwertycoin Group.
+// Copyright (c) 2020, Societatis.io
 //
-// This file is part of Qwertycoin.
+// This file is part of Societatis.
 //
-// Qwertycoin is free software: you can redistribute it and/or modify
+// Societatis is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Qwertycoin is distributed in the hope that it will be useful,
+// Societatis is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
-// along with Qwertycoin.  If not, see <http://www.gnu.org/licenses/>.
+// along with Societatis.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <algorithm>
 #include <fstream>
@@ -498,6 +499,9 @@ bool NodeServer::is_remote_host_allowed(const uint32_t address_ip)
 bool NodeServer::ban_host(const uint32_t address_ip, time_t seconds)
 {
     std::unique_lock<std::mutex> lock(mutex);
+
+    logger(WARNING, BRIGHT_YELLOW) << "Banning Host " << Common::ipAddressToString(address_ip);
+
     return block_host(address_ip, seconds);
 }
 
@@ -793,6 +797,7 @@ bool NodeServer::handshake(CryptoNote::LevinProtocol &proto,
             << "COMMAND_HANDSHAKE Failed, peer is wrong version! ("
             << std::to_string(rsp.node_data.version)
             << "), closing connection.";
+        ban_host(context.m_remote_ip);
         return false;
     } else if ((rsp.node_data.version - CryptoNote::P2P_CURRENT_VERSION) >= CryptoNote::P2P_UPGRADE_WINDOW) {
         logger(Logging::WARNING)
@@ -1508,6 +1513,7 @@ int NodeServer::handle_handshake(int command,
             << "UNSUPPORTED NETWORK AGENT VERSION CONNECTED! version="
             << std::to_string(arg.node_data.version);
         context.m_state = CryptoNoteConnectionContext::state_shutdown;
+		ban_host(context.m_remote_ip);
         return 1;
     } else if (arg.node_data.version > CryptoNote::P2P_CURRENT_VERSION) {
         logger(Logging::WARNING)

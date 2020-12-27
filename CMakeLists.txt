@@ -80,8 +80,8 @@ set(PROJECT_DESCRIPTION "Safe. Simple. Seamless. Secure.")
 set(PROJECT_VERSION "${PROJECT_GIT_TAG}")
 set(PROJECT_COPYRIGHT "Copyright (c) 2018-2020, The Qwertycoin Group.")
 set(PROJECT_VENDOR_NAME "The Qwertycoin Group")
-set(PROJECT_VENDOR_URL "https://qwertycoin.org")
-set(PROJECT_VENDOR_DOMAIN_REVERSED "org.qwertycoin")
+set(PROJECT_VENDOR_URL "https://societatis.io")
+set(PROJECT_VENDOR_DOMAIN_REVERSED "io.socetatis")
 project(${PROJECT_NAME} VERSION ${PROJECT_VERSION} LANGUAGES C CXX)
 
 if(UNIX)
@@ -112,10 +112,10 @@ if(BUILD_WITH_TOOLS)
     add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/src")
 endif()
 
-if(BUILD_WITH_TESTS)
+#[[if(BUILD_WITH_TESTS)
     enable_testing()
     add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/tests")
-endif()
+endif()]]
 
 if(BUILD_WITH_PACKAGE)
     include(project/CPackConfig)

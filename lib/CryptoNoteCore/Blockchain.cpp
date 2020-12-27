@@ -3,21 +3,22 @@
 // Copyright (c) 2018, Ryo Currency Project
 // Copyright (c) 2016-2018, The Karbo developers
 // Copyright (c) 2018-2020, The Qwertycoin Group.
+// Copyright (c) 2020, Societatis.io
 //
-// This file is part of Qwertycoin.
+// This file is part of Societatis.
 //
-// Qwertycoin is free software: you can redistribute it and/or modify
+// Societatis is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Qwertycoin is distributed in the hope that it will be useful,
+// Societatis is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
-// along with Qwertycoin.  If not, see <http://www.gnu.org/licenses/>.
+// along with Societatis.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <algorithm>
 #include <cmath>
@@ -40,7 +41,7 @@
 
 using namespace Logging;
 using namespace Common;
-using namespace Qwertycoin;
+using namespace Societatis;
 
 namespace {
 
@@ -1921,6 +1922,35 @@ bool Blockchain::handleGetObjects(
     }
 
     return true;
+}
+
+bool Blockchain::getTransactionsWithOutputGlobalIndexes(const std::vector<Crypto::Hash> &txsIds,
+														std::list<Crypto::Hash> &missedTxs,
+														std::vector<std::pair<Transaction,
+																			  std::vector<uint32_t>>> &txs)
+{
+	std::lock_guard<decltype(m_blockchain_lock)> lk(m_blockchain_lock);
+
+	for (const auto &txId : txsIds) {
+		auto it = m_transactionMap.find(txId);
+		if (it == m_transactionMap.end()) {
+			missedTxs.push_back(txId);
+		} else {
+			const TransactionEntry &tx = transactionByIndex(it->second);
+			if (!(tx.m_global_output_indexes.size())) {
+				logger(ERROR, BRIGHT_RED)
+					<< "internal error: global indexes for transaction "
+					<< txId
+					<< " is empty";
+
+				return false;
+			}
+
+			txs.push_back(std::make_pair(tx.tx, tx.m_global_output_indexes));
+		}
+	}
+
+	return true;
 }
 
 bool Blockchain::getAlternativeBlocks(std::list<Block>& blocks)

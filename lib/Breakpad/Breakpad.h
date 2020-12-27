@@ -1,4 +1,5 @@
 // Copyright (c) 2018-2020, The Qwertycoin Group.
+// Copyright (c) 2020, Societatis.io
 //
 // Licensed under the GNU General Public License, Version 3.
 // See the file LICENSE from this package for details.
@@ -11,7 +12,7 @@ namespace google_breakpad {
 class ExceptionHandler;
 } // namespace google_breakpad
 
-namespace Qwertycoin {
+namespace Societatis {
 
 namespace Breakpad {
 
@@ -29,4 +30,4 @@ private:
 
 } // namespace Breakpad
 
-} // namespace Qwertycoin
+} // namespace Societatis
