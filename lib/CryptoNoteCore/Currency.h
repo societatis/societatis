@@ -94,19 +94,13 @@ public:
     size_t difficultyCut() const { return m_difficultyCut; }
     size_t difficultyBlocksCountByBlockVersion(uint8_t blockMajorVersion) const
     {
-        if (blockMajorVersion >= BLOCK_MAJOR_VERSION_6TODO) {
+        if (blockMajorVersion >= BLOCK_MAJOR_VERSION_2) {
             return difficultyBlocksCount6();
-        } else if (blockMajorVersion >= BLOCK_MAJOR_VERSION_3) {
-            return difficultyBlocksCount3() + 1;
-        } else if (blockMajorVersion == BLOCK_MAJOR_VERSION_2) {
-            return difficultyBlocksCount2();
         } else {
             return difficultyBlocksCount();
         }
     };
     size_t difficultyBlocksCount() const { return m_difficultyWindow + m_difficultyLag; }
-    size_t difficultyBlocksCount2() const { return CryptoNote::parameters::DIFFICULTY_WINDOW_V2; }
-    size_t difficultyBlocksCount3() const { return CryptoNote::parameters::DIFFICULTY_WINDOW_V3; }
     size_t difficultyBlocksCount6() const { return CryptoNote::parameters::DIFFICULTY_WINDOW_V6; }
 
     size_t maxBlockSizeInitial() const { return m_maxBlockSizeInitial; }
@@ -218,16 +212,6 @@ public:
     difficulty_type nextDifficultyV1(
         std::vector<uint64_t> timestamps,
         std::vector<difficulty_type> Difficulties) const;
-    difficulty_type nextDifficultyV2(
-        std::vector<uint64_t> timestamps,
-        std::vector<difficulty_type> Difficulties) const;
-    difficulty_type nextDifficultyV3(
-        std::vector<uint64_t> timestamps,
-        std::vector<difficulty_type> Difficulties) const;
-    difficulty_type nextDifficultyV5(
-        uint8_t blockMajorVersion,
-        std::vector<uint64_t> timestamps,
-        std::vector<difficulty_type> Difficulties) const;
     difficulty_type nextDifficultyV6(uint8_t blockMajorVersion,
         std::vector<uint64_t> timestamps,
         std::vector<difficulty_type> Difficulties,
@@ -240,11 +224,6 @@ public:
         lazy_stat_callback_type& lazy_stat_cb) const;
 
     bool checkProofOfWorkV1(
-        Crypto::cn_context &context,
-        const Block &block,
-        difficulty_type currentDiffic,
-        Crypto::Hash &proofOfWork) const;
-    bool checkProofOfWorkV2(
         Crypto::cn_context &context,
         const Block &block,
         difficulty_type currentDiffic,

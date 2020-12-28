@@ -328,10 +328,6 @@ private:
     CryptoNote::BlockIndex m_blockIndex;
     TransactionMap m_transactionMap;
     MultisignatureOutputsContainer m_multisignatureOutputs;
-    UpgradeDetector m_upgradeDetectorV2;
-    UpgradeDetector m_upgradeDetectorV3;
-    UpgradeDetector m_upgradeDetectorV4;
-    UpgradeDetector m_upgradeDetectorV5;
     UpgradeDetector m_upgradeDetectorV6;
 
     PaymentIdIndex m_paymentIdIndex;

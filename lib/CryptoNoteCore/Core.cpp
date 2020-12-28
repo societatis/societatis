@@ -304,7 +304,7 @@ bool core::handle_incoming_tx(
     // want to process all transactions sequentially
 
     if (tx_blob.size() > m_currency.maxTransactionSizeLimit()
-        && getCurrentBlockMajorVersion() >= BLOCK_MAJOR_VERSION_4) {
+        && getCurrentBlockMajorVersion() >= BLOCK_MAJOR_VERSION_2) {
         logger(INFO) << "WRONG TRANSACTION BLOB, too big size " << tx_blob.size() << ", rejected";
         tvc.m_verification_failed = true;
         return false;
@@ -355,8 +355,8 @@ bool core::check_tx_mixin(const Transaction &tx, uint32_t height)
         assert(inputIndex < tx.signatures.size());
         if (txin.type() == typeid(KeyInput)) {
             uint64_t txMixin = boost::get<KeyInput>(txin).outputIndexes.size();
-            if (getCurrentBlockMajorVersion() >= BLOCK_MAJOR_VERSION_4
-                && txMixin < m_currency.minMixin() && txMixin != 1) {
+            if (getCurrentBlockMajorVersion() >= BLOCK_MAJOR_VERSION_2
+                && txMixin < m_currency.minMixin()) {
                 logger(ERROR)
                     << "Transaction "
                     << getObjectHash(tx)
@@ -414,7 +414,7 @@ bool core::check_tx_fee(
                     << m_currency.formatAmount(fee)
                     << ", minimum fee: "
                     // TODO: simplify overcomplicated expression.
-                    << m_currency.formatAmount(getBlockMajorVersionForHeight(height) < BLOCK_MAJOR_VERSION_6TODO ? m_currency.minimumFee() : getMinimalFeeForHeight(loose_check ? height - CryptoNote::parameters::EXPECTED_NUMBER_OF_BLOCKS_PER_DAY : height));
+                    << m_currency.formatAmount(getBlockMajorVersionForHeight(height) < BLOCK_MAJOR_VERSION_2 ? m_currency.minimumFee() : getMinimalFeeForHeight(loose_check ? height - CryptoNote::parameters::EXPECTED_NUMBER_OF_BLOCKS_PER_DAY : height));
 
                 tvc.m_verification_failed = true;
                 tvc.m_tx_fee_too_small = true;
@@ -432,7 +432,7 @@ bool core::check_tx_unmixable(const Transaction &tx, uint32_t height)
 {
     for (const auto &out : tx.outputs) {
         if (!is_valid_decomposed_amount(out.amount)
-            && height >= CryptoNote::parameters::UPGRADE_HEIGHT_V6TODO) {
+            && height >= CryptoNote::parameters::UPGRADE_HEIGHT_V2) {
             logger(ERROR)
                 << "Invalid decomposed output amount "
                 << out.amount
@@ -636,47 +636,13 @@ bool core::get_block_template(
 
         if (b.majorVersion == BLOCK_MAJOR_VERSION_1) {
             b.minorVersion =
+                m_currency.upgradeHeight(BLOCK_MAJOR_VERSION_1) == UpgradeDetectorBase::UNDEF_HEIGHT
+                ? BLOCK_MINOR_VERSION_1
+                : BLOCK_MINOR_VERSION_0;
+        }
+        else if (b.majorVersion >= BLOCK_MAJOR_VERSION_2) {
+            b.minorVersion =
                 m_currency.upgradeHeight(BLOCK_MAJOR_VERSION_2) == UpgradeDetectorBase::UNDEF_HEIGHT
-                ? BLOCK_MINOR_VERSION_1
-                : BLOCK_MINOR_VERSION_0;
-        }
-        else if (b.majorVersion==BLOCK_MAJOR_VERSION_2 || b.majorVersion==BLOCK_MAJOR_VERSION_3) {
-            if(m_currency.upgradeHeight(BLOCK_MAJOR_VERSION_3)==UpgradeDetectorBase::UNDEF_HEIGHT){
-                b.minorVersion =
-                    b.majorVersion == BLOCK_MAJOR_VERSION_2
-                    ? BLOCK_MINOR_VERSION_1
-                    : BLOCK_MINOR_VERSION_0;
-            } else {
-                b.minorVersion = BLOCK_MINOR_VERSION_0;
-            }
-
-            b.parentBlock.majorVersion = BLOCK_MAJOR_VERSION_1;
-            b.parentBlock.majorVersion = BLOCK_MINOR_VERSION_0;
-            b.parentBlock.transactionCount = 1;
-            TransactionExtraMergeMiningTag mm_tag = boost::value_initialized<decltype(mm_tag)>();
-
-            if (!appendMergeMiningTagToExtra(b.parentBlock.baseTransaction.extra, mm_tag)) {
-                logger(ERROR, BRIGHT_RED)
-                    << "Failed to append merge mining tag "
-                    << "to extra of the parent block miner transaction";
-                return false;
-            }
-        }
-        else if (b.majorVersion == BLOCK_MAJOR_VERSION_4) {
-            b.minorVersion =
-                m_currency.upgradeHeight(BLOCK_MAJOR_VERSION_4) == UpgradeDetectorBase::UNDEF_HEIGHT
-                ? BLOCK_MINOR_VERSION_1
-                : BLOCK_MINOR_VERSION_0;
-        }
-        else if (b.majorVersion >= BLOCK_MAJOR_VERSION_5) {
-            b.minorVersion =
-                m_currency.upgradeHeight(BLOCK_MAJOR_VERSION_5) == UpgradeDetectorBase::UNDEF_HEIGHT
-                ? BLOCK_MINOR_VERSION_1
-                : BLOCK_MINOR_VERSION_0;
-        }
-        else if (b.majorVersion >= BLOCK_MAJOR_VERSION_6TODO) {
-            b.minorVersion =
-                m_currency.upgradeHeight(BLOCK_MAJOR_VERSION_6TODO) == UpgradeDetectorBase::UNDEF_HEIGHT
                 ? BLOCK_MINOR_VERSION_1
                 : BLOCK_MINOR_VERSION_0;
         }
@@ -728,7 +694,7 @@ bool core::get_block_template(
     uint32_t previousBlockHeight = 0;
     uint64_t blockTarget = CryptoNote::parameters::DIFFICULTY_TARGET;
 
-    if (height >= CryptoNote::parameters::UPGRADE_HEIGHT_V6TODO) {
+    if (height >= CryptoNote::parameters::UPGRADE_HEIGHT_V2) {
         getBlockHeight(b.previousBlockHash, previousBlockHeight);
         uint64_t prev_timestamp = getBlockTimestamp(previousBlockHeight);
         if(prev_timestamp >= b.timestamp) {
@@ -1837,7 +1803,7 @@ bool core::fillBlockDetails(const Block &block, BlockDetails2 &blockDetails)
         }
     }
 
-    if (blockDetails.height >= CryptoNote::parameters::UPGRADE_HEIGHT_V6TODO) {
+    if (blockDetails.height >= CryptoNote::parameters::UPGRADE_HEIGHT_V2) {
         getBlockHeight(block.previousBlockHash, previousBlockHeight);
         blockTarget = block.timestamp - getBlockTimestamp(previousBlockHeight);
     }
@@ -2069,7 +2035,7 @@ bool core::handleIncomingTransaction(
 
     // is in checkpoint zone
     if (!m_blockchain.isInCheckpointZone(get_current_blockchain_height())) {
-        if (blobSize > m_currency.maxTransactionSizeLimit() && getCurrentBlockMajorVersion() >= BLOCK_MAJOR_VERSION_4) {
+        if (blobSize > m_currency.maxTransactionSizeLimit()) {
             logger(INFO)
                 << "Transaction verification failed: too big size "
                 << blobSize

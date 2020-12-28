@@ -56,7 +56,7 @@ protected:
 };
 
 #define TEST_ALREADY_GENERATED_COINS(alreadyGeneratedCoins, expectedReward) \
-    m_blockTooBig = !m_currency.getBlockReward(BLOCK_MAJOR_VERSION_4, 0, currentBlockSize, \
+    m_blockTooBig = !m_currency.getBlockReward(BLOCK_MAJOR_VERSION_1, 0, currentBlockSize, \
       alreadyGeneratedCoins, 0, m_blockReward, m_emissionChange, 0); \
     ASSERT_FALSE(m_blockTooBig); \
     ASSERT_EQ(UINT64_C(expectedReward), m_blockReward); \
@@ -222,7 +222,7 @@ protected:
     void SetUp() override
     {
         m_blockTooBig = !m_currency.getBlockReward(
-            BLOCK_MAJOR_VERSION_3,
+            BLOCK_MAJOR_VERSION_2,
             testMedian,
             0,
             alreadyGeneratedCoins,
@@ -238,7 +238,7 @@ protected:
 
     void do_test(size_t currentBlockSize) {
         m_blockTooBig = !m_currency.getBlockReward(
-            BLOCK_MAJOR_VERSION_3,
+            BLOCK_MAJOR_VERSION_2,
             testMedian,
             currentBlockSize,
             alreadyGeneratedCoins,
@@ -319,8 +319,8 @@ TEST_F(getBlockReward_and_currentBlockSize, calculates_correctly) {
 }
 
 const unsigned int testEmissionSpeedFactor = 4;
-const size_t testGrantedFullRewardZoneV1 = CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1;
-const size_t testGrantedFullRewardZoneV2 = CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2;
+const size_t testGrantedFullRewardZoneV1 = CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE;
+const size_t testGrantedFullRewardZoneV2 = CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE;
 const size_t testMedianV1 = testGrantedFullRewardZoneV1;
 const size_t testMedianV2 = testGrantedFullRewardZoneV2;
 const size_t testBlockSizeV1 = testMedianV1 + testMedianV1 * 8 / 10; // expected penalty 0.64 * reward
