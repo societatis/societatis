@@ -62,7 +62,6 @@ bool Currency::init()
     if (isTestnet()) {
         m_upgradeHeightV2 = 10;
         m_upgradeHeightV3 = 60;
-        m_upgradeHeightV4 = 70;
         m_upgradeHeightV5 = 80;
         m_upgradeHeightV6 = 100;
         m_governancePercent = 10;
@@ -120,9 +119,6 @@ uint32_t Currency::upgradeHeight(uint8_t majorVersion) const
     }
     else if (majorVersion == BLOCK_MAJOR_VERSION_5) {
         return m_upgradeHeightV5;
-    }
-    else if (majorVersion == BLOCK_MAJOR_VERSION_4) {
-        return m_upgradeHeightV4;
     }
     else if (majorVersion == BLOCK_MAJOR_VERSION_2) {
         return m_upgradeHeightV2;
@@ -490,25 +486,12 @@ bool Currency::isFusionTransaction(
 
     uint64_t inputAmount = 0;
     for (auto amount : inputsAmounts) {
-        if (height < CryptoNote::parameters::UPGRADE_HEIGHT_V4) {
-            if (amount < defaultDustThreshold()) {
-                logger(ERROR)
-                    << "Fusion transaction verification failed: amount "
-                    << amount
-                    << " is less than dust threshold.";
-                return false;
-            }
-        }
         inputAmount += amount;
     }
 
     std::vector<uint64_t> expectedOutputsAmounts;
     expectedOutputsAmounts.reserve(outputsAmounts.size());
-    decomposeAmount(
-        inputAmount,
-        height < CryptoNote::parameters::UPGRADE_HEIGHT_V4
-        ? defaultDustThreshold()
-        : UINT64_C(0), expectedOutputsAmounts);
+    decomposeAmount(inputAmount,UINT64_C(0), expectedOutputsAmounts);
     std::sort(expectedOutputsAmounts.begin(), expectedOutputsAmounts.end());
 
     bool decompose = expectedOutputsAmounts == outputsAmounts;
@@ -556,10 +539,6 @@ bool Currency::isAmountApplicableInFusionTransactionInput(
     uint32_t height) const
 {
     if (amount >= threshold) {
-        return false;
-    }
-
-    if (height < CryptoNote::parameters::UPGRADE_HEIGHT_V4 && amount < defaultDustThreshold()) {
         return false;
     }
 
@@ -733,8 +712,7 @@ difficulty_type Currency::nextDifficulty(uint32_t height,
     else if (blockMajorVersion >= BLOCK_MAJOR_VERSION_5) {
         return nextDifficultyV5(blockMajorVersion, timestamps, cumulativeDifficulties);
     }
-    else if (blockMajorVersion == BLOCK_MAJOR_VERSION_3
-               || blockMajorVersion == BLOCK_MAJOR_VERSION_4) {
+    else if (blockMajorVersion == BLOCK_MAJOR_VERSION_3) {
         return nextDifficultyV3(timestamps, cumulativeDifficulties);
     }
     else if (blockMajorVersion == BLOCK_MAJOR_VERSION_2) {
@@ -840,8 +818,8 @@ difficulty_type Currency::nextDifficultyV2(
     uint64_t nextDiffZ = low / timeSpan;
 
     // minimum limit
-    if (!isTestnet() && nextDiffZ < 100000) {
-        nextDiffZ = 100000;
+    if (!isTestnet() && nextDiffZ < CryptoNote::parameters::DEFAULT_DIFFICULTY/10) {
+        nextDiffZ = CryptoNote::parameters::DEFAULT_DIFFICULTY/10;
     }
 
     return nextDiffZ;
@@ -905,8 +883,8 @@ difficulty_type Currency::nextDifficultyV3(
     next_difficulty = static_cast<uint64_t>(nextDifficulty);
 
     // minimum limit
-    if (!isTestnet() && next_difficulty < 100000) {
-        next_difficulty = 100000;
+    if (!isTestnet() && next_difficulty < CryptoNote::parameters::DEFAULT_DIFFICULTY/10) {
+        next_difficulty = CryptoNote::parameters::DEFAULT_DIFFICULTY/10;
     }
 
     return next_difficulty;
@@ -971,11 +949,11 @@ difficulty_type Currency::nextDifficultyV5(
     }
 
     // minimum limit
-    if (nextDiffV5 < 10000000) {
-        nextDiffV5 = 10000000;
+    if (nextDiffV5 < CryptoNote::parameters::DEFAULT_DIFFICULTY*10) {
+        nextDiffV5 = CryptoNote::parameters::DEFAULT_DIFFICULTY*10;
     }
     if(isTestnet()){
-        nextDiffV5 = 10000;
+        nextDiffV5 = CryptoNote::parameters::DEFAULT_DIFFICULTY/100;
     }
 
     return nextDiffV5;
@@ -1243,8 +1221,6 @@ bool Currency::checkProofOfWork(
     switch (block.majorVersion) {
     case BLOCK_MAJOR_VERSION_1:
         // fall through
-    case BLOCK_MAJOR_VERSION_4:
-        // fall through
     case BLOCK_MAJOR_VERSION_5:
         // fall through
     case BLOCK_MAJOR_VERSION_6:
@@ -1361,7 +1337,6 @@ CurrencyBuilder::CurrencyBuilder(Logging::ILogger &log)
 
     upgradeHeightV2(parameters::UPGRADE_HEIGHT_V2);
     upgradeHeightV3(parameters::UPGRADE_HEIGHT_V3);
-    upgradeHeightV4(parameters::UPGRADE_HEIGHT_V4);
     upgradeHeightV5(parameters::UPGRADE_HEIGHT_V5);
     upgradeHeightV6(parameters::UPGRADE_HEIGHT_V6);
     upgradeVotingThreshold(parameters::UPGRADE_VOTING_THRESHOLD);

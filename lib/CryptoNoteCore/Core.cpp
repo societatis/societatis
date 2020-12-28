@@ -303,8 +303,7 @@ bool core::handle_incoming_tx(
     tvc = boost::value_initialized<tx_verification_context>();
     // want to process all transactions sequentially
 
-    if (tx_blob.size() > m_currency.maxTransactionSizeLimit()
-        && getCurrentBlockMajorVersion() >= BLOCK_MAJOR_VERSION_4) {
+    if (tx_blob.size() > m_currency.maxTransactionSizeLimit()) {
         logger(INFO) << "WRONG TRANSACTION BLOB, too big size " << tx_blob.size() << ", rejected";
         tvc.m_verification_failed = true;
         return false;
@@ -665,11 +664,6 @@ bool core::get_block_template(
                     << "to extra of the parent block miner transaction";
                 return false;
             }
-        } else if (b.majorVersion == BLOCK_MAJOR_VERSION_4) {
-            b.minorVersion =
-                m_currency.upgradeHeight(BLOCK_MAJOR_VERSION_4) == UpgradeDetectorBase::UNDEF_HEIGHT
-                ? BLOCK_MINOR_VERSION_1
-                : BLOCK_MINOR_VERSION_0;
         } else if (b.majorVersion >= BLOCK_MAJOR_VERSION_5) {
             b.minorVersion =
                 m_currency.upgradeHeight(BLOCK_MAJOR_VERSION_5) == UpgradeDetectorBase::UNDEF_HEIGHT
@@ -2070,7 +2064,7 @@ bool core::handleIncomingTransaction(
 
     // is in checkpoint zone
     if (!m_blockchain.isInCheckpointZone(get_current_blockchain_height())) {
-        if (blobSize > m_currency.maxTransactionSizeLimit() && getCurrentBlockMajorVersion() >= BLOCK_MAJOR_VERSION_4) {
+        if (blobSize > m_currency.maxTransactionSizeLimit()) {
             logger(INFO)
                 << "Transaction verification failed: too big size "
                 << blobSize

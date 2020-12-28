@@ -87,7 +87,7 @@ const size_t   DIFFICULTY_WINDOW_V6                           = 30;  // EXPECTED
 const size_t   DIFFICULTY_CUT                                 = 60;  // timestamps to cut after sorting
 const size_t   DIFFICULTY_LAG                                 = 15;  // !!!
 static_assert(2 * DIFFICULTY_CUT <= DIFFICULTY_WINDOW - 2, "Bad DIFFICULTY_WINDOW or DIFFICULTY_CUT");
-const size_t DEFAULT_DIFFICULTY                               = 10000;
+const size_t DEFAULT_DIFFICULTY                               = 1000000;
 const size_t FIXED_DIFFICULTY                                 = 0;
 
 static constexpr uint64_t POISSON_CHECK_TRIGGER               = 10;   // Reorg size that triggers poisson timestamp check
@@ -112,11 +112,10 @@ const size_t   FUSION_TX_MIN_INPUT_COUNT                      = 12;
 const size_t   FUSION_TX_MIN_IN_OUT_COUNT_RATIO               = 4;
 
 
-const uint32_t UPGRADE_HEIGHT_V2                              = 2;
-const uint32_t UPGRADE_HEIGHT_V3                              = 3;
-const uint32_t UPGRADE_HEIGHT_V4                              = 4;
-const uint32_t UPGRADE_HEIGHT_V5                              = 5;
-const uint32_t UPGRADE_HEIGHT_V6                              = 6;
+const uint32_t UPGRADE_HEIGHT_V2                              = 1;
+const uint32_t UPGRADE_HEIGHT_V3                              = 2;
+const uint32_t UPGRADE_HEIGHT_V5                              = 3;
+const uint32_t UPGRADE_HEIGHT_V6                              = 4;
 
 const unsigned UPGRADE_VOTING_THRESHOLD                      = 90; // percent
 const uint32_t UPGRADE_VOTING_WINDOW                         = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
@@ -134,7 +133,7 @@ const char     MINER_CONFIG_FILE_NAME[]                      = "miner_conf.json"
 
 /* Governance Fee and range // The Qwertycoin Foundation */
 const uint16_t GOVERNANCE_PERCENT_FEE                        = 10; // 10 percent of base block reward
-const uint32_t GOVERNANCE_HEIGHT_START                       = 10;
+const uint32_t GOVERNANCE_HEIGHT_START                       = UPGRADE_HEIGHT_V6;
 const uint32_t GOVERNANCE_HEIGHT_END                         = 4000000;
 
 } // namespace parameters
@@ -150,7 +149,6 @@ const uint8_t  CURRENT_TRANSACTION_VERSION                   =  TRANSACTION_VERS
 const uint8_t  BLOCK_MAJOR_VERSION_1                         =  1;
 const uint8_t  BLOCK_MAJOR_VERSION_2                         =  2;
 const uint8_t  BLOCK_MAJOR_VERSION_3                         =  3;
-const uint8_t  BLOCK_MAJOR_VERSION_4                         =  4;
 const uint8_t  BLOCK_MAJOR_VERSION_5                         =  5;
 const uint8_t  BLOCK_MAJOR_VERSION_6                         =  6;
 

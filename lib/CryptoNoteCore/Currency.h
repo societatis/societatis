@@ -348,7 +348,6 @@ private:
 
     uint32_t m_upgradeHeightV2;
     uint32_t m_upgradeHeightV3;
-    uint32_t m_upgradeHeightV4;
     uint32_t m_upgradeHeightV5;
     uint32_t m_upgradeHeightV6;
     unsigned int m_upgradeVotingThreshold;
@@ -576,11 +575,6 @@ public:
     CurrencyBuilder &upgradeHeightV3(uint64_t val)
     {
         m_currency.m_upgradeHeightV3 = static_cast<uint32_t>(val);
-        return *this;
-    }
-    CurrencyBuilder &upgradeHeightV4(uint64_t val)
-    {
-        m_currency.m_upgradeHeightV4 = static_cast<uint32_t>(val);
         return *this;
     }
     CurrencyBuilder &upgradeHeightV5(uint64_t val)
