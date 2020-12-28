@@ -194,7 +194,9 @@ const std::string GOVERNANCE_VIEW_SECRET_KEY                 = "eb398bd51ede17c4
 
 const char *const SEED_NODES[] = {
 	"135.181.24.147:7294", //holon-00
-	"135.181.27.29:7294"   //holon-01
+	"135.181.27.29:7294",  //holon-01
+	"159.89.132.110:7294", //02
+	"206.189.156.12:7294"  //03
 };
 
 } // namespace CryptoNote
