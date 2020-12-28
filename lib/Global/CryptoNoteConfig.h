@@ -50,7 +50,7 @@ const size_t   BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW              = 60;
 const size_t   BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V1           = 11;
 
 // MONEY_SUPPLY - total number coins to be generated
-const uint64_t MONEY_SUPPLY                                   = 7834599855; //(uint64_t)(-1);
+const uint64_t MONEY_SUPPLY                                   = uint64_t(7834599855);
 const uint64_t TAIL_EMISSION_REWARD                           = 10000000000; // 10 Coins
 const size_t CRYPTONOTE_COIN_VERSION                          = 1;
 
@@ -87,7 +87,7 @@ const size_t   DIFFICULTY_WINDOW_V6                           = 30;  // EXPECTED
 const size_t   DIFFICULTY_CUT                                 = 60;  // timestamps to cut after sorting
 const size_t   DIFFICULTY_LAG                                 = 15;  // !!!
 static_assert(2 * DIFFICULTY_CUT <= DIFFICULTY_WINDOW - 2, "Bad DIFFICULTY_WINDOW or DIFFICULTY_CUT");
-const size_t DEFAULT_DIFFICULTY                               = 1000000;
+const size_t DEFAULT_DIFFICULTY                               = 1000;
 const size_t FIXED_DIFFICULTY                                 = 0;
 
 static constexpr uint64_t POISSON_CHECK_TRIGGER               = 10;   // Reorg size that triggers poisson timestamp check
