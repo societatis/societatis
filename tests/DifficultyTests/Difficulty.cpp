@@ -169,7 +169,7 @@ bool test_difficulty_V6()
         CryptoNote::difficulty_type next_diff =
                 currency.nextDifficultyV6(0, timestamp_window,
                                           diff_window,
-                                          CryptoNote::parameters::UPGRADE_HEIGHT_V6 + idx);
+                                          CryptoNote::parameters::UPGRADE_HEIGHT_V4 + idx);
         if ((next_diff > precalc_diffs_V6[idx + 1]) ||
             (next_diff < precalc_diffs_V6[idx + 1])) {
             std::cerr << "Wrong difficulty for block " << idx << std::endl

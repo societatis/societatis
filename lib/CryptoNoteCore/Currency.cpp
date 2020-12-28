@@ -62,7 +62,7 @@ bool Currency::init()
     if (isTestnet()) {
         m_upgradeHeightV2 = 10;
         m_upgradeHeightV3 = 60;
-        m_upgradeHeightV6 = 100;
+        m_upgradeHeightV4 = 100;
         m_governancePercent = 10;
         m_governanceHeightStart = 1;
         m_governanceHeightEnd = 100;
@@ -113,8 +113,8 @@ size_t Currency::blockGrantedFullRewardZoneByBlockVersion(uint8_t blockMajorVers
 
 uint32_t Currency::upgradeHeight(uint8_t majorVersion) const
 {
-    if (majorVersion == BLOCK_MAJOR_VERSION_6) {
-        return m_upgradeHeightV6;
+    if (majorVersion == BLOCK_MAJOR_VERSION_4) {
+        return m_upgradeHeightV4;
     }
     else if (majorVersion == BLOCK_MAJOR_VERSION_2) {
         return m_upgradeHeightV2;
@@ -144,7 +144,7 @@ bool Currency::getBlockReward(
     // Consistency
     double consistency = 1.0;
     double exponent = 0.25; 
-    if (height >= CryptoNote::parameters::UPGRADE_HEIGHT_V6 && difficultyTarget() != 0) {
+    if (height >= CryptoNote::parameters::UPGRADE_HEIGHT_V4 && difficultyTarget() != 0) {
         // blockTarget is (Timestamp of New Block - Timestamp of Previous Block)
         consistency = (double) blockTarget / (double) difficultyTarget();
 
@@ -689,7 +689,7 @@ difficulty_type Currency::nextDifficulty(uint32_t height,
     if (!timestamps.empty()) {
         last_timestamp = timestamps.back();
     }
-    if ((blockMajorVersion >= BLOCK_MAJOR_VERSION_6) &&
+    if ((blockMajorVersion >= BLOCK_MAJOR_VERSION_4) &&
             (nextBlockTime > last_timestamp + CryptoNote::parameters::CRYPTONOTE_CLIF_THRESHOLD)) {
         size_t array_size = cumulativeDifficulties.size();
         difficulty_type last_difficulty = 1;
@@ -702,7 +702,7 @@ difficulty_type Currency::nextDifficulty(uint32_t height,
                                currentSolveTime, lazy_stat_cb);
     }
 
-    if (blockMajorVersion >= BLOCK_MAJOR_VERSION_6) {
+    if (blockMajorVersion >= BLOCK_MAJOR_VERSION_4) {
         return nextDifficultyV6(blockMajorVersion, timestamps, cumulativeDifficulties, height);
     }
     else if (blockMajorVersion == BLOCK_MAJOR_VERSION_3) {
@@ -909,7 +909,7 @@ difficulty_type Currency::nextDifficultyV6(uint8_t blockMajorVersion,
     // Consider this as a service or trial period.
     // With EPoW reward algo in place, we don't really need to worry about attackers
     // or large miners taking advanatage of our system.
-    if (height < CryptoNote::parameters::UPGRADE_HEIGHT_V6 + diffWindow) {
+    if (height < CryptoNote::parameters::UPGRADE_HEIGHT_V4 + diffWindow) {
         return nextDiffV6;
     }
 
@@ -1145,7 +1145,7 @@ bool Currency::checkProofOfWork(
     switch (block.majorVersion) {
     case BLOCK_MAJOR_VERSION_1:
         // fall through
-    case BLOCK_MAJOR_VERSION_6:
+    case BLOCK_MAJOR_VERSION_4:
         return checkProofOfWorkV1(context, block, currentDiffic, proofOfWork);
     case BLOCK_MAJOR_VERSION_2:
         // fall through
@@ -1259,7 +1259,7 @@ CurrencyBuilder::CurrencyBuilder(Logging::ILogger &log)
 
     upgradeHeightV2(parameters::UPGRADE_HEIGHT_V2);
     upgradeHeightV3(parameters::UPGRADE_HEIGHT_V3);
-    upgradeHeightV6(parameters::UPGRADE_HEIGHT_V6);
+    upgradeHeightV4(parameters::UPGRADE_HEIGHT_V4);
     upgradeVotingThreshold(parameters::UPGRADE_VOTING_THRESHOLD);
     upgradeVotingWindow(parameters::UPGRADE_VOTING_WINDOW);
     upgradeWindow(parameters::UPGRADE_WINDOW);

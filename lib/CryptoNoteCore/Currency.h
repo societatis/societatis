@@ -51,7 +51,7 @@ public:
     size_t timestampCheckWindow() const { return m_timestampCheckWindow; }
     size_t timestampCheckWindow(uint8_t blockMajorVersion) const
     {
-        if (blockMajorVersion >= 5) {
+        if (blockMajorVersion >= 4) {
             return timestampCheckWindow_v1();
         } else {
             return timestampCheckWindow();
@@ -61,7 +61,7 @@ public:
     uint64_t blockFutureTimeLimit() const { return m_blockFutureTimeLimit; }
     uint64_t blockFutureTimeLimit(uint8_t blockMajorVersion) const
     {
-        if (blockMajorVersion >= 5) {
+        if (blockMajorVersion >= 4) {
             return blockFutureTimeLimit_v1();
         } else {
             return blockFutureTimeLimit();
@@ -104,7 +104,7 @@ public:
     size_t difficultyCut() const { return m_difficultyCut; }
     size_t difficultyBlocksCountByBlockVersion(uint8_t blockMajorVersion) const
     {
-        if (blockMajorVersion >= BLOCK_MAJOR_VERSION_6) {
+        if (blockMajorVersion >= BLOCK_MAJOR_VERSION_4) {
             return difficultyBlocksCount6();
         } else if (blockMajorVersion >= BLOCK_MAJOR_VERSION_3) {
             return difficultyBlocksCount3() + 1;
@@ -344,7 +344,7 @@ private:
 
     uint32_t m_upgradeHeightV2;
     uint32_t m_upgradeHeightV3;
-    uint32_t m_upgradeHeightV6;
+    uint32_t m_upgradeHeightV4;
     unsigned int m_upgradeVotingThreshold;
     uint32_t m_upgradeVotingWindow;
     uint32_t m_upgradeWindow;
@@ -572,9 +572,9 @@ public:
         m_currency.m_upgradeHeightV3 = static_cast<uint32_t>(val);
         return *this;
     }
-    CurrencyBuilder &upgradeHeightV6(uint64_t val)
+    CurrencyBuilder &upgradeHeightV4(uint64_t val)
     {
-        m_currency.m_upgradeHeightV6 = static_cast<uint32_t>(val);
+        m_currency.m_upgradeHeightV4 = static_cast<uint32_t>(val);
         return *this;
     }
     CurrencyBuilder &upgradeVotingThreshold(unsigned int val);
