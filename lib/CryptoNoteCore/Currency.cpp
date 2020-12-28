@@ -62,7 +62,6 @@ bool Currency::init()
     if (isTestnet()) {
         m_upgradeHeightV2 = 10;
         m_upgradeHeightV3 = 60;
-        m_upgradeHeightV5 = 80;
         m_upgradeHeightV6 = 100;
         m_governancePercent = 10;
         m_governanceHeightStart = 1;
@@ -116,9 +115,6 @@ uint32_t Currency::upgradeHeight(uint8_t majorVersion) const
 {
     if (majorVersion == BLOCK_MAJOR_VERSION_6) {
         return m_upgradeHeightV6;
-    }
-    else if (majorVersion == BLOCK_MAJOR_VERSION_5) {
-        return m_upgradeHeightV5;
     }
     else if (majorVersion == BLOCK_MAJOR_VERSION_2) {
         return m_upgradeHeightV2;
@@ -709,9 +705,6 @@ difficulty_type Currency::nextDifficulty(uint32_t height,
     if (blockMajorVersion >= BLOCK_MAJOR_VERSION_6) {
         return nextDifficultyV6(blockMajorVersion, timestamps, cumulativeDifficulties, height);
     }
-    else if (blockMajorVersion >= BLOCK_MAJOR_VERSION_5) {
-        return nextDifficultyV5(blockMajorVersion, timestamps, cumulativeDifficulties);
-    }
     else if (blockMajorVersion == BLOCK_MAJOR_VERSION_3) {
         return nextDifficultyV3(timestamps, cumulativeDifficulties);
     }
@@ -888,75 +881,6 @@ difficulty_type Currency::nextDifficultyV3(
     }
 
     return next_difficulty;
-}
-
-template <typename T>
-inline T clamp(T lo, T v, T hi)
-{
-    return v < lo ? lo : v > hi ? hi : v;
-}
-
-// difficulty for block version 5.0
-difficulty_type Currency::nextDifficultyV5(
-    uint8_t blockMajorVersion,
-    std::vector<std::uint64_t> timestamps,
-    std::vector<difficulty_type> cumulativeDifficulties) const
-{
-    // LWMA-2 difficulty algorithm
-    // Copyright (c) 2017-2018 Zawy, MIT License
-    // https://github.com/zawy12/difficulty-algorithms/issues/3
-    // with modifications by Ryo Currency developers
-    // courtesy to aivve from Karbo
-
-    const int64_t  T = static_cast<int64_t>(m_difficultyTarget);
-    int64_t  N = difficultyBlocksCount3();
-    int64_t  L(0), ST, sum_3_ST(0);
-    uint64_t nextDiffV5, prev_D;
-
-    assert(timestamps.size() == cumulativeDifficulties.size()
-           && timestamps.size() <= static_cast<uint64_t>(N + 1));
-
-    int64_t max_TS, prev_max_TS;
-    prev_max_TS = timestamps[0];
-    for (int64_t i = 1; i <= N; i++) {
-        if (static_cast<int64_t>(timestamps[i]) > prev_max_TS) {
-            max_TS = timestamps[i];
-        } else {
-            max_TS = prev_max_TS + 1;
-        }
-        ST = std::min(6 * T, max_TS - prev_max_TS);
-        prev_max_TS = max_TS;
-        L += ST * i;
-        if (i > N - 3) {
-            sum_3_ST += ST;
-        }
-    }
-
-    // It is a potential error,  N should be less than cumulativeDifficulties.size()
-    nextDiffV5 = uint64_t((cumulativeDifficulties[N] - cumulativeDifficulties[0]) * T * (N + 1))
-                 / uint64_t(2 * L);
-    nextDiffV5 = (nextDiffV5 * 99ull) / 100ull;
-
-    // It is a potential error,  N should be less than cumulativeDifficulties.size()
-    prev_D = cumulativeDifficulties[N] - cumulativeDifficulties[N - 1];
-    nextDiffV5 = clamp(
-        (uint64_t)(prev_D * 67ull / 100ull),
-        nextDiffV5,
-        (uint64_t)(prev_D * 150ull / 100ull)
-    );
-    if (sum_3_ST < (8 * T) / 10) {
-        nextDiffV5 = (prev_D * 110ull) / 100ull;
-    }
-
-    // minimum limit
-    if (nextDiffV5 < CryptoNote::parameters::DEFAULT_DIFFICULTY*10) {
-        nextDiffV5 = CryptoNote::parameters::DEFAULT_DIFFICULTY*10;
-    }
-    if(isTestnet()){
-        nextDiffV5 = CryptoNote::parameters::DEFAULT_DIFFICULTY/100;
-    }
-
-    return nextDiffV5;
 }
 
 // difficulty for block version 6.0
@@ -1221,8 +1145,6 @@ bool Currency::checkProofOfWork(
     switch (block.majorVersion) {
     case BLOCK_MAJOR_VERSION_1:
         // fall through
-    case BLOCK_MAJOR_VERSION_5:
-        // fall through
     case BLOCK_MAJOR_VERSION_6:
         return checkProofOfWorkV1(context, block, currentDiffic, proofOfWork);
     case BLOCK_MAJOR_VERSION_2:
@@ -1337,7 +1259,6 @@ CurrencyBuilder::CurrencyBuilder(Logging::ILogger &log)
 
     upgradeHeightV2(parameters::UPGRADE_HEIGHT_V2);
     upgradeHeightV3(parameters::UPGRADE_HEIGHT_V3);
-    upgradeHeightV5(parameters::UPGRADE_HEIGHT_V5);
     upgradeHeightV6(parameters::UPGRADE_HEIGHT_V6);
     upgradeVotingThreshold(parameters::UPGRADE_VOTING_THRESHOLD);
     upgradeVotingWindow(parameters::UPGRADE_VOTING_WINDOW);

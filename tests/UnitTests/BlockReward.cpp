@@ -56,7 +56,7 @@ protected:
 };
 
 #define TEST_ALREADY_GENERATED_COINS(alreadyGeneratedCoins, expectedReward) \
-    m_blockTooBig = !m_currency.getBlockReward(BLOCK_MAJOR_VERSION_4, 0, currentBlockSize, \
+    m_blockTooBig = !m_currency.getBlockReward(4, 0, currentBlockSize, \
       alreadyGeneratedCoins, 0, m_blockReward, m_emissionChange, 0); \
     ASSERT_FALSE(m_blockTooBig); \
     ASSERT_EQ(UINT64_C(expectedReward), m_blockReward); \

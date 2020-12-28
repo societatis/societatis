@@ -664,11 +664,6 @@ bool core::get_block_template(
                     << "to extra of the parent block miner transaction";
                 return false;
             }
-        } else if (b.majorVersion >= BLOCK_MAJOR_VERSION_5) {
-            b.minorVersion =
-                m_currency.upgradeHeight(BLOCK_MAJOR_VERSION_5) == UpgradeDetectorBase::UNDEF_HEIGHT
-                ? BLOCK_MINOR_VERSION_1
-                : BLOCK_MINOR_VERSION_0;
         } else if (b.majorVersion >= BLOCK_MAJOR_VERSION_6) {
             b.minorVersion =
                 m_currency.upgradeHeight(BLOCK_MAJOR_VERSION_6) == UpgradeDetectorBase::UNDEF_HEIGHT
