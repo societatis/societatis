@@ -2068,7 +2068,7 @@ namespace CryptoNote {
 		uint64_t currentReward = 0;
 		int64_t emissionChange = 0;
 		size_t blockGrantedFullRewardZone =
-				CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2;
+				CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE;
 		res.block.effectiveSizeMedian = std::max(res.block.sizeMedian, blockGrantedFullRewardZone);
 
 		if (!m_core.getBlockReward(res.block.major_version, res.block.sizeMedian, 0,

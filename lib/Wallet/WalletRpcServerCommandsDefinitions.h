@@ -97,7 +97,7 @@ struct COMMAND_RPC_TRANSFER
         }
 
         std::list<transfer_destination> destinations;
-        uint64_t fee = CryptoNote::parameters::MINIMUM_FEE_V2;
+        uint64_t fee = CryptoNote::parameters::MINIMUM_FEE;
         uint64_t mixin = 0;
         uint64_t unlock_time = 0;
         std::string payment_id;

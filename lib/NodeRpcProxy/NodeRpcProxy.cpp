@@ -73,7 +73,7 @@ NodeRpcProxy::NodeRpcProxy(const std::string &nodeHost, unsigned short nodePort)
       m_peerCount(0),
       m_networkHeight(0),
 	  m_nodeHeight(0),
-	  m_minimalFee(CryptoNote::parameters::MAXIMUM_FEE)
+	  m_minimalFee(CryptoNote::parameters::MINIMUM_FEE)
 {
     resetInternalState();
 }

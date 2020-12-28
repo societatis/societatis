@@ -34,7 +34,7 @@ namespace CryptoNote {
 
 namespace parameters {
 
-const uint64_t DIFFICULTY_TARGET                              = 60; // seconds
+const uint64_t DIFFICULTY_TARGET                              = 120; // seconds
 const uint64_t CRYPTONOTE_MAX_BLOCK_NUMBER                    = 500000000;
 const size_t   CRYPTONOTE_MAX_BLOCK_BLOB_SIZE                 = 500000000;
 const size_t   CRYPTONOTE_MAX_TX_SIZE                         = 1000000000;
@@ -51,59 +51,30 @@ const size_t   BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V1           = 60;
 
 // MONEY_SUPPLY - total number coins to be generated
 const uint64_t MONEY_SUPPLY                                   = 7834599855; //(uint64_t)(-1);
-const uint64_t COIN                                           = 100000000;
 const uint64_t TAIL_EMISSION_REWARD                           = 10000000000; // 10 Coins
 const size_t CRYPTONOTE_COIN_VERSION                          = 1;
 
-const unsigned EMISSION_SPEED_FACTOR                          = 19;
+const unsigned EMISSION_SPEED_FACTOR                          = 18;
 static_assert(EMISSION_SPEED_FACTOR <= 8 * sizeof(uint64_t), "Bad EMISSION_SPEED_FACTOR");
 
 const size_t   CRYPTONOTE_REWARD_BLOCKS_WINDOW                = 100;
 const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE      = 1000000;
-const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2   = 1000000;
-const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1   = 1000000;
-const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_CURRENT = 1000000;
+
 const size_t   CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE         = 600;
 
 const size_t   CRYPTONOTE_DISPLAY_DECIMAL_POINT               = 8;
 
-/* This section defines our minimum and maximum fee counts required for transactions */
+/* This section defines our minimum fee count required for transactions */
 const uint64_t MINIMUM_FEE                                    = UINT64_C(10000);
-const uint64_t MAXIMUM_FEE                                    = UINT64_C(10000);
-
-const uint64_t MINIMUM_FEE_V1                                 = UINT64_C(10000);
-const uint64_t MAXIMUM_FEE_V1                                 = UINT64_C(10000);
-
-const uint64_t MINIMUM_FEE_V2                                 = UINT64_C(10000);
-const uint64_t MAXIMUM_FEE_V2                                 = UINT64_C(10000);
-
-// TODO: Check fee Upgrade heights
-const uint32_t MINIMUM_FEE_V1_HEIGHT                          = 1000000;
-const uint32_t MINIMUM_FEE_V2_HEIGHT                          = 10000000;
 
 /* This section defines the fees are remote node will receive from the sender */
 const double   REMOTE_NODE_FEE_FACTOR                         = 0.25; // percent
-const uint64_t MAX_REMOTE_NODE_FEE                            = UINT64_C(10000000000); // this equals 1000 Coins
-
+const uint64_t MAX_REMOTE_NODE_FEE                            = UINT64_C(10000000000);
 const uint64_t DEFAULT_DUST_THRESHOLD                         = UINT64_C(100000);
 
 /* This section defines our minimum and maximum mixin counts required for transactions */
 const uint64_t MIN_TX_MIXIN_SIZE                              = 0;
 const uint64_t MAX_TX_MIXIN_SIZE                              = 20;
-
-const uint64_t MIN_TX_MIXIN_SIZE_V1                           = 2;
-const uint64_t MAX_TX_MIXIN_SIZE_V1                           = 20;
-
-const uint64_t MIN_TX_MIXIN_SIZE_V2                           = 2;
-const uint64_t MAX_TX_MIXIN_SIZE_V2                           = 20;
-
-const uint64_t MIN_TX_MIXIN_SIZE_V3                           = 3;
-const uint64_t MAX_TX_MIXIN_SIZE_V3                           = 3;
-
-/* The heights to activate the mixin limits at */
-const uint32_t MIXIN_LIMITS_V1_HEIGHT                         = 200000;
-const uint32_t MIXIN_LIMITS_V2_HEIGHT                         = 1000000;
-const uint32_t MIXIN_LIMITS_V3_HEIGHT                         = 1200000;
 
 /* Maximum transaction size in byte */
 const uint64_t MAX_TRANSACTION_SIZE_LIMIT                     = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE / 2 - CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE;
@@ -237,7 +208,9 @@ const std::string GOVERNANCE_VIEW_SECRET_KEY                 = "eb398bd51ede17c4
 
 const char *const SEED_NODES[] = {
 	"135.181.24.147:7294", //holon-00
-	"135.181.27.29:7294"   //holon-01
+	 "135.181.27.29:7294",  //holon-01
+	"159.89.132.110:7294", //02
+	"206.189.156.12:7294"  //03
 };
 
 } // namespace CryptoNote

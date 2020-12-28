@@ -110,30 +110,27 @@ bool Currency::generateGenesisBlock()
 
 size_t Currency::blockGrantedFullRewardZoneByBlockVersion(uint8_t blockMajorVersion) const
 {
-    if (blockMajorVersion >= BLOCK_MAJOR_VERSION_4) {
-        return CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2;
-    } else if (blockMajorVersion == BLOCK_MAJOR_VERSION_3) {
-        return m_blockGrantedFullRewardZone;
-    } else if (blockMajorVersion == BLOCK_MAJOR_VERSION_2) {
-        return CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2;
-    } else {
-        return CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1;
-    }
+    return CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE;
 }
 
 uint32_t Currency::upgradeHeight(uint8_t majorVersion) const
 {
     if (majorVersion == BLOCK_MAJOR_VERSION_6) {
         return m_upgradeHeightV6;
-    } else if (majorVersion == BLOCK_MAJOR_VERSION_5) {
+    }
+    else if (majorVersion == BLOCK_MAJOR_VERSION_5) {
         return m_upgradeHeightV5;
-    } else if (majorVersion == BLOCK_MAJOR_VERSION_4) {
+    }
+    else if (majorVersion == BLOCK_MAJOR_VERSION_4) {
         return m_upgradeHeightV4;
-    } else if (majorVersion == BLOCK_MAJOR_VERSION_2) {
+    }
+    else if (majorVersion == BLOCK_MAJOR_VERSION_2) {
         return m_upgradeHeightV2;
-    } else if (majorVersion == BLOCK_MAJOR_VERSION_3) {
+    }
+    else if (majorVersion == BLOCK_MAJOR_VERSION_3) {
         return m_upgradeHeightV3;
-    } else {
+    }
+    else {
         return static_cast<uint32_t>(-1);
     }
 }
@@ -471,8 +468,8 @@ bool Currency::isFusionTransaction(
     size_t size,
     uint32_t height) const
 {
-    // TODO: Simplify if (...) content.
-    if (height <= CryptoNote::parameters::UPGRADE_HEIGHT_V3 ? size > CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_CURRENT * 30 / 100 : size > fusionTxMaxSize()) {
+
+    if (size > fusionTxMaxSize()) {
         logger(ERROR) << "Fusion transaction verification failed: size exceeded max allowed size.";
         return false;
     }
@@ -675,22 +672,7 @@ uint64_t Currency::getMinimalFee(
     uint64_t medianHistoricalReward,
     uint32_t height) const
 {
-    const uint64_t blocksInTwoYears = parameters::EXPECTED_NUMBER_OF_BLOCKS_PER_DAY * 365 * 2;
-    const double gauge = double(0.25);
-    uint64_t minimumFee(0);
-    double dailyDifficultyMoore = dailyDifficulty
-                                  / pow(2, static_cast<double>(height)
-                                  / static_cast<double>(blocksInTwoYears));
-    double minFee = gauge * parameters::COIN * static_cast<double>(avgHistoricalDifficulty)
-                    / dailyDifficultyMoore * static_cast<double>(reward)
-                    / static_cast<double>(medianHistoricalReward);
-    if (minFee == 0 || !std::isfinite(minFee)) {
-        return CryptoNote::parameters::MAXIMUM_FEE; // zero test
-    }
-    minimumFee = static_cast<uint64_t>(minFee);
-
-    // TODO: return std::min<uint64_t>(CryptoNote::parameters::MAXIMUM_FEE, minimumFee);
-    return CryptoNote::parameters::MINIMUM_FEE_V1;
+    return CryptoNote::parameters::MINIMUM_FEE;
 }
 
 uint64_t Currency::roundUpMinFee(uint64_t minimalFee, int digits) const

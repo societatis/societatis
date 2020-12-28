@@ -989,55 +989,7 @@ uint64_t Blockchain::getBlockTimestamp(uint32_t height)
 
 uint64_t Blockchain::getMinimalFee(uint32_t height)
 {
-    std::lock_guard<decltype(m_blockchain_lock)> lk(m_blockchain_lock);
-
-    if (height == 0 || m_blocks.size() <= 1) {
-        return 0;
-    }
-
-    if (height > m_blocks.size() - 1) {
-        height = m_blocks.size() - 1;
-    }
-    if (height < 3) {
-        height = 3;
-    }
-    size_t window = std::min(
-        height,
-        std::min<uint32_t>(m_blocks.size(), m_currency.expectedNumberOfBlocksPerDay())
-    );
-    if (window == 0) {
-        ++window;
-    }
-    size_t offset = height - window;
-    if (offset == 0) {
-        ++offset;
-    }
-
-    // calculate average difficulty for ~last month
-    uint64_t avgDifficultyCurrent = getAvgDifficultyForHeight(height, window * 7 * 4);
-
-    // historical reference moving average difficulty
-    uint64_t avgDifficultyHistorical = m_blocks[height].cumulative_difficulty / height;
-
-    /*
-    * Total reward with transaction fees is used as the level of usage metric
-    * to take into account transaction volume and cost of space in blockchain.
-    */
-
-    // calculate average reward for ~last day
-    std::vector<uint64_t> rewards;
-    rewards.reserve(window);
-    for (; offset < height; offset++) {
-        rewards.push_back(get_outs_money_amount(m_blocks[offset].bl.baseTransaction));
-    }
-    uint64_t avgRewardCurrent = std::accumulate(rewards.begin(), rewards.end(), 0ULL) / rewards.size();
-    rewards.shrink_to_fit();
-
-    // historical reference moving average reward
-    uint64_t avgRewardHistorical = m_blocks[height].already_generated_coins / height;
-
-    // TODO: return m_currency.getMinimalFee(avgDifficultyCurrent, avgRewardCurrent, avgDifficultyHistorical, avgRewardHistorical, height);
-    return CryptoNote::parameters::MINIMUM_FEE_V1;
+    return CryptoNote::parameters::MINIMUM_FEE;
 }
 
 uint64_t Blockchain::getCoinsInCirculation()

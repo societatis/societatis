@@ -319,8 +319,8 @@ TEST_F(getBlockReward_and_currentBlockSize, calculates_correctly) {
 }
 
 const unsigned int testEmissionSpeedFactor = 4;
-const size_t testGrantedFullRewardZoneV1 = CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1;
-const size_t testGrantedFullRewardZoneV2 = CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2;
+const size_t testGrantedFullRewardZoneV1 = CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE;
+const size_t testGrantedFullRewardZoneV2 = CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE;
 const size_t testMedianV1 = testGrantedFullRewardZoneV1;
 const size_t testMedianV2 = testGrantedFullRewardZoneV2;
 const size_t testBlockSizeV1 = testMedianV1 + testMedianV1 * 8 / 10; // expected penalty 0.64 * reward
