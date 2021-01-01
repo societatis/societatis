@@ -196,7 +196,7 @@ const uint32_t P2P_IDLE_CONNECTION_KILL_INTERVAL             = (5 * 60);      //
 const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = "013c01ff00012344ebdc03029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8";
 
 const char        LATEST_VERSION_URL[]                       = "https://releases.societatis.io";
-const std::string LICENSE_URL                                = "https://github.com/qwertycoin-org/qwertycoin/blob/master/LICENSE";
+const std::string LICENSE_URL                                = "https://github.com/societatis/societatis/blob/master/LICENSE.txt";
 
 /* Modules */
 
