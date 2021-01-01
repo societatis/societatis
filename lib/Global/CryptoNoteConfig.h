@@ -44,10 +44,10 @@ const size_t   CRYPTONOTE_TX_SPENDABLE_AGE                    = 10;
 const size_t   CRYPTONOTE_SAFE_TX_SPENDABLE_AGE               = 1;
 
 const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT             = DIFFICULTY_TARGET * 60;
-const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V1          = DIFFICULTY_TARGET * 6;
+const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V1          = DIFFICULTY_TARGET * 60;
 
 const size_t   BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW              = 60;
-const size_t   BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V1           = 11;
+const size_t   BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V1           = 60;
 
 // MONEY_SUPPLY - total number coins to be generated
 const uint64_t MONEY_SUPPLY                                   = 7834599855; //(uint64_t)(-1);
@@ -87,7 +87,7 @@ const size_t   DIFFICULTY_WINDOW_V6                           = 30;  // EXPECTED
 const size_t   DIFFICULTY_CUT                                 = 60;  // timestamps to cut after sorting
 const size_t   DIFFICULTY_LAG                                 = 15;  // !!!
 static_assert(2 * DIFFICULTY_CUT <= DIFFICULTY_WINDOW - 2, "Bad DIFFICULTY_WINDOW or DIFFICULTY_CUT");
-const size_t DEFAULT_DIFFICULTY                               = 1000000;
+const size_t DEFAULT_DIFFICULTY                               = 10000;
 const size_t FIXED_DIFFICULTY                                 = 0;
 
 static constexpr uint64_t POISSON_CHECK_TRIGGER               = 10;   // Reorg size that triggers poisson timestamp check
@@ -112,9 +112,11 @@ const size_t   FUSION_TX_MIN_INPUT_COUNT                      = 12;
 const size_t   FUSION_TX_MIN_IN_OUT_COUNT_RATIO               = 4;
 
 
-const uint32_t UPGRADE_HEIGHT_V2                              = 20;
-const uint32_t UPGRADE_HEIGHT_V3                              = 30;
-const uint32_t UPGRADE_HEIGHT_V4                              = 40;
+const uint32_t UPGRADE_HEIGHT_V2                              = 2;
+const uint32_t UPGRADE_HEIGHT_V3                              = 3;
+const uint32_t UPGRADE_HEIGHT_V4                              = 4;
+const uint32_t UPGRADE_HEIGHT_V5                              = 5;
+const uint32_t UPGRADE_HEIGHT_V6                              = 6;
 
 const unsigned UPGRADE_VOTING_THRESHOLD                      = 90; // percent
 const uint32_t UPGRADE_VOTING_WINDOW                         = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
@@ -132,13 +134,13 @@ const char     MINER_CONFIG_FILE_NAME[]                      = "miner_conf.json"
 
 /* Governance Fee and range // The Qwertycoin Foundation */
 const uint16_t GOVERNANCE_PERCENT_FEE                        = 10; // 10 percent of base block reward
-const uint32_t GOVERNANCE_HEIGHT_START                       = UPGRADE_HEIGHT_V4;
+const uint32_t GOVERNANCE_HEIGHT_START                       = 10;
 const uint32_t GOVERNANCE_HEIGHT_END                         = 4000000;
 
 } // namespace parameters
 
 const char     CRYPTONOTE_NAME[]                             = "Societatis";
-const char     GENESIS_COINBASE_TX_HEX[]                     = "013c01ff000180c8afa025029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd0880712101c6969691502274e5d1050eb8704f1110eda169969e97a57f26728a9b730f9025";
+const char     GENESIS_COINBASE_TX_HEX[]                     = "013c01ff000180c8afa025029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd0880712101aa505263e1ab6642348eaf8700b4adc096ff7d4a7466c6eab92a85574cacee65";
 const char     DNS_CHECKPOINTS_HOST[]                        = "checkpoints.societatis.io";
 
 const uint8_t  TRANSACTION_VERSION_1                         =  1;
@@ -149,6 +151,8 @@ const uint8_t  BLOCK_MAJOR_VERSION_1                         =  1;
 const uint8_t  BLOCK_MAJOR_VERSION_2                         =  2;
 const uint8_t  BLOCK_MAJOR_VERSION_3                         =  3;
 const uint8_t  BLOCK_MAJOR_VERSION_4                         =  4;
+const uint8_t  BLOCK_MAJOR_VERSION_5                         =  5;
+const uint8_t  BLOCK_MAJOR_VERSION_6                         =  6;
 
 const uint8_t  BLOCK_MINOR_VERSION_0                         =  0;
 const uint8_t  BLOCK_MINOR_VERSION_1                         =  1;

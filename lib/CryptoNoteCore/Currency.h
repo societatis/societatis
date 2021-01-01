@@ -51,7 +51,7 @@ public:
     size_t timestampCheckWindow() const { return m_timestampCheckWindow; }
     size_t timestampCheckWindow(uint8_t blockMajorVersion) const
     {
-        if (blockMajorVersion >= 4) {
+        if (blockMajorVersion >= BLOCK_MAJOR_VERSION_5) {
             return timestampCheckWindow_v1();
         } else {
             return timestampCheckWindow();
@@ -61,7 +61,7 @@ public:
     uint64_t blockFutureTimeLimit() const { return m_blockFutureTimeLimit; }
     uint64_t blockFutureTimeLimit(uint8_t blockMajorVersion) const
     {
-        if (blockMajorVersion >= 4) {
+        if (blockMajorVersion >= BLOCK_MAJOR_VERSION_5) {
             return blockFutureTimeLimit_v1();
         } else {
             return blockFutureTimeLimit();
@@ -104,7 +104,7 @@ public:
     size_t difficultyCut() const { return m_difficultyCut; }
     size_t difficultyBlocksCountByBlockVersion(uint8_t blockMajorVersion) const
     {
-        if (blockMajorVersion >= BLOCK_MAJOR_VERSION_4) {
+        if (blockMajorVersion >= BLOCK_MAJOR_VERSION_6) {
             return difficultyBlocksCount6();
         } else if (blockMajorVersion >= BLOCK_MAJOR_VERSION_3) {
             return difficultyBlocksCount3() + 1;
@@ -234,6 +234,10 @@ public:
     difficulty_type nextDifficultyV3(
         std::vector<uint64_t> timestamps,
         std::vector<difficulty_type> Difficulties) const;
+    difficulty_type nextDifficultyV5(
+        uint8_t blockMajorVersion,
+        std::vector<uint64_t> timestamps,
+        std::vector<difficulty_type> Difficulties) const;
     difficulty_type nextDifficultyV6(uint8_t blockMajorVersion,
         std::vector<uint64_t> timestamps,
         std::vector<difficulty_type> Difficulties,
@@ -345,6 +349,8 @@ private:
     uint32_t m_upgradeHeightV2;
     uint32_t m_upgradeHeightV3;
     uint32_t m_upgradeHeightV4;
+    uint32_t m_upgradeHeightV5;
+    uint32_t m_upgradeHeightV6;
     unsigned int m_upgradeVotingThreshold;
     uint32_t m_upgradeVotingWindow;
     uint32_t m_upgradeWindow;
@@ -575,6 +581,16 @@ public:
     CurrencyBuilder &upgradeHeightV4(uint64_t val)
     {
         m_currency.m_upgradeHeightV4 = static_cast<uint32_t>(val);
+        return *this;
+    }
+    CurrencyBuilder &upgradeHeightV5(uint64_t val)
+    {
+        m_currency.m_upgradeHeightV5 = static_cast<uint32_t>(val);
+        return *this;
+    }
+    CurrencyBuilder &upgradeHeightV6(uint64_t val)
+    {
+        m_currency.m_upgradeHeightV6 = static_cast<uint32_t>(val);
         return *this;
     }
     CurrencyBuilder &upgradeVotingThreshold(unsigned int val);

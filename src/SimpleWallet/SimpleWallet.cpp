@@ -326,7 +326,11 @@ struct TransferCommand
         : m_currency(currency),
           m_node(node),
           fake_outs_count(0),
-          fee(m_currency.minimumFee()),
+          fee(m_node.getLastLocalBlockHeaderInfo().majorVersion
+              < CryptoNote::BLOCK_MAJOR_VERSION_4
+              ? m_currency.minimumFee()
+              // round up minimal fee to 1 digit after last leading zero by default
+              : m_currency.roundUpMinFee(m_node.getMinimalFee(), 1)),
               ttl(0)
     {
     }
@@ -383,10 +387,16 @@ struct TransferCommand
                             return false;
                         }
 
-                        if (fee < m_currency.minimumFee()) {
+                        if (m_node.getLastLocalBlockHeaderInfo().majorVersion
+                            < CryptoNote::BLOCK_MAJOR_VERSION_4
+                            ? fee < m_currency.minimumFee()
+                            : fee < m_node.getMinimalFee()) {
                             logger(ERROR, BRIGHT_RED)
                                 << "Fee value is less than minimum: "
-                                << (m_currency.minimumFee());
+                                << (m_node.getLastLocalBlockHeaderInfo().majorVersion
+                                    < CryptoNote::BLOCK_MAJOR_VERSION_4
+                                    ? m_currency.minimumFee()
+                                    : m_node.getMinimalFee());
                             return false;
                         }
                     }
@@ -498,10 +508,16 @@ struct TransferCommand
                           return false;
                       }
 
-                      if (fee < m_currency.minimumFee()) {
+                      if (m_node.getLastLocalBlockHeaderInfo().majorVersion
+                                          < CryptoNote::BLOCK_MAJOR_VERSION_4
+                                  ? fee < m_currency.minimumFee()
+                                  : fee < m_node.getMinimalFee()) {
                           logger(ERROR, BRIGHT_RED)
                                   << "Fee value is less than minimum: "
-                                  << (m_currency.minimumFee());
+                                  << (m_node.getLastLocalBlockHeaderInfo().majorVersion
+                                                      < CryptoNote::BLOCK_MAJOR_VERSION_4
+                                              ? m_currency.minimumFee()
+                                              : m_node.getMinimalFee());
                           return false;
                       }
 
@@ -2737,7 +2753,12 @@ std::string simple_wallet::getFeeAddress()
 uint64_t simple_wallet::getMinimalFee()
 {
     uint64_t ret(0);
-    ret = m_currency.minimumFee();
+    if (m_node->getLastLocalBlockHeaderInfo().majorVersion < CryptoNote::BLOCK_MAJOR_VERSION_4) {
+        ret = m_currency.minimumFee();
+    } else {
+        // round fee to 2 digits after leading zeroes
+        ret = m_currency.roundUpMinFee(m_node->getMinimalFee(), 2);
+    }
     return ret;
 }
 

@@ -427,7 +427,7 @@ void serialize(ParentBlockSerializer &pbs, ISerializer &serializer)
 void serializeBlockHeader(BlockHeader &header, ISerializer &serializer)
 {
     serializer(header.majorVersion, "major_version");
-    if (header.majorVersion > BLOCK_MAJOR_VERSION_4) {
+    if (header.majorVersion > BLOCK_MAJOR_VERSION_6) {
         throw std::runtime_error("Wrong major version");
     }
 
@@ -436,7 +436,8 @@ void serializeBlockHeader(BlockHeader &header, ISerializer &serializer)
     if (header.majorVersion == BLOCK_MAJOR_VERSION_2
         || header.majorVersion == BLOCK_MAJOR_VERSION_3) {
         serializer(header.previousBlockHash, "prev_id");
-    } else if (header.majorVersion == BLOCK_MAJOR_VERSION_1) {
+    } else if (header.majorVersion == BLOCK_MAJOR_VERSION_1
+               || header.majorVersion >= BLOCK_MAJOR_VERSION_4) {
         serializer(header.timestamp, "timestamp");
         serializer(header.previousBlockHash, "prev_id");
         serializer.binary(&header.nonce, sizeof(header.nonce), "nonce");

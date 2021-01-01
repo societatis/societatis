@@ -62,7 +62,9 @@ bool Currency::init()
     if (isTestnet()) {
         m_upgradeHeightV2 = 10;
         m_upgradeHeightV3 = 60;
-        m_upgradeHeightV4 = 100;
+        m_upgradeHeightV4 = 70;
+        m_upgradeHeightV5 = 80;
+        m_upgradeHeightV6 = 100;
         m_governancePercent = 10;
         m_governanceHeightStart = 1;
         m_governanceHeightEnd = 100;
@@ -113,7 +115,13 @@ size_t Currency::blockGrantedFullRewardZoneByBlockVersion(uint8_t blockMajorVers
 
 uint32_t Currency::upgradeHeight(uint8_t majorVersion) const
 {
-    if (majorVersion == BLOCK_MAJOR_VERSION_4) {
+    if (majorVersion == BLOCK_MAJOR_VERSION_6) {
+        return m_upgradeHeightV6;
+    }
+    else if (majorVersion == BLOCK_MAJOR_VERSION_5) {
+        return m_upgradeHeightV5;
+    }
+    else if (majorVersion == BLOCK_MAJOR_VERSION_4) {
         return m_upgradeHeightV4;
     }
     else if (majorVersion == BLOCK_MAJOR_VERSION_2) {
@@ -144,7 +152,7 @@ bool Currency::getBlockReward(
     // Consistency
     double consistency = 1.0;
     double exponent = 0.25; 
-    if (height >= CryptoNote::parameters::UPGRADE_HEIGHT_V4 && difficultyTarget() != 0) {
+    if (height >= CryptoNote::parameters::UPGRADE_HEIGHT_V6 && difficultyTarget() != 0) {
         // blockTarget is (Timestamp of New Block - Timestamp of Previous Block)
         consistency = (double) blockTarget / (double) difficultyTarget();
 
@@ -482,12 +490,25 @@ bool Currency::isFusionTransaction(
 
     uint64_t inputAmount = 0;
     for (auto amount : inputsAmounts) {
+        if (height < CryptoNote::parameters::UPGRADE_HEIGHT_V4) {
+            if (amount < defaultDustThreshold()) {
+                logger(ERROR)
+                    << "Fusion transaction verification failed: amount "
+                    << amount
+                    << " is less than dust threshold.";
+                return false;
+            }
+        }
         inputAmount += amount;
     }
 
     std::vector<uint64_t> expectedOutputsAmounts;
     expectedOutputsAmounts.reserve(outputsAmounts.size());
-    decomposeAmount(inputAmount,UINT64_C(0), expectedOutputsAmounts);
+    decomposeAmount(
+        inputAmount,
+        height < CryptoNote::parameters::UPGRADE_HEIGHT_V4
+        ? defaultDustThreshold()
+        : UINT64_C(0), expectedOutputsAmounts);
     std::sort(expectedOutputsAmounts.begin(), expectedOutputsAmounts.end());
 
     bool decompose = expectedOutputsAmounts == outputsAmounts;
@@ -535,6 +556,10 @@ bool Currency::isAmountApplicableInFusionTransactionInput(
     uint32_t height) const
 {
     if (amount >= threshold) {
+        return false;
+    }
+
+    if (height < CryptoNote::parameters::UPGRADE_HEIGHT_V4 && amount < defaultDustThreshold()) {
         return false;
     }
 
@@ -689,7 +714,7 @@ difficulty_type Currency::nextDifficulty(uint32_t height,
     if (!timestamps.empty()) {
         last_timestamp = timestamps.back();
     }
-    if ((blockMajorVersion >= BLOCK_MAJOR_VERSION_4) &&
+    if ((blockMajorVersion >= BLOCK_MAJOR_VERSION_6) &&
             (nextBlockTime > last_timestamp + CryptoNote::parameters::CRYPTONOTE_CLIF_THRESHOLD)) {
         size_t array_size = cumulativeDifficulties.size();
         difficulty_type last_difficulty = 1;
@@ -702,10 +727,14 @@ difficulty_type Currency::nextDifficulty(uint32_t height,
                                currentSolveTime, lazy_stat_cb);
     }
 
-    if (blockMajorVersion >= BLOCK_MAJOR_VERSION_4) {
+    if (blockMajorVersion >= BLOCK_MAJOR_VERSION_6) {
         return nextDifficultyV6(blockMajorVersion, timestamps, cumulativeDifficulties, height);
     }
-    else if (blockMajorVersion == BLOCK_MAJOR_VERSION_3) {
+    else if (blockMajorVersion >= BLOCK_MAJOR_VERSION_5) {
+        return nextDifficultyV5(blockMajorVersion, timestamps, cumulativeDifficulties);
+    }
+    else if (blockMajorVersion == BLOCK_MAJOR_VERSION_3
+               || blockMajorVersion == BLOCK_MAJOR_VERSION_4) {
         return nextDifficultyV3(timestamps, cumulativeDifficulties);
     }
     else if (blockMajorVersion == BLOCK_MAJOR_VERSION_2) {
@@ -811,8 +840,8 @@ difficulty_type Currency::nextDifficultyV2(
     uint64_t nextDiffZ = low / timeSpan;
 
     // minimum limit
-    if (!isTestnet() && nextDiffZ < CryptoNote::parameters::DEFAULT_DIFFICULTY/10) {
-        nextDiffZ = CryptoNote::parameters::DEFAULT_DIFFICULTY/10;
+    if (!isTestnet() && nextDiffZ < 100000) {
+        nextDiffZ = 100000;
     }
 
     return nextDiffZ;
@@ -876,11 +905,80 @@ difficulty_type Currency::nextDifficultyV3(
     next_difficulty = static_cast<uint64_t>(nextDifficulty);
 
     // minimum limit
-    if (!isTestnet() && next_difficulty < CryptoNote::parameters::DEFAULT_DIFFICULTY/10) {
-        next_difficulty = CryptoNote::parameters::DEFAULT_DIFFICULTY/10;
+    if (!isTestnet() && next_difficulty < 100000) {
+        next_difficulty = 100000;
     }
 
     return next_difficulty;
+}
+
+template <typename T>
+inline T clamp(T lo, T v, T hi)
+{
+    return v < lo ? lo : v > hi ? hi : v;
+}
+
+// difficulty for block version 5.0
+difficulty_type Currency::nextDifficultyV5(
+    uint8_t blockMajorVersion,
+    std::vector<std::uint64_t> timestamps,
+    std::vector<difficulty_type> cumulativeDifficulties) const
+{
+    // LWMA-2 difficulty algorithm
+    // Copyright (c) 2017-2018 Zawy, MIT License
+    // https://github.com/zawy12/difficulty-algorithms/issues/3
+    // with modifications by Ryo Currency developers
+    // courtesy to aivve from Karbo
+
+    const int64_t  T = static_cast<int64_t>(m_difficultyTarget);
+    int64_t  N = difficultyBlocksCount3();
+    int64_t  L(0), ST, sum_3_ST(0);
+    uint64_t nextDiffV5, prev_D;
+
+    assert(timestamps.size() == cumulativeDifficulties.size()
+           && timestamps.size() <= static_cast<uint64_t>(N + 1));
+
+    int64_t max_TS, prev_max_TS;
+    prev_max_TS = timestamps[0];
+    for (int64_t i = 1; i <= N; i++) {
+        if (static_cast<int64_t>(timestamps[i]) > prev_max_TS) {
+            max_TS = timestamps[i];
+        } else {
+            max_TS = prev_max_TS + 1;
+        }
+        ST = std::min(6 * T, max_TS - prev_max_TS);
+        prev_max_TS = max_TS;
+        L += ST * i;
+        if (i > N - 3) {
+            sum_3_ST += ST;
+        }
+    }
+
+    // It is a potential error,  N should be less than cumulativeDifficulties.size()
+    nextDiffV5 = uint64_t((cumulativeDifficulties[N] - cumulativeDifficulties[0]) * T * (N + 1))
+                 / uint64_t(2 * L);
+    nextDiffV5 = (nextDiffV5 * 99ull) / 100ull;
+
+    // It is a potential error,  N should be less than cumulativeDifficulties.size()
+    prev_D = cumulativeDifficulties[N] - cumulativeDifficulties[N - 1];
+    nextDiffV5 = clamp(
+        (uint64_t)(prev_D * 67ull / 100ull),
+        nextDiffV5,
+        (uint64_t)(prev_D * 150ull / 100ull)
+    );
+    if (sum_3_ST < (8 * T) / 10) {
+        nextDiffV5 = (prev_D * 110ull) / 100ull;
+    }
+
+    // minimum limit
+    if (nextDiffV5 < 10000000) {
+        nextDiffV5 = 10000000;
+    }
+    if(isTestnet()){
+        nextDiffV5 = 10000;
+    }
+
+    return nextDiffV5;
 }
 
 // difficulty for block version 6.0
@@ -909,7 +1007,7 @@ difficulty_type Currency::nextDifficultyV6(uint8_t blockMajorVersion,
     // Consider this as a service or trial period.
     // With EPoW reward algo in place, we don't really need to worry about attackers
     // or large miners taking advanatage of our system.
-    if (height < CryptoNote::parameters::UPGRADE_HEIGHT_V4 + diffWindow) {
+    if (height < CryptoNote::parameters::UPGRADE_HEIGHT_V6 + diffWindow) {
         return nextDiffV6;
     }
 
@@ -1146,6 +1244,10 @@ bool Currency::checkProofOfWork(
     case BLOCK_MAJOR_VERSION_1:
         // fall through
     case BLOCK_MAJOR_VERSION_4:
+        // fall through
+    case BLOCK_MAJOR_VERSION_5:
+        // fall through
+    case BLOCK_MAJOR_VERSION_6:
         return checkProofOfWorkV1(context, block, currentDiffic, proofOfWork);
     case BLOCK_MAJOR_VERSION_2:
         // fall through
@@ -1260,6 +1362,8 @@ CurrencyBuilder::CurrencyBuilder(Logging::ILogger &log)
     upgradeHeightV2(parameters::UPGRADE_HEIGHT_V2);
     upgradeHeightV3(parameters::UPGRADE_HEIGHT_V3);
     upgradeHeightV4(parameters::UPGRADE_HEIGHT_V4);
+    upgradeHeightV5(parameters::UPGRADE_HEIGHT_V5);
+    upgradeHeightV6(parameters::UPGRADE_HEIGHT_V6);
     upgradeVotingThreshold(parameters::UPGRADE_VOTING_THRESHOLD);
     upgradeVotingWindow(parameters::UPGRADE_VOTING_WINDOW);
     upgradeWindow(parameters::UPGRADE_WINDOW);
