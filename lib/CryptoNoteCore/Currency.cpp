@@ -841,7 +841,7 @@ difficulty_type Currency::nextDifficultyV2(
 
     // minimum limit
     if (!isTestnet() && nextDiffZ < CryptoNote::parameters::DEFAULT_DIFFICULTY) {
-        nextDiffZ = CryptoNote::parameters::DEFAULT_DIFFICULTY;
+        nextDiffZ = CryptoNote::parameters::DEFAULT_DIFFICULTY/1000;
     }
 
     return nextDiffZ;
@@ -906,7 +906,7 @@ difficulty_type Currency::nextDifficultyV3(
 
     // minimum limit
     if (!isTestnet() && next_difficulty < CryptoNote::parameters::DEFAULT_DIFFICULTY) {
-        next_difficulty = CryptoNote::parameters::DEFAULT_DIFFICULTY;
+        next_difficulty = CryptoNote::parameters::DEFAULT_DIFFICULTY/1000;
     }
 
     return next_difficulty;
@@ -972,7 +972,7 @@ difficulty_type Currency::nextDifficultyV5(
 
     // minimum limit
     if (nextDiffV5 < CryptoNote::parameters::DEFAULT_DIFFICULTY) {
-        nextDiffV5 = CryptoNote::parameters::DEFAULT_DIFFICULTY;
+        nextDiffV5 = CryptoNote::parameters::DEFAULT_DIFFICULTY/1000;
     }
     if(isTestnet()){
         nextDiffV5 = CryptoNote::parameters::DEFAULT_DIFFICULTY;
