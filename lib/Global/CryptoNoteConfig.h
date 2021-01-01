@@ -4,7 +4,7 @@
 // Copyright (c) 2018, Ryo Currency Project
 // Copyright (c) 2016-2018, The Karbowanec developers
 // Copyright (c) 2018-2020, The Qwertycoin Group.
-// Copyright (c) 2020, Societatis.io
+// Copyright (c) 2020-2021, Societatis.io
 //
 // This file is part of Societatis.
 //
@@ -50,7 +50,7 @@ const size_t   BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW              = 60;
 const size_t   BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V1           = 11;
 
 // MONEY_SUPPLY - total number coins to be generated
-const uint64_t MONEY_SUPPLY                                   = uint64_t(7834599855);
+const uint64_t MONEY_SUPPLY                                   = uint64_t(800000000000000000); // 8bn * 8decimals
 const uint64_t TAIL_EMISSION_REWARD                           = 10000000000; // 10 Coins
 const size_t CRYPTONOTE_COIN_VERSION                          = 1;
 
@@ -87,7 +87,7 @@ const size_t   DIFFICULTY_WINDOW_V6                           = 30;  // EXPECTED
 const size_t   DIFFICULTY_CUT                                 = 60;  // timestamps to cut after sorting
 const size_t   DIFFICULTY_LAG                                 = 15;  // !!!
 static_assert(2 * DIFFICULTY_CUT <= DIFFICULTY_WINDOW - 2, "Bad DIFFICULTY_WINDOW or DIFFICULTY_CUT");
-const size_t DEFAULT_DIFFICULTY                               = 1000;
+const size_t DEFAULT_DIFFICULTY                               = 10000;
 const size_t FIXED_DIFFICULTY                                 = 0;
 
 static constexpr uint64_t POISSON_CHECK_TRIGGER               = 10;   // Reorg size that triggers poisson timestamp check
@@ -112,9 +112,9 @@ const size_t   FUSION_TX_MIN_INPUT_COUNT                      = 12;
 const size_t   FUSION_TX_MIN_IN_OUT_COUNT_RATIO               = 4;
 
 
-const uint32_t UPGRADE_HEIGHT_V2                              = 20;
-const uint32_t UPGRADE_HEIGHT_V3                              = 30;
-const uint32_t UPGRADE_HEIGHT_V4                              = 40;
+const uint32_t UPGRADE_HEIGHT_V2                              = 2;
+const uint32_t UPGRADE_HEIGHT_V3                              = 3;
+const uint32_t UPGRADE_HEIGHT_V4                              = 61;
 
 const unsigned UPGRADE_VOTING_THRESHOLD                      = 90; // percent
 const uint32_t UPGRADE_VOTING_WINDOW                         = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
@@ -130,15 +130,15 @@ const char     P2P_NET_DATA_FILENAME[]                       = "p2pstate.dat";
 const char     CRYPTONOTE_BLOCKCHAIN_INDICES_FILENAME[]      = "blockchainindices.bin";
 const char     MINER_CONFIG_FILE_NAME[]                      = "miner_conf.json";
 
-/* Governance Fee and range // The Qwertycoin Foundation */
-const uint16_t GOVERNANCE_PERCENT_FEE                        = 10; // 10 percent of base block reward
+/* Governance Fee and range // The SCTS Foundation */
+const uint16_t GOVERNANCE_PERCENT_FEE                        = 10;
 const uint32_t GOVERNANCE_HEIGHT_START                       = UPGRADE_HEIGHT_V4;
-const uint32_t GOVERNANCE_HEIGHT_END                         = 4000000;
+const uint32_t GOVERNANCE_HEIGHT_END                         = 10000000;
 
 } // namespace parameters
 
 const char     CRYPTONOTE_NAME[]                             = "Societatis";
-const char     GENESIS_COINBASE_TX_HEX[]                     = "013c01ff000180c8afa025029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd0880712101c6969691502274e5d1050eb8704f1110eda169969e97a57f26728a9b730f9025";
+const char     GENESIS_COINBASE_TX_HEX[]                     = "013c01ff000194f6c2d7e858029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd088071210187ed6e740177d8ca66d5845250f5803ed729d1bcf26642c857b62a23f68d9d75";
 const char     DNS_CHECKPOINTS_HOST[]                        = "checkpoints.societatis.io";
 
 const uint8_t  TRANSACTION_VERSION_1                         =  1;
@@ -187,10 +187,10 @@ const uint32_t P2P_FAILED_ADDR_FORGET_SECONDS                = (60 * 60);     //
 const uint32_t P2P_IP_BLOCKTIME                              = (60 * 60 * 24);//24 hour
 const uint32_t P2P_IP_FAILS_BEFORE_BLOCK                     = 10;
 const uint32_t P2P_IDLE_CONNECTION_KILL_INTERVAL             = (5 * 60);      //5 minutes
-const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = "013c01ff00018094ebdc03029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8";
+const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = "013c01ff00012344ebdc03029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8";
 
 const char        LATEST_VERSION_URL[]                       = "https://releases.societatis.io";
-const std::string LICENSE_URL                                = "https://github.com/qwertycoin-org/qwertycoin/blob/master/LICENSE";
+const std::string LICENSE_URL                                = "https://github.com/societatis/societatis/blob/master/LICENSE.txt";
 
 /* Modules */
 
@@ -199,8 +199,8 @@ const bool     P2P_MESSAGES                                  =  true;
 const uint16_t P2P_MESSAGES_CHAR_COUNT                       =  160;
 
 /* Governance Fee Wallets // The Qwertycoin Foundation */
-const std::string GOVERNANCE_WALLET_ADDRESS                  = "SCTSf91g8G7DSypHKvk5dQcL8jYZJkTN4ZExANxaLojP72VgRZ9SMgu9A6DyZxDen5Lgtu39a5reGKok9nSYMe463ddfZDUjar";
-const std::string GOVERNANCE_VIEW_SECRET_KEY                 = "eb398bd51ede17c46e80729d97c8841ea9a5e0a7988b45284a02a6e681fa9b0b";
+const std::string GOVERNANCE_WALLET_ADDRESS                  = "SCTSLjXeTYTUWpHFN9uVMjKy8rbVnYBPsTZrET3NHdEFBm1vg4ZJyhCJQCNEHbb8M66NDQGRKfZxoYuKhpoovbE97XocHtEuYt";
+const std::string GOVERNANCE_VIEW_SECRET_KEY                 = "dfd552d4cc367330c1811ca042adc79b1e51f0ab5c87bf217639150d4a601304";
 
 const char *const SEED_NODES[] = {
 	"135.181.24.147:7294", //holon-00
