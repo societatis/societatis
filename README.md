@@ -50,7 +50,7 @@ More information at [societatis.io](https://societatis.io/)
 
 ##### Prerequisites
 
-- You will need the following packages: build-essential, [cmake (3.10 or higher)](https://docs.societatis.io/developer/compiling-from-source/untitled) and git;
+- You will need the following packages: build-essential, [cmake (3.10 or higher)](https://docs.qwertycoin.org/developer/compiling-from-source/untitled) and git;
 - Most of these should already be installed on your system. For example on Ubuntu by running:
 ```
 sudo apt-get install build-essential cmake git
