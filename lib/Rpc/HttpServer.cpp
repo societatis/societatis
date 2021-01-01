@@ -2,7 +2,7 @@
 // Copyright (c) 2014-2016 XDN developers
 // Copyright (c) 2016-2018 Karbowanec developers
 // Copyright (c) 2018-2020, The Qwertycoin Group.
-// Copyright (c) 2020, Societatis.io
+// Copyright (c) 2020-2021, Societatis.io
 //
 // This file is part of Societatis.
 //

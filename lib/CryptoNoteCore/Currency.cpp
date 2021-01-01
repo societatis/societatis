@@ -2,7 +2,7 @@
 // Copyright (c) 2016-2018  zawy12
 // Copyright (c) 2016-2018, The Karbowanec developers
 // Copyright (c) 2018-2020, The Qwertycoin Group.
-// Copyright (c) 2020, Societatis.io
+// Copyright (c) 2020-2021, Societatis.io
 //
 // This file is part of Societatis.
 //
@@ -840,8 +840,8 @@ difficulty_type Currency::nextDifficultyV2(
     uint64_t nextDiffZ = low / timeSpan;
 
     // minimum limit
-    if (!isTestnet() && nextDiffZ < 100000) {
-        nextDiffZ = 100000;
+    if (!isTestnet() && nextDiffZ < CryptoNote::parameters::DEFAULT_DIFFICULTY) {
+        nextDiffZ = CryptoNote::parameters::DEFAULT_DIFFICULTY;
     }
 
     return nextDiffZ;
@@ -905,8 +905,8 @@ difficulty_type Currency::nextDifficultyV3(
     next_difficulty = static_cast<uint64_t>(nextDifficulty);
 
     // minimum limit
-    if (!isTestnet() && next_difficulty < 100000) {
-        next_difficulty = 100000;
+    if (!isTestnet() && next_difficulty < CryptoNote::parameters::DEFAULT_DIFFICULTY) {
+        next_difficulty = CryptoNote::parameters::DEFAULT_DIFFICULTY;
     }
 
     return next_difficulty;
@@ -971,11 +971,11 @@ difficulty_type Currency::nextDifficultyV5(
     }
 
     // minimum limit
-    if (nextDiffV5 < 10000000) {
-        nextDiffV5 = 10000000;
+    if (nextDiffV5 < CryptoNote::parameters::DEFAULT_DIFFICULTY) {
+        nextDiffV5 = CryptoNote::parameters::DEFAULT_DIFFICULTY;
     }
     if(isTestnet()){
-        nextDiffV5 = 10000;
+        nextDiffV5 = CryptoNote::parameters::DEFAULT_DIFFICULTY;
     }
 
     return nextDiffV5;

@@ -4,7 +4,7 @@
 // Copyright (c) 2017-2019, The Iridium developers
 // Copyright (c) 2016-2019, The Karbowanec developers
 // Copyright (c) 2018-2020, The Qwertycoin Group.
-// Copyright (c) 2020, Societatis.io
+// Copyright (c) 2020-2021, Societatis.io
 //
 // This file is part of Societatis.
 //
@@ -285,7 +285,7 @@ NodeServer::NodeServer(System::Dispatcher &dispatcher,
       m_payload_handler(payload_handler),
       m_allow_local_ip(false),
       m_hide_my_port(false),
-      m_network_id(QWERTYCOIN_NETWORK),
+      m_network_id(SOCIETATIS_NETWORK),
       logger(log, "node_server"),
       m_stopEvent(m_dispatcher),
       m_idleTimer(m_dispatcher),

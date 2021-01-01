@@ -2,7 +2,7 @@
 // Copyright (c) 2018, The TurtleCoin Developers
 // Copyright (c) 2018-2019 The Karbo developers
 // Copyright (c) 2018-2020, The Qwertycoin Group.
-// Copyright (c) 2020, Societatis.io
+// Copyright (c) 2020-2021, Societatis.io
 //
 // This file is part of Societatis.
 //

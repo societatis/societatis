@@ -2,7 +2,7 @@
 // Copyright (c) 2014-2016, The Monero Project
 // Copyright (c) 2017-2018, Karbo developers
 // Copyright (c) 2018-2020, The Qwertycoin Group.
-// Copyright (c) 2020, Societatis.io
+// Copyright (c) 2020-2021, Societatis.io
 //
 // All rights reserved.
 //

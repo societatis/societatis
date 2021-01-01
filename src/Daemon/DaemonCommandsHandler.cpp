@@ -4,7 +4,7 @@
 // Copyright (c) 2018, The TurtleCoin developers
 // Copyright (c) 2016-2019, The Karbowanec developers
 // Copyright (c) 2018-2020, The Qwertycoin Group.
-// Copyright (c) 2020, Societatis.io
+// Copyright (c) 2020-2021, Societatis.io
 //
 // This file is part of Societatis.
 //

@@ -1,6 +1,6 @@
 // Copyright (c) 2012-2017, The CryptoNote developers, The Bytecoin developers
 // Copyright (c) 2018-2020, The Qwertycoin Group.
-// Copyright (c) 2020, Societatis.io
+// Copyright (c) 2020-2021, Societatis.io
 // Copyright (c) 2018, Karbo developers
 //
 // This file is part of Societatis.
@@ -666,16 +666,9 @@ bool get_block_longhash(cn_context &context, const Block &b, Hash &res)
     } else {
         return false;
     }
-    //cn_slow_hash(context, bd.data(), bd.size(), res);
-    if(b.majorVersion == BLOCK_MAJOR_VERSION_4) {
-        // heavy 4.0
-        cn_pow_hash_v2 cnh;
-        cnh.hash(bd.data(), bd.size(), res.data);
-    } else {
-        cn_pow_hash_v1 cnh;
-        cnh.hash(bd.data(), bd.size(), res.data);
-    }
 
+    cn_pow_hash_v1 cnh;
+    cnh.hash(bd.data(), bd.size(), res.data);
     return true;
 }
 
