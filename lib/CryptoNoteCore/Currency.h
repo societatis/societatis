@@ -51,23 +51,13 @@ public:
     size_t timestampCheckWindow() const { return m_timestampCheckWindow; }
     size_t timestampCheckWindow(uint8_t blockMajorVersion) const
     {
-        if (blockMajorVersion >= BLOCK_MAJOR_VERSION_5) {
-            return timestampCheckWindow_v1();
-        } else {
-            return timestampCheckWindow();
-        }
+        return timestampCheckWindow();
     }
-    size_t timestampCheckWindow_v1() const { return m_timestampCheckWindow_v1; }
     uint64_t blockFutureTimeLimit() const { return m_blockFutureTimeLimit; }
     uint64_t blockFutureTimeLimit(uint8_t blockMajorVersion) const
     {
-        if (blockMajorVersion >= BLOCK_MAJOR_VERSION_5) {
-            return blockFutureTimeLimit_v1();
-        } else {
-            return blockFutureTimeLimit();
-        }
+        return blockFutureTimeLimit();
     }
-    uint64_t blockFutureTimeLimit_v1() const { return m_blockFutureTimeLimit_v1; }
 
     uint64_t moneySupply() const { return m_moneySupply; }
     unsigned int emissionSpeedFactor() const { return m_emissionSpeedFactor; }
@@ -231,14 +221,14 @@ public:
     difficulty_type nextDifficultyV2(
         std::vector<uint64_t> timestamps,
         std::vector<difficulty_type> Difficulties) const;
-    difficulty_type nextDifficultyV3(
+    difficulty_type nextDifficultyV3V4(
         std::vector<uint64_t> timestamps,
         std::vector<difficulty_type> Difficulties) const;
-    difficulty_type nextDifficultyV5(
+    difficulty_type nextDifficultyV6(
         uint8_t blockMajorVersion,
         std::vector<uint64_t> timestamps,
         std::vector<difficulty_type> Difficulties) const;
-    difficulty_type nextDifficultyV6(uint8_t blockMajorVersion,
+    difficulty_type nextDifficultyV5(uint8_t blockMajorVersion,
         std::vector<uint64_t> timestamps,
         std::vector<difficulty_type> Difficulties,
         uint32_t height) const;
@@ -298,9 +288,7 @@ private:
     size_t m_expectedNumberOfBlocksPerDay;
 
     size_t m_timestampCheckWindow;
-    size_t m_timestampCheckWindow_v1;
     uint64_t m_blockFutureTimeLimit;
-    uint64_t m_blockFutureTimeLimit_v1;
 
     uint64_t m_moneySupply;
     unsigned int m_emissionSpeedFactor;
@@ -427,22 +415,11 @@ public:
         m_currency.m_timestampCheckWindow = val;
         return *this;
     }
-    CurrencyBuilder &timestampCheckWindow_v1(size_t val)
-    {
-        m_currency.m_timestampCheckWindow_v1 = val;
-        return *this;
-    }
     CurrencyBuilder &blockFutureTimeLimit(uint64_t val)
     {
         m_currency.m_blockFutureTimeLimit = val;
         return *this;
     }
-    CurrencyBuilder &blockFutureTimeLimit_v1(uint64_t val)
-    {
-        m_currency.m_blockFutureTimeLimit_v1 = val;
-        return *this;
-    }
-
     CurrencyBuilder &moneySupply(uint64_t val) { m_currency.m_moneySupply = val; return *this; }
     CurrencyBuilder &emissionSpeedFactor(unsigned int val);
     CurrencyBuilder &cryptonoteCoinVersion(size_t val)

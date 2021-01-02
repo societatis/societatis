@@ -845,7 +845,7 @@ difficulty_type Blockchain::getDifficultyForNextBlock(uint64_t nextBlockTime)
     }
     CryptoNote::Currency::lazy_stat_callback_type cb([&](IMinerHandler::stat_period p, uint64_t next_time)
     {
-        uint32_t min_height = CryptoNote::parameters::UPGRADE_HEIGHT_V6 +
+        uint32_t min_height = CryptoNote::parameters::UPGRADE_HEIGHT_V5 +
                 CryptoNote::parameters::EXPECTED_NUMBER_OF_BLOCKS_PER_DAY / 24;
         uint64_t time_window = 0;
         switch (p) {
@@ -899,11 +899,11 @@ bool Blockchain::getDifficultyStat(uint32_t height,
                                    difficulty_type& min_diff,
                                    difficulty_type& max_diff)
 {
-    uint32_t min_height = CryptoNote::parameters::UPGRADE_HEIGHT_V6 +
+    uint32_t min_height = CryptoNote::parameters::UPGRADE_HEIGHT_V5 +
             CryptoNote::parameters::EXPECTED_NUMBER_OF_BLOCKS_PER_DAY / 24;
     if (height < min_height) {
         logger (WARNING) << "Can't get difficulty stat for height less than " <<
-                            CryptoNote::parameters::UPGRADE_HEIGHT_V6 +
+                            CryptoNote::parameters::UPGRADE_HEIGHT_V5 +
                             CryptoNote::parameters::EXPECTED_NUMBER_OF_BLOCKS_PER_DAY / 24;
         return false;
     }
@@ -1083,7 +1083,7 @@ bool Blockchain::switch_to_alternative_blockchain(
             }
         }
 
-        uint64_t block_ftl = CryptoNote::parameters::CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V1;
+        uint64_t block_ftl = CryptoNote::parameters::CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT;
         // This would fail later anyway
         if (high_timestamp > get_adjusted_time() + block_ftl) {
             logger(ERROR, BRIGHT_RED)
@@ -1322,7 +1322,7 @@ difficulty_type Blockchain::get_next_difficulty_for_alternative_chain(
 
     CryptoNote::Currency::lazy_stat_callback_type cb([&](IMinerHandler::stat_period p, uint64_t next_time)
     {
-        uint32_t min_height = CryptoNote::parameters::UPGRADE_HEIGHT_V6 +
+        uint32_t min_height = CryptoNote::parameters::UPGRADE_HEIGHT_V5 +
                 CryptoNote::parameters::EXPECTED_NUMBER_OF_BLOCKS_PER_DAY / 24;
         uint64_t time_window = 0;
         switch (p) {
@@ -1449,7 +1449,7 @@ bool Blockchain::validate_miner_transaction(
     uint32_t previousBlockHeight = 0;
     uint64_t blockTarget = CryptoNote::parameters::DIFFICULTY_TARGET;
 
-    if (height >= CryptoNote::parameters::UPGRADE_HEIGHT_V6) {
+    if (height >= CryptoNote::parameters::UPGRADE_HEIGHT_V5) {
         getBlockHeight(b.previousBlockHash, previousBlockHeight);
         blockTarget = b.timestamp - getBlockTimestamp(previousBlockHeight);
     }

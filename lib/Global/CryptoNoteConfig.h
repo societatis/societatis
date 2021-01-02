@@ -44,17 +44,15 @@ const size_t   CRYPTONOTE_TX_SPENDABLE_AGE                    = 10;
 const size_t   CRYPTONOTE_SAFE_TX_SPENDABLE_AGE               = 1;
 
 const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT             = DIFFICULTY_TARGET * 60;
-const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V1          = DIFFICULTY_TARGET * 6;
 
 const size_t   BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW              = 60;
-const size_t   BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V1           = 11;
 
 // MONEY_SUPPLY - total number coins to be generated
 const uint64_t MONEY_SUPPLY                                   = uint64_t(800000000000000000); // 8bn * 8decimals
 const uint64_t TAIL_EMISSION_REWARD                           = 10000000000; // 10 Coins
 const size_t CRYPTONOTE_COIN_VERSION                          = 1;
 
-const unsigned EMISSION_SPEED_FACTOR                          = 18;
+const unsigned EMISSION_SPEED_FACTOR                          = 17;
 static_assert(EMISSION_SPEED_FACTOR <= 8 * sizeof(uint64_t), "Bad EMISSION_SPEED_FACTOR");
 
 const size_t   CRYPTONOTE_REWARD_BLOCKS_WINDOW                = 100;
@@ -87,7 +85,7 @@ const size_t   DIFFICULTY_WINDOW_V6                           = 30;  // EXPECTED
 const size_t   DIFFICULTY_CUT                                 = 60;  // timestamps to cut after sorting
 const size_t   DIFFICULTY_LAG                                 = 15;  // !!!
 static_assert(2 * DIFFICULTY_CUT <= DIFFICULTY_WINDOW - 2, "Bad DIFFICULTY_WINDOW or DIFFICULTY_CUT");
-const size_t DEFAULT_DIFFICULTY                               = 100000;
+const size_t DEFAULT_DIFFICULTY                               = 1000000;
 const size_t FIXED_DIFFICULTY                                 = 0;
 
 static constexpr uint64_t POISSON_CHECK_TRIGGER               = 10;   // Reorg size that triggers poisson timestamp check
@@ -112,12 +110,11 @@ const size_t   FUSION_TX_MIN_INPUT_COUNT                      = 12;
 const size_t   FUSION_TX_MIN_IN_OUT_COUNT_RATIO               = 4;
 
 
-const uint32_t UPGRADE_HEIGHT_V2                              = 20;
-const uint32_t UPGRADE_HEIGHT_V3                              = 30;
-const uint32_t UPGRADE_HEIGHT_V4                              = 40;
-const uint32_t UPGRADE_HEIGHT_V5                              = 50;
-const uint32_t UPGRADE_HEIGHT_V6                              = 100;
-const uint32_t UPGRADE_HEIGHT_V7                              = 1000000;
+const uint32_t UPGRADE_HEIGHT_V2                              = 5;
+const uint32_t UPGRADE_HEIGHT_V3                              = 10;
+const uint32_t UPGRADE_HEIGHT_V4                              = 15;
+const uint32_t UPGRADE_HEIGHT_V5                              = 61;
+const uint32_t UPGRADE_HEIGHT_V6                              = 10000000;
 
 const unsigned UPGRADE_VOTING_THRESHOLD                      = 90; // percent
 const uint32_t UPGRADE_VOTING_WINDOW                         = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
@@ -141,7 +138,7 @@ const uint32_t GOVERNANCE_HEIGHT_END                         = 10000000;
 } // namespace parameters
 
 const char     CRYPTONOTE_NAME[]                             = "Societatis";
-const char     GENESIS_COINBASE_TX_HEX[]                     = "013c01ff000194f6c2d7e858029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd088071210187ed6e740177d8ca66d5845250f5803ed729d1bcf26642c857b62a23f68d9d75";
+const char     GENESIS_COINBASE_TX_HEX[]                     = "013c01ff0001a8ec85afd1b101029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd0880712101dd45a5b45e331f0553d5e9e84150573e0daae57b98245460821a0519c23f398c";
 const char     DNS_CHECKPOINTS_HOST[]                        = "checkpoints.societatis.io";
 
 const uint8_t  TRANSACTION_VERSION_1                         =  1;
@@ -154,7 +151,6 @@ const uint8_t  BLOCK_MAJOR_VERSION_3                         =  3;
 const uint8_t  BLOCK_MAJOR_VERSION_4                         =  4;
 const uint8_t  BLOCK_MAJOR_VERSION_5                         =  5;
 const uint8_t  BLOCK_MAJOR_VERSION_6                         =  6;
-const uint8_t  BLOCK_MAJOR_VERSION_7                         =  7;
 
 const uint8_t  BLOCK_MINOR_VERSION_0                         =  0;
 const uint8_t  BLOCK_MINOR_VERSION_1                         =  1;
@@ -205,8 +201,8 @@ const bool     P2P_MESSAGES                                  =  true;
 const uint16_t P2P_MESSAGES_CHAR_COUNT                       =  160;
 
 /* Governance Fee Wallets // The Qwertycoin Foundation */
-const std::string GOVERNANCE_WALLET_ADDRESS                  = "SCTSLjXeTYTUWpHFN9uVMjKy8rbVnYBPsTZrET3NHdEFBm1vg4ZJyhCJQCNEHbb8M66NDQGRKfZxoYuKhpoovbE97XocHtEuYt";
-const std::string GOVERNANCE_VIEW_SECRET_KEY                 = "dfd552d4cc367330c1811ca042adc79b1e51f0ab5c87bf217639150d4a601304";
+const std::string GOVERNANCE_WALLET_ADDRESS                  = "SCTSUvZHgBMCWdyc5SRVztNU2vemeBXkr5CDAQnHR1xWgcUoQguPDUJKiR1ERP9kjhW3JugmiUhQNeo7zt4YKmx67MCDuioT4r";
+const std::string GOVERNANCE_VIEW_SECRET_KEY                 = "beb85b64f7de1d65afb4ef8bcd452435169f53869e23d09c673de5c02775df09";
 
 const char *const SEED_NODES[] = {
 	"135.181.24.147:7294", //holon-00

@@ -437,7 +437,7 @@ bool core::check_tx_unmixable(const Transaction &tx, uint32_t height)
 {
     for (const auto &out : tx.outputs) {
         if (!is_valid_decomposed_amount(out.amount)
-            && height >= CryptoNote::parameters::UPGRADE_HEIGHT_V6) {
+            && height >= CryptoNote::parameters::UPGRADE_HEIGHT_V5) {
             logger(ERROR)
                 << "Invalid decomposed output amount "
                 << out.amount
@@ -665,17 +665,20 @@ bool core::get_block_template(
                     << "to extra of the parent block miner transaction";
                 return false;
             }
-        } else if (b.majorVersion == BLOCK_MAJOR_VERSION_4) {
+        }
+        else if (b.majorVersion == BLOCK_MAJOR_VERSION_4) {
             b.minorVersion =
                 m_currency.upgradeHeight(BLOCK_MAJOR_VERSION_4) == UpgradeDetectorBase::UNDEF_HEIGHT
                 ? BLOCK_MINOR_VERSION_1
                 : BLOCK_MINOR_VERSION_0;
-        } else if (b.majorVersion >= BLOCK_MAJOR_VERSION_5) {
+        }
+        else if (b.majorVersion >= BLOCK_MAJOR_VERSION_5) {
             b.minorVersion =
                 m_currency.upgradeHeight(BLOCK_MAJOR_VERSION_5) == UpgradeDetectorBase::UNDEF_HEIGHT
                 ? BLOCK_MINOR_VERSION_1
                 : BLOCK_MINOR_VERSION_0;
-        } else if (b.majorVersion >= BLOCK_MAJOR_VERSION_6) {
+        }
+        else if (b.majorVersion >= BLOCK_MAJOR_VERSION_6) {
             b.minorVersion =
                 m_currency.upgradeHeight(BLOCK_MAJOR_VERSION_6) == UpgradeDetectorBase::UNDEF_HEIGHT
                 ? BLOCK_MINOR_VERSION_1
@@ -729,7 +732,7 @@ bool core::get_block_template(
     uint32_t previousBlockHeight = 0;
     uint64_t blockTarget = CryptoNote::parameters::DIFFICULTY_TARGET;
 
-    if (height >= CryptoNote::parameters::UPGRADE_HEIGHT_V6) {
+    if (height >= CryptoNote::parameters::UPGRADE_HEIGHT_V5) {
         getBlockHeight(b.previousBlockHash, previousBlockHeight);
         uint64_t prev_timestamp = getBlockTimestamp(previousBlockHeight);
         if(prev_timestamp >= b.timestamp) {
@@ -1838,7 +1841,7 @@ bool core::fillBlockDetails(const Block &block, BlockDetails2 &blockDetails)
         }
     }
 
-    if (blockDetails.height >= CryptoNote::parameters::UPGRADE_HEIGHT_V6) {
+    if (blockDetails.height >= CryptoNote::parameters::UPGRADE_HEIGHT_V5) {
         getBlockHeight(block.previousBlockHash, previousBlockHeight);
         blockTarget = block.timestamp - getBlockTimestamp(previousBlockHeight);
     }
