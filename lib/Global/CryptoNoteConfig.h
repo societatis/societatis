@@ -85,7 +85,7 @@ const size_t   DIFFICULTY_WINDOW_V6                           = 30;  // EXPECTED
 const size_t   DIFFICULTY_CUT                                 = 60;  // timestamps to cut after sorting
 const size_t   DIFFICULTY_LAG                                 = 15;  // !!!
 static_assert(2 * DIFFICULTY_CUT <= DIFFICULTY_WINDOW - 2, "Bad DIFFICULTY_WINDOW or DIFFICULTY_CUT");
-const size_t DEFAULT_DIFFICULTY                               = 1000000;
+const size_t DEFAULT_DIFFICULTY                               = 100000;
 const size_t FIXED_DIFFICULTY                                 = 0;
 
 static constexpr uint64_t POISSON_CHECK_TRIGGER               = 10;   // Reorg size that triggers poisson timestamp check
@@ -111,8 +111,8 @@ const size_t   FUSION_TX_MIN_IN_OUT_COUNT_RATIO               = 4;
 
 
 const uint32_t UPGRADE_HEIGHT_V2                              = 5;
-const uint32_t UPGRADE_HEIGHT_V3                              = 10;
-const uint32_t UPGRADE_HEIGHT_V4                              = 15;
+const uint32_t UPGRADE_HEIGHT_V3                              = 7;
+const uint32_t UPGRADE_HEIGHT_V4                              = 9;
 const uint32_t UPGRADE_HEIGHT_V5                              = 61;
 const uint32_t UPGRADE_HEIGHT_V6                              = 10000000;
 
