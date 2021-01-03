@@ -132,7 +132,7 @@ const char     MINER_CONFIG_FILE_NAME[]                      = "miner_conf.json"
 
 /* Governance Fee and range // The SCTS Foundation */
 const uint16_t GOVERNANCE_PERCENT_FEE                        = 10;
-const uint32_t GOVERNANCE_HEIGHT_START                       = UPGRADE_HEIGHT_V6;
+const uint32_t GOVERNANCE_HEIGHT_START                       = UPGRADE_HEIGHT_V5;
 const uint32_t GOVERNANCE_HEIGHT_END                         = 10000000;
 
 } // namespace parameters
@@ -202,7 +202,7 @@ const uint16_t P2P_MESSAGES_CHAR_COUNT                       =  160;
 
 /* Governance Fee Wallets // The Qwertycoin Foundation */
 const std::string GOVERNANCE_WALLET_ADDRESS                  = "SCTSUvZHgBMCWdyc5SRVztNU2vemeBXkr5CDAQnHR1xWgcUoQguPDUJKiR1ERP9kjhW3JugmiUhQNeo7zt4YKmx67MCDuioT4r";
-const std::string GOVERNANCE_VIEW_SECRET_KEY                 = "beb85b64f7de1d65afb4ef8bcd452435169f53869e23d09c673de5c02775df09";
+const std::string GOVERNANCE_VIEW_SECRET_KEY                 = "bd18aaa29ddb7adce2cc57573ca8070b3d865986f7a0ca053c91cb7c8904bb04";
 
 const char *const SEED_NODES[] = {
 	"135.181.24.147:7294", //holon-00
