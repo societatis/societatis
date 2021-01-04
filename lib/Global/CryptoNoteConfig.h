@@ -85,7 +85,7 @@ const size_t   DIFFICULTY_WINDOW_V6                           = 30;  // EXPECTED
 const size_t   DIFFICULTY_CUT                                 = 60;  // timestamps to cut after sorting
 const size_t   DIFFICULTY_LAG                                 = 15;  // !!!
 static_assert(2 * DIFFICULTY_CUT <= DIFFICULTY_WINDOW - 2, "Bad DIFFICULTY_WINDOW or DIFFICULTY_CUT");
-const size_t DEFAULT_DIFFICULTY                               = 100000;
+const size_t DEFAULT_DIFFICULTY                               = 10000;
 const size_t FIXED_DIFFICULTY                                 = 0;
 
 static constexpr uint64_t POISSON_CHECK_TRIGGER               = 10;   // Reorg size that triggers poisson timestamp check
@@ -110,11 +110,11 @@ const size_t   FUSION_TX_MIN_INPUT_COUNT                      = 12;
 const size_t   FUSION_TX_MIN_IN_OUT_COUNT_RATIO               = 4;
 
 
-const uint32_t UPGRADE_HEIGHT_V2                              = 5;
-const uint32_t UPGRADE_HEIGHT_V3                              = 7;
-const uint32_t UPGRADE_HEIGHT_V4                              = 9;
-const uint32_t UPGRADE_HEIGHT_V5                              = 61;
-const uint32_t UPGRADE_HEIGHT_V6                              = 10000000;
+const uint32_t UPGRADE_HEIGHT_V2                              = 20;
+const uint32_t UPGRADE_HEIGHT_V3                              = 30;
+const uint32_t UPGRADE_HEIGHT_V4                              = 40;
+const uint32_t UPGRADE_HEIGHT_V5                              = 60;
+const uint32_t UPGRADE_HEIGHT_V6                              = 120;
 
 const unsigned UPGRADE_VOTING_THRESHOLD                      = 90; // percent
 const uint32_t UPGRADE_VOTING_WINDOW                         = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
@@ -138,7 +138,7 @@ const uint32_t GOVERNANCE_HEIGHT_END                         = 10000000;
 } // namespace parameters
 
 const char     CRYPTONOTE_NAME[]                             = "Societatis";
-const char     GENESIS_COINBASE_TX_HEX[]                     = "013c01ff0001a8ec85afd1b101029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd0880712101dd45a5b45e331f0553d5e9e84150573e0daae57b98245460821a0519c23f398c";
+const char     GENESIS_COINBASE_TX_HEX[]                     = "013c01ff0001a8ec85afd1b101029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd088071210185f297bea2e626180aaaad1d5b3ed05037275e425cbf294b6604093fb9747a7c";
 const char     DNS_CHECKPOINTS_HOST[]                        = "checkpoints.societatis.io";
 
 const uint8_t  TRANSACTION_VERSION_1                         =  1;

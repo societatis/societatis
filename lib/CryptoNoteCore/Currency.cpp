@@ -117,20 +117,15 @@ uint32_t Currency::upgradeHeight(uint8_t majorVersion) const
 {
     if (majorVersion == BLOCK_MAJOR_VERSION_6) {
         return m_upgradeHeightV6;
-    }
-    else if (majorVersion == BLOCK_MAJOR_VERSION_5) {
+    } else if (majorVersion == BLOCK_MAJOR_VERSION_5) {
         return m_upgradeHeightV5;
-    }
-    else if (majorVersion == BLOCK_MAJOR_VERSION_4) {
+    } else if (majorVersion == BLOCK_MAJOR_VERSION_4) {
         return m_upgradeHeightV4;
-    }
-    else if (majorVersion == BLOCK_MAJOR_VERSION_2) {
+    } else if (majorVersion == BLOCK_MAJOR_VERSION_2) {
         return m_upgradeHeightV2;
-    }
-    else if (majorVersion == BLOCK_MAJOR_VERSION_3) {
+    } else if (majorVersion == BLOCK_MAJOR_VERSION_3) {
         return m_upgradeHeightV3;
-    }
-    else {
+    } else {
         return static_cast<uint32_t>(-1);
     }
 }
@@ -152,7 +147,7 @@ bool Currency::getBlockReward(
     // Consistency
     double consistency = 1.0;
     double exponent = 0.25; 
-    if (height >= CryptoNote::parameters::UPGRADE_HEIGHT_V5 && difficultyTarget() != 0) {
+    if (height >= CryptoNote::parameters::UPGRADE_HEIGHT_V6 && difficultyTarget() != 0) {
         // blockTarget is (Timestamp of New Block - Timestamp of Previous Block)
         consistency = (double) blockTarget / (double) difficultyTarget();
 
@@ -468,7 +463,7 @@ bool Currency::isFusionTransaction(
     size_t size,
     uint32_t height) const
 {
-
+    // TODO: Simplify if (...) content.
     if (size > fusionTxMaxSize()) {
         logger(ERROR) << "Fusion transaction verification failed: size exceeded max allowed size.";
         return false;
@@ -714,7 +709,7 @@ difficulty_type Currency::nextDifficulty(uint32_t height,
     if (!timestamps.empty()) {
         last_timestamp = timestamps.back();
     }
-    if ((blockMajorVersion >= BLOCK_MAJOR_VERSION_5) &&
+    if ((blockMajorVersion >= BLOCK_MAJOR_VERSION_6) &&
             (nextBlockTime > last_timestamp + CryptoNote::parameters::CRYPTONOTE_CLIF_THRESHOLD)) {
         size_t array_size = cumulativeDifficulties.size();
         difficulty_type last_difficulty = 1;
@@ -728,11 +723,10 @@ difficulty_type Currency::nextDifficulty(uint32_t height,
     }
 
     if (blockMajorVersion >= BLOCK_MAJOR_VERSION_6) {
-        return nextDifficultyV6(blockMajorVersion, timestamps, cumulativeDifficulties);
+        return nextDifficultyV6(blockMajorVersion, timestamps, cumulativeDifficulties, height);
     }
-    else if (blockMajorVersion == BLOCK_MAJOR_VERSION_5) {
-        // TARGET
-        return nextDifficultyV5(blockMajorVersion, timestamps, cumulativeDifficulties, height);
+    else if (blockMajorVersion >= BLOCK_MAJOR_VERSION_5) {
+        return nextDifficultyV5(blockMajorVersion, timestamps, cumulativeDifficulties);
     }
     else if (blockMajorVersion == BLOCK_MAJOR_VERSION_3
           || blockMajorVersion == BLOCK_MAJOR_VERSION_4) {
@@ -842,7 +836,7 @@ difficulty_type Currency::nextDifficultyV2(
 
     // minimum limit
     if (!isTestnet() && nextDiffZ < CryptoNote::parameters::DEFAULT_DIFFICULTY) {
-        nextDiffZ = CryptoNote::parameters::DEFAULT_DIFFICULTY/1000;
+        nextDiffZ = CryptoNote::parameters::DEFAULT_DIFFICULTY;
     }
 
     return nextDiffZ;
@@ -907,14 +901,83 @@ difficulty_type Currency::nextDifficultyV3V4(
 
     // minimum limit
     if (!isTestnet() && next_difficulty < CryptoNote::parameters::DEFAULT_DIFFICULTY) {
-        next_difficulty = CryptoNote::parameters::DEFAULT_DIFFICULTY/1000;
+        next_difficulty = CryptoNote::parameters::DEFAULT_DIFFICULTY;
     }
 
     return next_difficulty;
 }
 
+template <typename T>
+inline T clamp(T lo, T v, T hi)
+{
+    return v < lo ? lo : v > hi ? hi : v;
+}
+
 // difficulty for block version 5.0
-difficulty_type Currency::nextDifficultyV5(uint8_t blockMajorVersion,
+difficulty_type Currency::nextDifficultyV5(
+    uint8_t blockMajorVersion,
+    std::vector<std::uint64_t> timestamps,
+    std::vector<difficulty_type> cumulativeDifficulties) const
+{
+    // LWMA-2 difficulty algorithm
+    // Copyright (c) 2017-2018 Zawy, MIT License
+    // https://github.com/zawy12/difficulty-algorithms/issues/3
+    // with modifications by Ryo Currency developers
+    // courtesy to aivve from Karbo
+
+    const int64_t  T = static_cast<int64_t>(m_difficultyTarget);
+    int64_t  N = difficultyBlocksCount3();
+    int64_t  L(0), ST, sum_3_ST(0);
+    uint64_t nextDiffV5, prev_D;
+
+    assert(timestamps.size() == cumulativeDifficulties.size()
+           && timestamps.size() <= static_cast<uint64_t>(N + 1));
+
+    int64_t max_TS, prev_max_TS;
+    prev_max_TS = timestamps[0];
+    for (int64_t i = 1; i <= N; i++) {
+        if (static_cast<int64_t>(timestamps[i]) > prev_max_TS) {
+            max_TS = timestamps[i];
+        } else {
+            max_TS = prev_max_TS + 1;
+        }
+        ST = std::min(6 * T, max_TS - prev_max_TS);
+        prev_max_TS = max_TS;
+        L += ST * i;
+        if (i > N - 3) {
+            sum_3_ST += ST;
+        }
+    }
+
+    // It is a potential error,  N should be less than cumulativeDifficulties.size()
+    nextDiffV5 = uint64_t((cumulativeDifficulties[N] - cumulativeDifficulties[0]) * T * (N + 1))
+                 / uint64_t(2 * L);
+    nextDiffV5 = (nextDiffV5 * 99ull) / 100ull;
+
+    // It is a potential error,  N should be less than cumulativeDifficulties.size()
+    prev_D = cumulativeDifficulties[N] - cumulativeDifficulties[N - 1];
+    nextDiffV5 = clamp(
+        (uint64_t)(prev_D * 67ull / 100ull),
+        nextDiffV5,
+        (uint64_t)(prev_D * 150ull / 100ull)
+    );
+    if (sum_3_ST < (8 * T) / 10) {
+        nextDiffV5 = (prev_D * 110ull) / 100ull;
+    }
+
+    // minimum limit
+    if (nextDiffV5 < CryptoNote::parameters::DEFAULT_DIFFICULTY) {
+        nextDiffV5 = CryptoNote::parameters::DEFAULT_DIFFICULTY;
+    }
+    if(isTestnet()){
+        nextDiffV5 = CryptoNote::parameters::DEFAULT_DIFFICULTY;
+    }
+
+    return nextDiffV5;
+}
+
+// difficulty for block version 6.0
+difficulty_type Currency::nextDifficultyV6(uint8_t blockMajorVersion,
     std::vector<uint64_t> timestamps,
     std::vector<difficulty_type> cumulativeDifficulties,
     uint32_t height) const
@@ -929,7 +992,7 @@ difficulty_type Currency::nextDifficultyV5(uint8_t blockMajorVersion,
     // Dynamic difficulty calculation window
     uint32_t diffWindow = timestamps.size() - 1;
 
-    difficulty_type nextDiffV5 = CryptoNote::parameters::DEFAULT_DIFFICULTY;
+    difficulty_type nextDiffV6 = CryptoNote::parameters::DEFAULT_DIFFICULTY;
     difficulty_type min_difficulty = CryptoNote::parameters::DEFAULT_DIFFICULTY;
     // Condition #1 When starting a chain or a working testnet requiring
     // block sample gathering until enough blocks are available (Kick-off Scenario)
@@ -939,18 +1002,18 @@ difficulty_type Currency::nextDifficultyV5(uint8_t blockMajorVersion,
     // Consider this as a service or trial period.
     // With EPoW reward algo in place, we don't really need to worry about attackers
     // or large miners taking advanatage of our system.
-    if (height < CryptoNote::parameters::UPGRADE_HEIGHT_V5 + diffWindow) {
-        return nextDiffV5;
+    if (height < CryptoNote::parameters::UPGRADE_HEIGHT_V6 + diffWindow) {
+        return nextDiffV6;
     }
 
     // check all values in input vectors greater than previous value to calc adjacent differences later
     if (std::adjacent_find(timestamps.begin(), timestamps.end(), std::greater<uint64_t>()) != timestamps.end()) {
         logger (ERROR) << "Invalid timestamps for difficulty calculation";
-        return nextDiffV5;
+        return nextDiffV6;
     }
     if (std::adjacent_find(cumulativeDifficulties.begin(), cumulativeDifficulties.end(), std::greater_equal<difficulty_type>()) != cumulativeDifficulties.end()) {
         logger (ERROR) << "Invalid cumulativeDifficulties for difficulty calculation";
-        return nextDiffV5;
+        return nextDiffV6;
     }
 
     uint64_t difficulty_target = CryptoNote::parameters::DIFFICULTY_TARGET;
@@ -1010,25 +1073,25 @@ difficulty_type Currency::nextDifficultyV5(uint8_t blockMajorVersion,
         if (valid_solvetime_mean >= invalid_solvetime_mean) {
             double coef = double(difficulty_target) / double(valid_solvetime_mean);
             if (valid_solvetime_mean < difficulty_target) {
-                nextDiffV5 = prev_difficulty * std::min(1.01, coef) + 0.5;
+                nextDiffV6 = prev_difficulty * std::min(1.01, coef) + 0.5;
             } else {
-                nextDiffV5 = prev_difficulty * std::max(0.99, coef) + 0.5;
+                nextDiffV6 = prev_difficulty * std::max(0.99, coef) + 0.5;
             }
         } else {
             double coef = double(difficulty_target) / double(invalid_solvetime_mean);
             if (invalid_solvetime_mean < difficulty_target) {
-                nextDiffV5 = prev_difficulty * std::min(1.01, coef) + 0.5;
+                nextDiffV6 = prev_difficulty * std::min(1.01, coef) + 0.5;
             } else {
-                nextDiffV5 = prev_difficulty * std::max(0.99, coef) + 0.5;
+                nextDiffV6 = prev_difficulty * std::max(0.99, coef) + 0.5;
             }
         }
     } else if (window_time < window_target * 0.97) {
-        nextDiffV5 = prev_difficulty * 1.02 + 0.5;
+        nextDiffV6 = prev_difficulty * 1.02 + 0.5;
     } else {
-        nextDiffV5 = prev_difficulty * 0.98 + 0.5;
+        nextDiffV6 = prev_difficulty * 0.98 + 0.5;
     }
 
-    return std::max(nextDiffV5, min_difficulty);
+    return std::max(nextDiffV6, min_difficulty);
 }
 
 difficulty_type Currency::getClifDifficulty(uint32_t height,
@@ -1096,75 +1159,6 @@ difficulty_type Currency::getClifDifficulty(uint32_t height,
 
     logger (INFO) << "CLIF difficulty result: " << new_diff;
     return new_diff;
-}
-
-template <typename T>
-inline T clamp(T lo, T v, T hi)
-{
-    return v < lo ? lo : v > hi ? hi : v;
-}
-
-// difficulty for block version 6.0
-difficulty_type Currency::nextDifficultyV6(
-    uint8_t blockMajorVersion,
-    std::vector<std::uint64_t> timestamps,
-    std::vector<difficulty_type> cumulativeDifficulties) const
-{
-    // LWMA-2 difficulty algorithm
-    // Copyright (c) 2017-2018 Zawy, MIT License
-    // https://github.com/zawy12/difficulty-algorithms/issues/3
-    // with modifications by Ryo Currency developers
-    // courtesy to aivve from Karbo
-
-    const int64_t  T = static_cast<int64_t>(m_difficultyTarget);
-    int64_t  N = difficultyBlocksCount3();
-    int64_t  L(0), ST, sum_3_ST(0);
-    uint64_t nextDiffV6, prev_D;
-
-    assert(timestamps.size() == cumulativeDifficulties.size()
-           && timestamps.size() <= static_cast<uint64_t>(N + 1));
-
-    int64_t max_TS, prev_max_TS;
-    prev_max_TS = timestamps[0];
-    for (int64_t i = 1; i <= N; i++) {
-        if (static_cast<int64_t>(timestamps[i]) > prev_max_TS) {
-            max_TS = timestamps[i];
-        } else {
-            max_TS = prev_max_TS + 1;
-        }
-        ST = std::min(6 * T, max_TS - prev_max_TS);
-        prev_max_TS = max_TS;
-        L += ST * i;
-        if (i > N - 3) {
-            sum_3_ST += ST;
-        }
-    }
-
-    // It is a potential error,  N should be less than cumulativeDifficulties.size()
-    nextDiffV6 = uint64_t((cumulativeDifficulties[N] - cumulativeDifficulties[0]) * T * (N + 1))
-                 / uint64_t(2 * L);
-    nextDiffV6 = (nextDiffV6 * 99ull) / 100ull;
-
-    // It is a potential error,  N should be less than cumulativeDifficulties.size()
-    prev_D = cumulativeDifficulties[N] - cumulativeDifficulties[N - 1];
-    nextDiffV6 = clamp(
-        (uint64_t)(prev_D * 67ull / 100ull),
-        nextDiffV6,
-        (uint64_t)(prev_D * 150ull / 100ull)
-    );
-    if (sum_3_ST < (8 * T) / 10) {
-        nextDiffV6 = (prev_D * 110ull) / 100ull;
-    }
-
-    // minimum limit
-    if (nextDiffV6 < CryptoNote::parameters::DEFAULT_DIFFICULTY) {
-        nextDiffV6 = CryptoNote::parameters::DEFAULT_DIFFICULTY;
-    }
-    if(isTestnet()){
-        nextDiffV6 = CryptoNote::parameters::DEFAULT_DIFFICULTY/1000;
-    }
-
-    return nextDiffV6;
 }
 
 bool Currency::checkProofOfWorkV1(

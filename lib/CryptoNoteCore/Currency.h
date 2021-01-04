@@ -224,11 +224,11 @@ public:
     difficulty_type nextDifficultyV3V4(
         std::vector<uint64_t> timestamps,
         std::vector<difficulty_type> Difficulties) const;
-    difficulty_type nextDifficultyV6(
+    difficulty_type nextDifficultyV5(
         uint8_t blockMajorVersion,
         std::vector<uint64_t> timestamps,
         std::vector<difficulty_type> Difficulties) const;
-    difficulty_type nextDifficultyV5(uint8_t blockMajorVersion,
+    difficulty_type nextDifficultyV6(uint8_t blockMajorVersion,
         std::vector<uint64_t> timestamps,
         std::vector<difficulty_type> Difficulties,
         uint32_t height) const;
@@ -420,6 +420,7 @@ public:
         m_currency.m_blockFutureTimeLimit = val;
         return *this;
     }
+
     CurrencyBuilder &moneySupply(uint64_t val) { m_currency.m_moneySupply = val; return *this; }
     CurrencyBuilder &emissionSpeedFactor(unsigned int val);
     CurrencyBuilder &cryptonoteCoinVersion(size_t val)
