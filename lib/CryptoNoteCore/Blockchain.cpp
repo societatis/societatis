@@ -1083,7 +1083,7 @@ bool Blockchain::switch_to_alternative_blockchain(
             }
         }
 
-        uint64_t block_ftl = CryptoNote::parameters::CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT;
+        uint64_t block_ftl = CryptoNote::parameters::CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V1;
         // This would fail later anyway
         if (high_timestamp > get_adjusted_time() + block_ftl) {
             logger(ERROR, BRIGHT_RED)

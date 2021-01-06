@@ -117,15 +117,20 @@ uint32_t Currency::upgradeHeight(uint8_t majorVersion) const
 {
     if (majorVersion == BLOCK_MAJOR_VERSION_6) {
         return m_upgradeHeightV6;
-    } else if (majorVersion == BLOCK_MAJOR_VERSION_5) {
+    }
+    else if (majorVersion == BLOCK_MAJOR_VERSION_5) {
         return m_upgradeHeightV5;
-    } else if (majorVersion == BLOCK_MAJOR_VERSION_4) {
+    }
+    else if (majorVersion == BLOCK_MAJOR_VERSION_4) {
         return m_upgradeHeightV4;
-    } else if (majorVersion == BLOCK_MAJOR_VERSION_2) {
+    }
+    else if (majorVersion == BLOCK_MAJOR_VERSION_2) {
         return m_upgradeHeightV2;
-    } else if (majorVersion == BLOCK_MAJOR_VERSION_3) {
+    }
+    else if (majorVersion == BLOCK_MAJOR_VERSION_3) {
         return m_upgradeHeightV3;
-    } else {
+    }
+    else {
         return static_cast<uint32_t>(-1);
     }
 }
@@ -724,18 +729,14 @@ difficulty_type Currency::nextDifficulty(uint32_t height,
 
     if (blockMajorVersion >= BLOCK_MAJOR_VERSION_6) {
         return nextDifficultyV6(blockMajorVersion, timestamps, cumulativeDifficulties, height);
-    }
-    else if (blockMajorVersion >= BLOCK_MAJOR_VERSION_5) {
+    } else if (blockMajorVersion >= BLOCK_MAJOR_VERSION_5) {
         return nextDifficultyV5(blockMajorVersion, timestamps, cumulativeDifficulties);
-    }
-    else if (blockMajorVersion == BLOCK_MAJOR_VERSION_3
-          || blockMajorVersion == BLOCK_MAJOR_VERSION_4) {
+    } else if (blockMajorVersion == BLOCK_MAJOR_VERSION_3
+               || blockMajorVersion == BLOCK_MAJOR_VERSION_4) {
         return nextDifficultyV3V4(timestamps, cumulativeDifficulties);
-    }
-    else if (blockMajorVersion == BLOCK_MAJOR_VERSION_2) {
+    } else if (blockMajorVersion == BLOCK_MAJOR_VERSION_2) {
         return nextDifficultyV2(timestamps, cumulativeDifficulties);
-    }
-    else {
+    } else {
         return nextDifficultyV1(timestamps, cumulativeDifficulties);
     }
 }
@@ -835,8 +836,8 @@ difficulty_type Currency::nextDifficultyV2(
     uint64_t nextDiffZ = low / timeSpan;
 
     // minimum limit
-    if (!isTestnet() && nextDiffZ < CryptoNote::parameters::DEFAULT_DIFFICULTY) {
-        nextDiffZ = CryptoNote::parameters::DEFAULT_DIFFICULTY;
+    if (!isTestnet() && nextDiffZ < CryptoNote::parameters::DEFAULT_DIFFICULTY/100) {
+        nextDiffZ = CryptoNote::parameters::DEFAULT_DIFFICULTY/100;
     }
 
     return nextDiffZ;
@@ -900,8 +901,8 @@ difficulty_type Currency::nextDifficultyV3V4(
     next_difficulty = static_cast<uint64_t>(nextDifficulty);
 
     // minimum limit
-    if (!isTestnet() && next_difficulty < CryptoNote::parameters::DEFAULT_DIFFICULTY) {
-        next_difficulty = CryptoNote::parameters::DEFAULT_DIFFICULTY;
+    if (!isTestnet() && next_difficulty < CryptoNote::parameters::DEFAULT_DIFFICULTY/100) {
+        next_difficulty = CryptoNote::parameters::DEFAULT_DIFFICULTY/100;
     }
 
     return next_difficulty;
@@ -967,7 +968,7 @@ difficulty_type Currency::nextDifficultyV5(
 
     // minimum limit
     if (nextDiffV5 < CryptoNote::parameters::DEFAULT_DIFFICULTY) {
-        nextDiffV5 = CryptoNote::parameters::DEFAULT_DIFFICULTY;
+        nextDiffV5 = CryptoNote::parameters::DEFAULT_DIFFICULTY/100;
     }
     if(isTestnet()){
         nextDiffV5 = CryptoNote::parameters::DEFAULT_DIFFICULTY;
@@ -1307,7 +1308,9 @@ CurrencyBuilder::CurrencyBuilder(Logging::ILogger &log)
     expectedNumberOfBlocksPerDay(parameters::EXPECTED_NUMBER_OF_BLOCKS_PER_DAY);
 
     timestampCheckWindow(parameters::BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW);
+    timestampCheckWindow_v1(parameters::BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V1);
     blockFutureTimeLimit(parameters::CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT);
+    blockFutureTimeLimit_v1(parameters::CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V1);
 
     moneySupply(parameters::MONEY_SUPPLY);
     emissionSpeedFactor(parameters::EMISSION_SPEED_FACTOR);

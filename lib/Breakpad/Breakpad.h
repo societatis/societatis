@@ -12,7 +12,7 @@ namespace google_breakpad {
 class ExceptionHandler;
 } // namespace google_breakpad
 
-namespace Societatis {
+namespace Qwertycoin {
 
 namespace Breakpad {
 
@@ -30,4 +30,4 @@ private:
 
 } // namespace Breakpad
 
-} // namespace Societatis
+} // namespace Qwertycoin

@@ -796,7 +796,7 @@ namespace CryptoNote {
 
 		if (amount != 0) {
 			logger(INFO) << "Masternode received relayed transaction fee: "
-						 << m_core.currency().formatAmount(amount) << " QWC";
+						 << m_core.currency().formatAmount(amount) << " SCTS";
 			return true;
 		}
 

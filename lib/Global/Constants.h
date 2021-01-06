@@ -12,7 +12,7 @@
 #include <Global/CryptoNoteConfig.h>
 #include <version.h>
 
-namespace Societatis {
+namespace Qwertycoin {
 
 const Crypto::Hash NULL_HASH = boost::value_initialized<Crypto::Hash>();
 const Crypto::PublicKey NULL_PUBLIC_KEY = boost::value_initialized<Crypto::PublicKey>();

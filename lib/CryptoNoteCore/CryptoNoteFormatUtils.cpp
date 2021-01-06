@@ -666,6 +666,7 @@ bool get_block_longhash(cn_context &context, const Block &b, Hash &res)
     } else {
         return false;
     }
+
     cn_pow_hash_v1 cnh;
     cnh.hash(bd.data(), bd.size(), res.data);
 
