@@ -14,31 +14,20 @@
 4. [Useful Links](#usefullinks)
 
 ## Installing <a name="installing"></a>
-We offer binary images of the latest releases here: https://releases.societatis.io
 
 If you would like to compile yourself, read on.
 
-### Downloads <a name="downloads"></a>
-| Operating System   | Download                                 |
-| ----------------   | ---------------------------------------- |
-| Windows 32         | https://releases.societatis.io/get/cli/latest/win32 |
-| Windows 64         | https://releases.societatis.io/get/cli/latest/win64 |
-| macOS 10.8 & Later | https://releases.societatis.io/get/cli/latest/macos |
-| Linux DEB          | https://releases.societatis.io/get/cli/latest/linux/deb |
-| Linux RPM          | https://releases.societatis.io/get/cli/latest/linux/rpm |
-| Android            | https://releases.societatis.io/get/cli/latest/arm64 |
-| Other platforms    | https://releases.societatis.io|
 
 ### Coin Specs <a name="coinspecs"></a>
 <table>
 <tr><td>Ticker Symbol</td><td>SCTS</td></tr>
 <tr><td>Algorithm</td><td>Cryptonight</td></tr>
-<tr><td>Type</td><td>Proof of Work (PoW)</td></tr>
-<tr><td>Block Time</td><td>60 Seconds</td></tr>
+<tr><td>Type</td><td>Egalitarian Proof of Work (EPoW)</td></tr>
+<tr><td>Block Time</td><td>120 Seconds</td></tr>
 <tr><td>Premine</td><td>0.0 %</td></tr>
 <tr><td>Decimals</td><td>8 Digits</td></tr>
-<tr><td>Block Reward</td><td>Decrease by each block</td></tr>
-<tr><td>Max Coin Supply </td><td>xxx,xxx,xxx,xxx SCTS</td></tr>
+<tr><td>Block Reward</td><td>Adjusted to difficulty</td></tr>
+<tr><td>Max Coin Supply </td><td>8,000,000,000 SCTS</td></tr>
 <tr><td>P2P | RPC Port</td><td>7294 | 7295</td></tr>
 </table>
 
