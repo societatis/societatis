@@ -2059,7 +2059,7 @@ namespace CryptoNote {
 			}
 		}
 
-		if (res.block.height >= CryptoNote::parameters::UPGRADE_HEIGHT_V2) {
+		if (res.block.height >= CryptoNote::parameters::UPGRADE_HEIGHT_V6) {
 			m_core.getBlockHeight(blk.previousBlockHash, previousBlockHeight);
 			blockTarget = blk.timestamp - m_core.getBlockTimestamp(previousBlockHeight);
 		}

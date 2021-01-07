@@ -54,21 +54,21 @@ protected:
 
 TEST_F(Currency_isFusionTransactionTest, succeedsOnFusionTransaction) {
   auto tx = FusionTransactionBuilder(m_currency, TEST_AMOUNT).buildTx();
-  ASSERT_TRUE(m_currency.isFusionTransaction(tx, CryptoNote::parameters::UPGRADE_HEIGHT_V5));
+  ASSERT_TRUE(m_currency.isFusionTransaction(tx, CryptoNote::parameters::UPGRADE_HEIGHT_V4));
 }
 
 TEST_F(Currency_isFusionTransactionTest, succeedsIfFusionTransactionSizeEqMaxSize) {
   FusionTransactionBuilder builder(m_currency, TEST_AMOUNT);
   auto tx = builder.createFusionTransactionBySize(m_currency.fusionTxMaxSize());
   ASSERT_EQ(m_currency.fusionTxMaxSize(), getObjectBinarySize(tx));
-  ASSERT_TRUE(m_currency.isFusionTransaction(tx, CryptoNote::parameters::UPGRADE_HEIGHT_V5));
+  ASSERT_TRUE(m_currency.isFusionTransaction(tx, CryptoNote::parameters::UPGRADE_HEIGHT_V4));
 }
 
 TEST_F(Currency_isFusionTransactionTest, failsIfFusionTransactionSizeGreaterThanMaxSize) {
   FusionTransactionBuilder builder(m_currency, TEST_AMOUNT);
   auto tx = builder.createFusionTransactionBySize(m_currency.fusionTxMaxSize() + 1);
   ASSERT_EQ(m_currency.fusionTxMaxSize() + 1, getObjectBinarySize(tx));
-  ASSERT_FALSE(m_currency.isFusionTransaction(tx, CryptoNote::parameters::UPGRADE_HEIGHT_V5));
+  ASSERT_FALSE(m_currency.isFusionTransaction(tx, CryptoNote::parameters::UPGRADE_HEIGHT_V4));
 }
 
 TEST_F(Currency_isFusionTransactionTest, failsIfTransactionInputsCountIsNotEnought) {
@@ -76,7 +76,7 @@ TEST_F(Currency_isFusionTransactionTest, failsIfTransactionInputsCountIsNotEnoug
   builder.setInputCount(m_currency.fusionTxMinInputCount() - 1);
   auto tx = builder.buildTx();
   ASSERT_EQ(m_currency.fusionTxMinInputCount() - 1, tx.inputs.size());
-  ASSERT_FALSE(m_currency.isFusionTransaction(tx, CryptoNote::parameters::UPGRADE_HEIGHT_V5));
+  ASSERT_FALSE(m_currency.isFusionTransaction(tx, CryptoNote::parameters::UPGRADE_HEIGHT_V4));
 }
 
 TEST_F(Currency_isFusionTransactionTest, failsIfTransactionInputOutputCountRatioIsLessThenNecessary) {
@@ -84,7 +84,7 @@ TEST_F(Currency_isFusionTransactionTest, failsIfTransactionInputOutputCountRatio
   auto tx = builder.buildTx();
   ASSERT_EQ(3, tx.outputs.size());
   ASSERT_GT(tx.outputs.size() * m_currency.fusionTxMinInOutCountRatio(), tx.inputs.size());
-  ASSERT_FALSE(m_currency.isFusionTransaction(tx, CryptoNote::parameters::UPGRADE_HEIGHT_V5));
+  ASSERT_FALSE(m_currency.isFusionTransaction(tx, CryptoNote::parameters::UPGRADE_HEIGHT_V4));
 }
 
 TEST_F(Currency_isFusionTransactionTest, failsIfTransactionHasNotExponentialOutput) {
@@ -92,7 +92,7 @@ TEST_F(Currency_isFusionTransactionTest, failsIfTransactionHasNotExponentialOutp
   builder.setFirstOutput(TEST_AMOUNT);
   auto tx = builder.buildTx();
   ASSERT_EQ(1, tx.outputs.size());
-  ASSERT_FALSE(m_currency.isFusionTransaction(tx, CryptoNote::parameters::UPGRADE_HEIGHT_V5));
+  ASSERT_FALSE(m_currency.isFusionTransaction(tx, CryptoNote::parameters::UPGRADE_HEIGHT_V4));
 }
 
 TEST_F(Currency_isFusionTransactionTest, failsIfTransactionHasOutputsWithTheSameExponent) {
@@ -100,7 +100,7 @@ TEST_F(Currency_isFusionTransactionTest, failsIfTransactionHasOutputsWithTheSame
   builder.setFirstOutput(70 * m_currency.defaultDustThreshold());
   auto tx = builder.buildTx();
   ASSERT_EQ(2, tx.outputs.size());
-  ASSERT_FALSE(m_currency.isFusionTransaction(tx, CryptoNote::parameters::UPGRADE_HEIGHT_V5));
+  ASSERT_FALSE(m_currency.isFusionTransaction(tx, CryptoNote::parameters::UPGRADE_HEIGHT_V4));
 }
 
 TEST_F(Currency_isFusionTransactionTest, succeedsIfTransactionHasDustOutput) {
@@ -108,21 +108,21 @@ TEST_F(Currency_isFusionTransactionTest, succeedsIfTransactionHasDustOutput) {
   auto tx = builder.buildTx();
   ASSERT_EQ(2, tx.outputs.size());
   ASSERT_EQ(m_currency.defaultDustThreshold(), tx.outputs[0].amount);
-  ASSERT_TRUE(m_currency.isFusionTransaction(tx, CryptoNote::parameters::UPGRADE_HEIGHT_V5));
+  ASSERT_TRUE(m_currency.isFusionTransaction(tx, CryptoNote::parameters::UPGRADE_HEIGHT_V4));
 }
 
 TEST_F(Currency_isFusionTransactionTest, failsIfTransactionFeeIsNotZero) {
   FusionTransactionBuilder builder(m_currency, 370 * m_currency.defaultDustThreshold());
   builder.setFee(70 * m_currency.defaultDustThreshold());
   auto tx = builder.buildTx();
-  ASSERT_FALSE(m_currency.isFusionTransaction(tx, CryptoNote::parameters::UPGRADE_HEIGHT_V5));
+  ASSERT_FALSE(m_currency.isFusionTransaction(tx, CryptoNote::parameters::UPGRADE_HEIGHT_V4));
 }
 
 TEST_F(Currency_isFusionTransactionTest, succedsIfTransactionHasInputEqualsDustThreshold) {
   FusionTransactionBuilder builder(m_currency, TEST_AMOUNT);
   builder.setFirstInput(m_currency.defaultDustThreshold());
   auto tx = builder.buildTx();
-  ASSERT_TRUE(m_currency.isFusionTransaction(tx, CryptoNote::parameters::UPGRADE_HEIGHT_V5));
+  ASSERT_TRUE(m_currency.isFusionTransaction(tx, CryptoNote::parameters::UPGRADE_HEIGHT_V4));
 }
 
 // FIXME: Broken test!
@@ -130,5 +130,5 @@ TEST_F(Currency_isFusionTransactionTest, succedsIfTransactionHasInputEqualsDustT
 //  FusionTransactionBuilder builder(m_currency, TEST_AMOUNT);
 //  builder.setFirstInput(m_currency.defaultDustThreshold() - 1);
 //  auto tx = builder.buildTx();
-//  ASSERT_FALSE(m_currency.isFusionTransaction(tx, CryptoNote::parameters::UPGRADE_HEIGHT_V5));
+//  ASSERT_FALSE(m_currency.isFusionTransaction(tx, CryptoNote::parameters::UPGRADE_HEIGHT_V4));
 //}

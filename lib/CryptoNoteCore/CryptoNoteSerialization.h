@@ -42,6 +42,7 @@ bool serialize(EllipticCurvePoint &ecPoint, Common::StringView name, CN::ISerial
 namespace CryptoNote {
 
 struct AccountKeys;
+struct TransactionExtraMergeMiningTag;
 
 void serialize(TransactionPrefix &txP, ISerializer &serializer);
 void serialize(Transaction &tx, ISerializer &serializer);
@@ -60,6 +61,7 @@ void serialize(MultisignatureOutput &multisignature, ISerializer &serializer);
 void serialize(BlockHeader &header, ISerializer &serializer);
 void serialize(Block &block, ISerializer &serializer);
 void serialize(ParentBlockSerializer &pbs, ISerializer &serializer);
+void serialize(TransactionExtraMergeMiningTag& tag, ISerializer& serializer);
 
 void serialize(AccountPublicAddress &address, ISerializer &serializer);
 void serialize(AccountKeys &keys, ISerializer &s);

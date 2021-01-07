@@ -398,6 +398,25 @@ void serialize(ParentBlockSerializer &pbs, ISerializer &serializer)
 
     serializer(pbs.m_parentBlock.baseTransaction, "minerTx");
 
+    TransactionExtraMergeMiningTag mmTag;
+    if (!getMergeMiningTagFromExtra(pbs.m_parentBlock.baseTransaction.extra, mmTag)) {
+        throw std::runtime_error("Can't get extra merge mining tag");
+    }
+
+    if (mmTag.depth > 8 * sizeof(Crypto::Hash)) {
+        throw std::runtime_error("Wrong merge mining tag depth");
+    }
+
+    if (serializer.type() == ISerializer::OUTPUT) {
+        if (mmTag.depth != pbs.m_parentBlock.blockchainBranch.size()) {
+            throw std::runtime_error(
+                "Blockchain branch size must be equal to merge mining tag depth"
+            );
+        }
+    } else {
+        pbs.m_parentBlock.blockchainBranch.resize(mmTag.depth);
+    }
+
     //serializer(m_parentBlock.blockchainBranch, "blockchainBranch");
     // TODO: Make arrays with computable size! This code won't work with json serialization!
     for (Crypto::Hash& hash: pbs.m_parentBlock.blockchainBranch) {
@@ -408,18 +427,21 @@ void serialize(ParentBlockSerializer &pbs, ISerializer &serializer)
 void serializeBlockHeader(BlockHeader &header, ISerializer &serializer)
 {
     serializer(header.majorVersion, "major_version");
-    if (header.majorVersion > BLOCK_MAJOR_VERSION_2) {
+    if (header.majorVersion > BLOCK_MAJOR_VERSION_6) {
         throw std::runtime_error("Wrong major version");
     }
 
     serializer(header.minorVersion, "minor_version");
 
-    if (header.majorVersion >= BLOCK_MAJOR_VERSION_1) {
+    if (header.majorVersion == BLOCK_MAJOR_VERSION_2
+        || header.majorVersion == BLOCK_MAJOR_VERSION_3) {
+        serializer(header.previousBlockHash, "prev_id");
+    } else if (header.majorVersion == BLOCK_MAJOR_VERSION_1
+               || header.majorVersion >= BLOCK_MAJOR_VERSION_4) {
         serializer(header.timestamp, "timestamp");
         serializer(header.previousBlockHash, "prev_id");
         serializer.binary(&header.nonce, sizeof(header.nonce), "nonce");
-    }
-    else {
+    } else {
         throw std::runtime_error("Wrong major version");
     }
 }
@@ -433,7 +455,8 @@ void serialize(Block &block, ISerializer &serializer)
 {
     serializeBlockHeader(block, serializer);
 
-    if (block.majorVersion == BLOCK_MAJOR_VERSION_2) {
+    if (block.majorVersion == BLOCK_MAJOR_VERSION_2
+        || block.majorVersion == BLOCK_MAJOR_VERSION_3) {
         auto parentBlockSerializer = makeParentBlockSerializer(block, false, false);
         serializer(parentBlockSerializer, "parent_block");
     }
@@ -453,6 +476,31 @@ void serialize(AccountKeys &keys, ISerializer &s)
     s(keys.address, "m_account_address");
     s(keys.spendSecretKey, "m_spend_secret_key");
     s(keys.viewSecretKey, "m_view_secret_key");
+}
+
+void doSerialize(TransactionExtraMergeMiningTag &tag, ISerializer &serializer)
+{
+    auto depth = static_cast<uint64_t>(tag.depth);
+    serializer(depth, "depth");
+    tag.depth = static_cast<size_t>(depth);
+    serializer(tag.merkleRoot, "merkle_root");
+}
+
+void serialize(TransactionExtraMergeMiningTag &tag, ISerializer &serializer)
+{
+    if (serializer.type() == ISerializer::OUTPUT) {
+        std::string field;
+        StringOutputStream os(field);
+        BinaryOutputStreamSerializer output(os);
+        doSerialize(tag, output);
+        serializer(field, "");
+    } else {
+        std::string field;
+        serializer(field, "");
+        MemoryInputStream stream(field.data(), field.size());
+        BinaryInputStreamSerializer input(stream);
+        doSerialize(tag, input);
+    }
 }
 
 void serialize(KeyPair &keyPair, ISerializer &serializer)

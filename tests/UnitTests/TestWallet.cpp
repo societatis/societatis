@@ -2210,7 +2210,7 @@ TEST_F(WalletApi, createFusionTransactionCreatesValidFusionTransactionWithoutMix
 
   ASSERT_NE(WALLET_INVALID_TRANSACTION_ID, wallet.createFusionTransaction(FUSION_THRESHOLD, 0));
   ASSERT_TRUE(catchNode.caught);
-  ASSERT_TRUE(currency.isFusionTransaction(catchNode.transaction, CryptoNote::parameters::UPGRADE_HEIGHT_V5));
+  ASSERT_TRUE(currency.isFusionTransaction(catchNode.transaction, CryptoNote::parameters::UPGRADE_HEIGHT_V4));
 
   wallet.shutdown();
 }
@@ -2225,7 +2225,7 @@ TEST_F(WalletApi, createFusionTransactionCreatesValidFusionTransactionWithMixin)
 
   ASSERT_NE(WALLET_INVALID_TRANSACTION_ID, wallet.createFusionTransaction(FUSION_THRESHOLD, 2));
   ASSERT_TRUE(catchNode.caught);
-  ASSERT_TRUE(currency.isFusionTransaction(catchNode.transaction, CryptoNote::parameters::UPGRADE_HEIGHT_V5));
+  ASSERT_TRUE(currency.isFusionTransaction(catchNode.transaction, CryptoNote::parameters::UPGRADE_HEIGHT_V4));
 
   wallet.shutdown();
 }
@@ -2604,7 +2604,7 @@ TEST_F(WalletApi, DISABLED_fusionManagerEstimate) {
       maxOutputIndex = i;
     }
 
-    if (currency.isAmountApplicableInFusionTransactionInput(tx.outputs[i].amount, tx.outputs[i].amount + 1, CryptoNote::parameters::UPGRADE_HEIGHT_V5)) {
+    if (currency.isAmountApplicableInFusionTransactionInput(tx.outputs[i].amount, tx.outputs[i].amount + 1, CryptoNote::parameters::UPGRADE_HEIGHT_V4)) {
       ++expectedResult.fusionReadyCount;
     }
   }
