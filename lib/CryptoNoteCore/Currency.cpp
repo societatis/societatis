@@ -754,8 +754,7 @@ difficulty_type Currency::nextDifficultyV1(
         return 0;
     }
 
-    //return (low + timeSpan - 1) / timeSpan;
-    return CryptoNote::parameters::DEFAULT_DIFFICULTY;
+    return (low + timeSpan - 1) / timeSpan;
 }
 
 // difficulty for block version 2.0
