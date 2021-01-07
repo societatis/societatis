@@ -1629,14 +1629,6 @@ bool Blockchain::handle_alternative_block(
             return false;
         }
 
-        // Disable merged mining
-        TransactionExtraMergeMiningTag mmTag;
-        if (getMergeMiningTagFromExtra(bei.bl.baseTransaction.extra, mmTag)
-            && bei.bl.majorVersion >= CryptoNote::BLOCK_MAJOR_VERSION_2) {
-            logger(ERROR, BRIGHT_RED) << "Merge mining tag was found in extra of miner transaction";
-            return false;
-        }
-
         // Check the block's hash against the difficulty target for its alt chain
         difficulty_type current_diff = get_next_difficulty_for_alternative_chain(alt_chain, bei, bei.bl.timestamp);
         if (!(current_diff)) {
@@ -2644,14 +2636,6 @@ bool Blockchain::pushBlock(
 
     if (!checkParentBlockSize(blockData, blockHash)) {
         bvc.m_verification_failed = true;
-        return false;
-    }
-
-    // Disable merged mining
-    TransactionExtraMergeMiningTag mmTag;
-    if (getMergeMiningTagFromExtra(blockData.baseTransaction.extra, mmTag)
-        && blockData.majorVersion >= CryptoNote::BLOCK_MAJOR_VERSION_2) {
-        logger(ERROR, BRIGHT_RED) << "Merge mining tag was found in extra of miner transaction";
         return false;
     }
 
