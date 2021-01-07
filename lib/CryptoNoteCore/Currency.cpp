@@ -152,7 +152,7 @@ bool Currency::getBlockReward(
     // Consistency
     double consistency = 1.0;
     double exponent = 0.25; 
-    if (height >= CryptoNote::parameters::UPGRADE_HEIGHT_V6 && difficultyTarget() != 0) {
+    if (height >= CryptoNote::parameters::UPGRADE_HEIGHT_V3 && difficultyTarget() != 0) {
         // blockTarget is (Timestamp of New Block - Timestamp of Previous Block)
         consistency = (double) blockTarget / (double) difficultyTarget();
 
@@ -699,7 +699,7 @@ difficulty_type Currency::nextDifficulty(uint32_t height,
     if (!timestamps.empty()) {
         last_timestamp = timestamps.back();
     }
-    if ((blockMajorVersion >= BLOCK_MAJOR_VERSION_6) &&
+    if ((blockMajorVersion >= BLOCK_MAJOR_VERSION_3) &&
             (nextBlockTime > last_timestamp + CryptoNote::parameters::CRYPTONOTE_CLIF_THRESHOLD)) {
         size_t array_size = cumulativeDifficulties.size();
         difficulty_type last_difficulty = 1;
@@ -712,15 +712,15 @@ difficulty_type Currency::nextDifficulty(uint32_t height,
                                currentSolveTime, lazy_stat_cb);
     }
 
-    if (blockMajorVersion >= BLOCK_MAJOR_VERSION_6) {
-        return nextDifficultyV6(blockMajorVersion, timestamps, cumulativeDifficulties, height);
+    if (blockMajorVersion >= BLOCK_MAJOR_VERSION_3) {
+        return nextDifficultyV3(blockMajorVersion, timestamps, cumulativeDifficulties, height);
     }
     else {
-        return nextDifficultyV1(timestamps, cumulativeDifficulties);
+        return nextDifficultyV1V2(timestamps, cumulativeDifficulties);
     }
 }
 
-difficulty_type Currency::nextDifficultyV1(
+difficulty_type Currency::nextDifficultyV1V2(
     std::vector<uint64_t> timestamps,
     std::vector<difficulty_type> cumulativeDifficulties) const
 {
@@ -767,8 +767,8 @@ difficulty_type Currency::nextDifficultyV1(
     return (low + timeSpan - 1) / timeSpan;
 }
 
-// difficulty for block version 6.0
-difficulty_type Currency::nextDifficultyV6(uint8_t blockMajorVersion,
+// difficulty for block version 3.0 EPOW
+difficulty_type Currency::nextDifficultyV3(uint8_t blockMajorVersion,
     std::vector<uint64_t> timestamps,
     std::vector<difficulty_type> cumulativeDifficulties,
     uint32_t height) const
@@ -793,7 +793,7 @@ difficulty_type Currency::nextDifficultyV6(uint8_t blockMajorVersion,
     // Consider this as a service or trial period.
     // With EPoW reward algo in place, we don't really need to worry about attackers
     // or large miners taking advanatage of our system.
-    if (height < CryptoNote::parameters::UPGRADE_HEIGHT_V6 + diffWindow) {
+    if (height < CryptoNote::parameters::UPGRADE_HEIGHT_V3 + diffWindow) {
         return nextDiffV6;
     }
 
@@ -958,7 +958,7 @@ bool Currency::checkProofOfWorkV1(
     difficulty_type currentDiffic,
     Crypto::Hash &proofOfWork) const
 {
-    if (BLOCK_MAJOR_VERSION_2 == block.majorVersion||BLOCK_MAJOR_VERSION_3 == block.majorVersion) {
+    if (BLOCK_MAJOR_VERSION_2 == block.majorVersion) {
         return false;
     }
 
@@ -1028,12 +1028,12 @@ bool Currency::checkProofOfWork(
 {
     switch (block.majorVersion) {
     case BLOCK_MAJOR_VERSION_1:
+    case BLOCK_MAJOR_VERSION_3:
     case BLOCK_MAJOR_VERSION_4:
     case BLOCK_MAJOR_VERSION_5:
     case BLOCK_MAJOR_VERSION_6:
         return checkProofOfWorkV1(context, block, currentDiffic, proofOfWork);
     case BLOCK_MAJOR_VERSION_2:
-    case BLOCK_MAJOR_VERSION_3:
         return checkProofOfWorkV2(context, block, currentDiffic, proofOfWork);
     }
 

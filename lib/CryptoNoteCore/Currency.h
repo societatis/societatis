@@ -51,7 +51,7 @@ public:
     size_t timestampCheckWindow() const { return m_timestampCheckWindow; }
     size_t timestampCheckWindow(uint8_t blockMajorVersion) const
     {
-        if (blockMajorVersion >= BLOCK_MAJOR_VERSION_4) {
+        if (blockMajorVersion >= BLOCK_MAJOR_VERSION_3) {
             return timestampCheckWindow_v1();
         } else {
             return timestampCheckWindow();
@@ -61,7 +61,7 @@ public:
     uint64_t blockFutureTimeLimit() const { return m_blockFutureTimeLimit; }
     uint64_t blockFutureTimeLimit(uint8_t blockMajorVersion) const
     {
-        if (blockMajorVersion >= BLOCK_MAJOR_VERSION_4) {
+        if (blockMajorVersion >= BLOCK_MAJOR_VERSION_3) {
             return blockFutureTimeLimit_v1();
         } else {
             return blockFutureTimeLimit();
@@ -104,13 +104,10 @@ public:
     size_t difficultyCut() const { return m_difficultyCut; }
     size_t difficultyBlocksCountByBlockVersion(uint8_t blockMajorVersion) const
     {
-        if (blockMajorVersion >= BLOCK_MAJOR_VERSION_6) {
+        if (blockMajorVersion >= BLOCK_MAJOR_VERSION_3) {
             return difficultyBlocksCount6();
-        } else if (blockMajorVersion >= BLOCK_MAJOR_VERSION_3) {
-            return difficultyBlocksCount3() + 1;
-        } else if (blockMajorVersion == BLOCK_MAJOR_VERSION_2) {
-            return difficultyBlocksCount2();
-        } else {
+        }
+        else {
             return difficultyBlocksCount();
         }
     };
@@ -225,10 +222,10 @@ public:
         std::vector<difficulty_type> Difficulties,
         uint64_t nextBlockTime,
         lazy_stat_callback_type &lazy_stat_cb) const;
-    difficulty_type nextDifficultyV1(
+    difficulty_type nextDifficultyV1V2(
         std::vector<uint64_t> timestamps,
         std::vector<difficulty_type> Difficulties) const;
-    difficulty_type nextDifficultyV6(uint8_t blockMajorVersion,
+    difficulty_type nextDifficultyV3(uint8_t blockMajorVersion,
         std::vector<uint64_t> timestamps,
         std::vector<difficulty_type> Difficulties,
         uint32_t height) const;
