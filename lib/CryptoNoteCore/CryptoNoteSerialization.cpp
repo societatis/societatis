@@ -398,25 +398,6 @@ void serialize(ParentBlockSerializer &pbs, ISerializer &serializer)
 
     serializer(pbs.m_parentBlock.baseTransaction, "minerTx");
 
-    TransactionExtraMergeMiningTag mmTag;
-    if (!getMergeMiningTagFromExtra(pbs.m_parentBlock.baseTransaction.extra, mmTag)) {
-        throw std::runtime_error("Can't get extra merge mining tag");
-    }
-
-    if (mmTag.depth > 8 * sizeof(Crypto::Hash)) {
-        throw std::runtime_error("Wrong merge mining tag depth");
-    }
-
-    if (serializer.type() == ISerializer::OUTPUT) {
-        if (mmTag.depth != pbs.m_parentBlock.blockchainBranch.size()) {
-            throw std::runtime_error(
-                "Blockchain branch size must be equal to merge mining tag depth"
-            );
-        }
-    } else {
-        pbs.m_parentBlock.blockchainBranch.resize(mmTag.depth);
-    }
-
     //serializer(m_parentBlock.blockchainBranch, "blockchainBranch");
     // TODO: Make arrays with computable size! This code won't work with json serialization!
     for (Crypto::Hash& hash: pbs.m_parentBlock.blockchainBranch) {
@@ -472,31 +453,6 @@ void serialize(AccountKeys &keys, ISerializer &s)
     s(keys.address, "m_account_address");
     s(keys.spendSecretKey, "m_spend_secret_key");
     s(keys.viewSecretKey, "m_view_secret_key");
-}
-
-void doSerialize(TransactionExtraMergeMiningTag &tag, ISerializer &serializer)
-{
-    auto depth = static_cast<uint64_t>(tag.depth);
-    serializer(depth, "depth");
-    tag.depth = static_cast<size_t>(depth);
-    serializer(tag.merkleRoot, "merkle_root");
-}
-
-void serialize(TransactionExtraMergeMiningTag &tag, ISerializer &serializer)
-{
-    if (serializer.type() == ISerializer::OUTPUT) {
-        std::string field;
-        StringOutputStream os(field);
-        BinaryOutputStreamSerializer output(os);
-        doSerialize(tag, output);
-        serializer(field, "");
-    } else {
-        std::string field;
-        serializer(field, "");
-        MemoryInputStream stream(field.data(), field.size());
-        BinaryInputStreamSerializer input(stream);
-        doSerialize(tag, input);
-    }
 }
 
 void serialize(KeyPair &keyPair, ISerializer &serializer)

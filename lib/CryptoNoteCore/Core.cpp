@@ -645,16 +645,6 @@ bool core::get_block_template(
             b.parentBlock.majorVersion = BLOCK_MAJOR_VERSION_1;
             b.parentBlock.majorVersion = BLOCK_MINOR_VERSION_0;
             b.parentBlock.transactionCount = 1;
-
-            //TODO 
-            TransactionExtraMergeMiningTag mm_tag = boost::value_initialized<decltype(mm_tag)>();
-
-            if (!appendMergeMiningTagToExtra(b.parentBlock.baseTransaction.extra, mm_tag)) {
-                logger(ERROR, BRIGHT_RED)
-                    << "Failed to append merge mining tag "
-                    << "to extra of the parent block miner transaction";
-                return false;
-            }
         }
 
         b.previousBlockHash = get_tail_id();
