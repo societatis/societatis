@@ -71,8 +71,7 @@ bool miner::set_block_template(const Block &bl, const difficulty_type &di)
 
     m_template = bl;
 
-    if (m_template.majorVersion == BLOCK_MAJOR_VERSION_2
-        || m_template.majorVersion == BLOCK_MAJOR_VERSION_3) {
+    if (m_template.majorVersion == BLOCK_MAJOR_VERSION_2) {
         CryptoNote::TransactionExtraMergeMiningTag mm_tag;
         mm_tag.depth = 0;
         if (!CryptoNote::get_aux_block_header_hash(m_template, mm_tag.merkleRoot)) {

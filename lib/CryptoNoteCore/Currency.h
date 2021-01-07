@@ -51,23 +51,13 @@ public:
     size_t timestampCheckWindow() const { return m_timestampCheckWindow; }
     size_t timestampCheckWindow(uint8_t blockMajorVersion) const
     {
-        if (blockMajorVersion >= BLOCK_MAJOR_VERSION_5) {
-            return timestampCheckWindow_v1();
-        } else {
-            return timestampCheckWindow();
-        }
+        return timestampCheckWindow();
     }
-    size_t timestampCheckWindow_v1() const { return m_timestampCheckWindow_v1; }
     uint64_t blockFutureTimeLimit() const { return m_blockFutureTimeLimit; }
     uint64_t blockFutureTimeLimit(uint8_t blockMajorVersion) const
     {
-        if (blockMajorVersion >= BLOCK_MAJOR_VERSION_5) {
-            return blockFutureTimeLimit_v1();
-        } else {
-            return blockFutureTimeLimit();
-        }
+        return blockFutureTimeLimit();
     }
-    uint64_t blockFutureTimeLimit_v1() const { return m_blockFutureTimeLimit_v1; }
 
     uint64_t moneySupply() const { return m_moneySupply; }
     unsigned int emissionSpeedFactor() const { return m_emissionSpeedFactor; }
@@ -104,20 +94,9 @@ public:
     size_t difficultyCut() const { return m_difficultyCut; }
     size_t difficultyBlocksCountByBlockVersion(uint8_t blockMajorVersion) const
     {
-        if (blockMajorVersion >= BLOCK_MAJOR_VERSION_6) {
-            return difficultyBlocksCount6();
-        } else if (blockMajorVersion >= BLOCK_MAJOR_VERSION_3) {
-            return difficultyBlocksCount3() + 1;
-        } else if (blockMajorVersion == BLOCK_MAJOR_VERSION_2) {
-            return difficultyBlocksCount2();
-        } else {
-            return difficultyBlocksCount();
-        }
+        return difficultyBlocksCount();
     };
     size_t difficultyBlocksCount() const { return m_difficultyWindow + m_difficultyLag; }
-    size_t difficultyBlocksCount2() const { return CryptoNote::parameters::DIFFICULTY_WINDOW_V2; }
-    size_t difficultyBlocksCount3() const { return CryptoNote::parameters::DIFFICULTY_WINDOW_V3; }
-    size_t difficultyBlocksCount6() const { return CryptoNote::parameters::DIFFICULTY_WINDOW_V6; }
 
     size_t maxBlockSizeInitial() const { return m_maxBlockSizeInitial; }
     uint64_t maxBlockSizeGrowthSpeedNumerator() const { return m_maxBlockSizeGrowthSpeedNumerator; }
@@ -238,7 +217,7 @@ public:
         uint8_t blockMajorVersion,
         std::vector<uint64_t> timestamps,
         std::vector<difficulty_type> Difficulties) const;
-    difficulty_type nextDifficultyV6(uint8_t blockMajorVersion,
+    difficulty_type nextDifficultyV2(uint8_t blockMajorVersion,
         std::vector<uint64_t> timestamps,
         std::vector<difficulty_type> Difficulties,
         uint32_t height) const;
@@ -249,16 +228,6 @@ public:
         uint64_t currentSolveTime,
         lazy_stat_callback_type& lazy_stat_cb) const;
 
-    bool checkProofOfWorkV1(
-        Crypto::cn_context &context,
-        const Block &block,
-        difficulty_type currentDiffic,
-        Crypto::Hash &proofOfWork) const;
-    bool checkProofOfWorkV2(
-        Crypto::cn_context &context,
-        const Block &block,
-        difficulty_type currentDiffic,
-        Crypto::Hash &proofOfWork) const;
     bool checkProofOfWork(
         Crypto::cn_context &context,
         const Block &block,
@@ -298,9 +267,7 @@ private:
     size_t m_expectedNumberOfBlocksPerDay;
 
     size_t m_timestampCheckWindow;
-    size_t m_timestampCheckWindow_v1;
     uint64_t m_blockFutureTimeLimit;
-    uint64_t m_blockFutureTimeLimit_v1;
 
     uint64_t m_moneySupply;
     unsigned int m_emissionSpeedFactor;
@@ -347,10 +314,6 @@ private:
     size_t m_fusionTxMinInOutCountRatio;
 
     uint32_t m_upgradeHeightV2;
-    uint32_t m_upgradeHeightV3;
-    uint32_t m_upgradeHeightV4;
-    uint32_t m_upgradeHeightV5;
-    uint32_t m_upgradeHeightV6;
     unsigned int m_upgradeVotingThreshold;
     uint32_t m_upgradeVotingWindow;
     uint32_t m_upgradeWindow;
@@ -427,19 +390,9 @@ public:
         m_currency.m_timestampCheckWindow = val;
         return *this;
     }
-    CurrencyBuilder &timestampCheckWindow_v1(size_t val)
-    {
-        m_currency.m_timestampCheckWindow_v1 = val;
-        return *this;
-    }
     CurrencyBuilder &blockFutureTimeLimit(uint64_t val)
     {
         m_currency.m_blockFutureTimeLimit = val;
-        return *this;
-    }
-    CurrencyBuilder &blockFutureTimeLimit_v1(uint64_t val)
-    {
-        m_currency.m_blockFutureTimeLimit_v1 = val;
         return *this;
     }
 
@@ -571,26 +524,6 @@ public:
     CurrencyBuilder &upgradeHeightV2(uint64_t val)
     {
         m_currency.m_upgradeHeightV2 = static_cast<uint32_t>(val);
-        return *this;
-    }
-    CurrencyBuilder &upgradeHeightV3(uint64_t val)
-    {
-        m_currency.m_upgradeHeightV3 = static_cast<uint32_t>(val);
-        return *this;
-    }
-    CurrencyBuilder &upgradeHeightV4(uint64_t val)
-    {
-        m_currency.m_upgradeHeightV4 = static_cast<uint32_t>(val);
-        return *this;
-    }
-    CurrencyBuilder &upgradeHeightV5(uint64_t val)
-    {
-        m_currency.m_upgradeHeightV5 = static_cast<uint32_t>(val);
-        return *this;
-    }
-    CurrencyBuilder &upgradeHeightV6(uint64_t val)
-    {
-        m_currency.m_upgradeHeightV6 = static_cast<uint32_t>(val);
         return *this;
     }
     CurrencyBuilder &upgradeVotingThreshold(unsigned int val);
