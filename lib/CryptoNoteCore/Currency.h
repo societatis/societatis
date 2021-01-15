@@ -49,25 +49,8 @@ public:
     size_t expectedNumberOfBlocksPerDay() const { return m_expectedNumberOfBlocksPerDay; }
 
     size_t timestampCheckWindow() const { return m_timestampCheckWindow; }
-    size_t timestampCheckWindow(uint8_t blockMajorVersion) const
-    {
-        if (blockMajorVersion >= BLOCK_MAJOR_VERSION_3) {
-            return timestampCheckWindow_v1();
-        } else {
-            return timestampCheckWindow();
-        }
-    }
-    size_t timestampCheckWindow_v1() const { return m_timestampCheckWindow_v1; }
+
     uint64_t blockFutureTimeLimit() const { return m_blockFutureTimeLimit; }
-    uint64_t blockFutureTimeLimit(uint8_t blockMajorVersion) const
-    {
-        if (blockMajorVersion >= BLOCK_MAJOR_VERSION_3) {
-            return blockFutureTimeLimit_v1();
-        } else {
-            return blockFutureTimeLimit();
-        }
-    }
-    uint64_t blockFutureTimeLimit_v1() const { return m_blockFutureTimeLimit_v1; }
 
     uint64_t moneySupply() const { return m_moneySupply; }
     unsigned int emissionSpeedFactor() const { return m_emissionSpeedFactor; }
@@ -104,17 +87,9 @@ public:
     size_t difficultyCut() const { return m_difficultyCut; }
     size_t difficultyBlocksCountByBlockVersion(uint8_t blockMajorVersion) const
     {
-        if (blockMajorVersion >= BLOCK_MAJOR_VERSION_3) {
-            return difficultyBlocksCount6();
-        }
-        else {
-            return difficultyBlocksCount();
-        }
+        return difficultyBlocksCount();
     };
     size_t difficultyBlocksCount() const { return m_difficultyWindow + m_difficultyLag; }
-    size_t difficultyBlocksCount2() const { return CryptoNote::parameters::DIFFICULTY_WINDOW_V2; }
-    size_t difficultyBlocksCount3() const { return CryptoNote::parameters::DIFFICULTY_WINDOW_V3; }
-    size_t difficultyBlocksCount6() const { return CryptoNote::parameters::DIFFICULTY_WINDOW_V6; }
 
     size_t maxBlockSizeInitial() const { return m_maxBlockSizeInitial; }
     uint64_t maxBlockSizeGrowthSpeedNumerator() const { return m_maxBlockSizeGrowthSpeedNumerator; }
@@ -285,9 +260,7 @@ private:
     size_t m_expectedNumberOfBlocksPerDay;
 
     size_t m_timestampCheckWindow;
-    size_t m_timestampCheckWindow_v1;
     uint64_t m_blockFutureTimeLimit;
-    uint64_t m_blockFutureTimeLimit_v1;
 
     uint64_t m_moneySupply;
     unsigned int m_emissionSpeedFactor;
@@ -414,19 +387,9 @@ public:
         m_currency.m_timestampCheckWindow = val;
         return *this;
     }
-    CurrencyBuilder &timestampCheckWindow_v1(size_t val)
-    {
-        m_currency.m_timestampCheckWindow_v1 = val;
-        return *this;
-    }
     CurrencyBuilder &blockFutureTimeLimit(uint64_t val)
     {
         m_currency.m_blockFutureTimeLimit = val;
-        return *this;
-    }
-    CurrencyBuilder &blockFutureTimeLimit_v1(uint64_t val)
-    {
-        m_currency.m_blockFutureTimeLimit_v1 = val;
         return *this;
     }
 

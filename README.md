@@ -75,7 +75,7 @@ git clone https://github.com/societatis/societatis
 cd societatis
 md build
 cd build
-cmake -G "Visual Studio 16 2019" -X x64 -DBUILD_WITH_TOOLS:BOOL=TRUE .. 
+cmake -G "Visual Studio 16 2019" -A x64 -DBUILD_WITH_TOOLS:BOOL=TRUE .. 
 cmake --build . --config Release
 ```
 - If all went well, it will complete successfully, and you will find all your binaries in the `.\build\src\Release` directory;
