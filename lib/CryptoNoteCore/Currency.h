@@ -49,7 +49,6 @@ public:
     size_t expectedNumberOfBlocksPerDay() const { return m_expectedNumberOfBlocksPerDay; }
 
     size_t timestampCheckWindow() const { return m_timestampCheckWindow; }
-
     uint64_t blockFutureTimeLimit() const { return m_blockFutureTimeLimit; }
 
     uint64_t moneySupply() const { return m_moneySupply; }
@@ -191,19 +190,10 @@ public:
 
     typedef std::function<difficulty_type(IMinerHandler::stat_period, uint64_t)> lazy_stat_callback_type;
 
-    difficulty_type nextDifficulty(uint32_t height,
-        uint8_t blockMajorVersion,
-        std::vector<uint64_t> timestamps,
-        std::vector<difficulty_type> Difficulties,
-        uint64_t nextBlockTime,
-        lazy_stat_callback_type &lazy_stat_cb) const;
-    difficulty_type nextDifficultyV1V2(
-        std::vector<uint64_t> timestamps,
-        std::vector<difficulty_type> Difficulties) const;
-    difficulty_type nextDifficultyV3(uint8_t blockMajorVersion,
-        std::vector<uint64_t> timestamps,
-        std::vector<difficulty_type> Difficulties,
-        uint32_t height) const;
+    difficulty_type nextDifficulty(uint8_t blockMajorVersion,
+                                   std::vector<uint64_t> timestamps,
+                                   std::vector<difficulty_type> Difficulties,
+                                   uint32_t height) const;
 
     difficulty_type getClifDifficulty(uint32_t height,
         uint8_t blockMajorVersion,
@@ -211,16 +201,6 @@ public:
         uint64_t currentSolveTime,
         lazy_stat_callback_type& lazy_stat_cb) const;
 
-    bool checkProofOfWorkV1(
-        Crypto::cn_context &context,
-        const Block &block,
-        difficulty_type currentDiffic,
-        Crypto::Hash &proofOfWork) const;
-    bool checkProofOfWorkV2(
-        Crypto::cn_context &context,
-        const Block &block,
-        difficulty_type currentDiffic,
-        Crypto::Hash &proofOfWork) const;
     bool checkProofOfWork(
         Crypto::cn_context &context,
         const Block &block,

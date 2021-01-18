@@ -40,7 +40,7 @@ namespace {
     CryptoNote::Block blk_prev = blk_last;
     for (size_t i = 0; i < new_block_count; ++i) {
       CryptoNote::Block blk_next;
-	  CryptoNote::difficulty_type diffic = currency.nextDifficultyV5(block_major_version, timestamps, cummulative_difficulties);
+	  CryptoNote::difficulty_type diffic = currency.nextDifficulty(block_major_version, timestamps, cummulative_difficulties, get_block_height(blk_last));
       if (!generator.constructBlockManually(blk_next, blk_prev, miner_account,
         test_generator::bf_major_ver | test_generator::bf_timestamp | test_generator::bf_diffic,
         block_major_version, 0, blk_prev.timestamp, Crypto::Hash(), diffic)) {
@@ -57,60 +57,6 @@ namespace {
 
       events.push_back(blk_next);
       blk_prev = blk_next;
-    }
-
-    return true;
-  }
-
-  bool getParentBlockSize(const CryptoNote::Block& block, size_t& size) {
-    auto serializer = CryptoNote::makeParentBlockSerializer(block, false, false);
-    if (!CryptoNote::getObjectBinarySize(serializer, size)) {
-      LOG_ERROR("Failed to get size of parent block");
-      return false;
-    }
-    return true;
-  }
-
-  bool adjustParentBlockSize(CryptoNote::Block& block, size_t targetSize) {
-    size_t parentBlockSize;
-    if (!getParentBlockSize(block, parentBlockSize)) {
-      return false;
-    }
-
-    if (parentBlockSize > targetSize) {
-      LOG_ERROR("Parent block size is " << parentBlockSize << " bytes that is already greater than target size " << targetSize << " bytes");
-      return false;
-    }
-
-    block.parentBlock.baseTransaction.extra.resize(block.parentBlock.baseTransaction.extra.size() + (targetSize - parentBlockSize));
-
-    if (!getParentBlockSize(block, parentBlockSize)) {
-      return false;
-    }
-
-    if (parentBlockSize > targetSize) {
-      if (block.parentBlock.baseTransaction.extra.size() < parentBlockSize - targetSize) {
-        LOG_ERROR("Failed to adjust parent block size to " << targetSize);
-        return false;
-      }
-
-      block.parentBlock.baseTransaction.extra.resize(block.parentBlock.baseTransaction.extra.size() - (parentBlockSize - targetSize));
-
-      if (!getParentBlockSize(block, parentBlockSize)) {
-        return false;
-      }
-
-      if (parentBlockSize + 1 == targetSize) {
-        block.timestamp = std::max(block.timestamp, UINT64_C(1)) << 7;
-        if (!getParentBlockSize(block, parentBlockSize)) {
-          return false;
-        }
-      }
-    }
-
-    if (parentBlockSize != targetSize) {
-      LOG_ERROR("Failed to adjust parent block size to " << targetSize);
-      return false;
     }
 
     return true;
@@ -254,14 +200,14 @@ bool gen_block_invalid_nonce::generate(std::vector<test_event_entry>& events) co
   BLOCK_VALIDATION_INIT_GENERATE();
 
   std::vector<uint64_t> timestamps;
-  std::vector<difficulty_type> commulative_difficulties;
-  if (!lift_up_difficulty(m_currency, events, timestamps, commulative_difficulties, generator, 2, blk_0, miner_account,
+  std::vector<difficulty_type> cummulative_difficulties;
+  if (!lift_up_difficulty(m_currency, events, timestamps, cummulative_difficulties, generator, 2, blk_0, miner_account,
     m_blockMajorVersion)) {
     return false;
   }
 
   // Create invalid nonce
-  difficulty_type diffic = m_currency.nextDifficultyV5(m_blockMajorVersion, timestamps, commulative_difficulties);
+  difficulty_type diffic = m_currency.nextDifficulty(0, timestamps, cummulative_difficulties, get_block_height(blk_0));
   assert(1 < diffic);
   const Block& blk_last = boost::get<Block>(events.back());
   uint64_t timestamp = blk_last.timestamp;
@@ -689,7 +635,7 @@ bool gen_block_invalid_binary_format::generate(std::vector<test_event_entry>& ev
   do
   {
     blk_last = boost::get<Block>(events.back());
-	diffic = m_currency.nextDifficultyV5(m_blockMajorVersion, timestamps, cummulative_difficulties);
+	diffic = m_currency.nextDifficulty(0, timestamps, cummulative_difficulties, get_block_height(blk_0));
     if (!lift_up_difficulty(m_currency, events, timestamps, cummulative_difficulties, generator, 1, blk_last,
       miner_account, m_blockMajorVersion)) {
       return false;
@@ -706,7 +652,7 @@ bool gen_block_invalid_binary_format::generate(std::vector<test_event_entry>& ev
   std::vector<Crypto::Hash> tx_hashes;
   tx_hashes.push_back(getObjectHash(tx_0));
   size_t txs_size = getObjectBinarySize(tx_0);
-  diffic = m_currency.nextDifficultyV5(m_blockMajorVersion, timestamps, cummulative_difficulties);
+  diffic = m_currency.nextDifficulty(0, timestamps, cummulative_difficulties, get_block_height(blk_0));
   if (!generator.constructBlockManually(blk_test, blk_last, miner_account,
     test_generator::bf_major_ver | test_generator::bf_diffic | test_generator::bf_timestamp | test_generator::bf_tx_hashes,
     m_blockMajorVersion, 0, blk_last.timestamp, Crypto::Hash(), diffic, Transaction(), tx_hashes, txs_size))
@@ -764,9 +710,6 @@ bool TestMaxSizeOfParentBlock::generate(std::vector<test_event_entry>& events) c
 
   CryptoNote::Block blk_1;
   generator.constructBlockManually(blk_1, blk_0, miner_account, test_generator::bf_major_ver, BLOCK_MAJOR_VERSION_2);
-  if (!adjustParentBlockSize(blk_1, 2 * 1024)) {
-    return false;
-  }
   events.push_back(blk_1);
 
   DO_CALLBACK(events, "check_block_accepted");
@@ -779,9 +722,6 @@ bool TestBigParentBlock::generate(std::vector<test_event_entry>& events) const {
 
   CryptoNote::Block blk_1;
   generator.constructBlockManually(blk_1, blk_0, miner_account, test_generator::bf_major_ver, BLOCK_MAJOR_VERSION_2);
-  if (!adjustParentBlockSize(blk_1, 2 * 1024 + 1)) {
-    return false;
-  }
   events.push_back(blk_1);
 
   DO_CALLBACK(events, "check_block_purged");

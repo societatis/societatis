@@ -124,11 +124,11 @@ uint32_t Currency::upgradeHeight(uint8_t majorVersion) const
     else if (majorVersion == BLOCK_MAJOR_VERSION_4) {
         return m_upgradeHeightV4;
     }
-    else if (majorVersion == BLOCK_MAJOR_VERSION_2) {
-        return m_upgradeHeightV2;
-    }
     else if (majorVersion == BLOCK_MAJOR_VERSION_3) {
         return m_upgradeHeightV3;
+    }
+    else if (majorVersion == BLOCK_MAJOR_VERSION_2) {
+        return m_upgradeHeightV2;
     }
     else {
         return static_cast<uint32_t>(-1);
@@ -152,7 +152,7 @@ bool Currency::getBlockReward(
     // Consistency
     double consistency = 1.0;
     double exponent = 0.25; 
-    if (height >= CryptoNote::parameters::UPGRADE_HEIGHT_V3 && difficultyTarget() != 0) {
+    if (height > CryptoNote::parameters::UPGRADE_HEIGHT_V1 && difficultyTarget() != 0) {
         // blockTarget is (Timestamp of New Block - Timestamp of Previous Block)
         consistency = (double) blockTarget / (double) difficultyTarget();
 
@@ -189,10 +189,7 @@ bool Currency::getBlockReward(
     }
 
     uint64_t penalizedBaseReward = getPenalizedAmount(baseReward, medianSize, currentBlockSize);
-    uint64_t penalizedFee = fee;
-    if (blockMajorVersion >= BLOCK_MAJOR_VERSION_2 || cryptonoteCoinVersion() == 1) {
-        penalizedFee = getPenalizedAmount(fee, medianSize, currentBlockSize);
-    }
+    uint64_t penalizedFee = getPenalizedAmount(fee, medianSize, currentBlockSize);
 
     emissionChange = penalizedBaseReward - (fee - penalizedFee);
     reward = penalizedBaseReward + penalizedFee;
@@ -675,115 +672,20 @@ uint64_t Currency::roundUpMinFee(uint64_t minimalFee, int digits) const
     return ret;
 }
 
-difficulty_type Currency::nextDifficulty(uint32_t height,
+difficulty_type Currency::nextDifficulty(
     uint8_t blockMajorVersion,
-    std::vector<uint64_t> timestamps,
-    std::vector<difficulty_type> cumulativeDifficulties,
-    uint64_t nextBlockTime, lazy_stat_callback_type &lazy_stat_cb) const
-{
-    // check if we use special scenario with some fixed diff
-    if (CryptoNote::parameters::FIXED_DIFFICULTY > 0)
-    {
-        logger (WARNING) << "Fixed difficulty is used: " <<
-                            CryptoNote::parameters::FIXED_DIFFICULTY;
-        return CryptoNote::parameters::FIXED_DIFFICULTY;
-    }
-    if (m_fixedDifficulty > 0)
-    {
-        logger (WARNING) << "Fixed difficulty is used: " <<
-                            m_fixedDifficulty;
-        return m_fixedDifficulty;
-    }
-
-    uint64_t last_timestamp = 0;
-    if (!timestamps.empty()) {
-        last_timestamp = timestamps.back();
-    }
-    if ((blockMajorVersion >= BLOCK_MAJOR_VERSION_3) &&
-            (nextBlockTime > last_timestamp + CryptoNote::parameters::CRYPTONOTE_CLIF_THRESHOLD)) {
-        size_t array_size = cumulativeDifficulties.size();
-        difficulty_type last_difficulty = 1;
-        if (array_size >= 2) {
-            last_difficulty = cumulativeDifficulties[array_size - 1] - cumulativeDifficulties[array_size - 2];
-        }
-        uint64_t currentSolveTime = nextBlockTime - last_timestamp;
-        return getClifDifficulty(height, blockMajorVersion,
-                               last_difficulty, last_timestamp,
-                               currentSolveTime, lazy_stat_cb);
-    }
-
-    if (blockMajorVersion >= BLOCK_MAJOR_VERSION_3) {
-        return nextDifficultyV3(blockMajorVersion, timestamps, cumulativeDifficulties, height);
-    }
-    else {
-        return nextDifficultyV1V2(timestamps, cumulativeDifficulties);
-    }
-}
-
-difficulty_type Currency::nextDifficultyV1V2(
-    std::vector<uint64_t> timestamps,
-    std::vector<difficulty_type> cumulativeDifficulties) const
-{
-    assert(m_difficultyWindow >= 2);
-
-    if (timestamps.size() > m_difficultyWindow) {
-        timestamps.resize(m_difficultyWindow);
-        cumulativeDifficulties.resize(m_difficultyWindow);
-    }
-
-    size_t length = timestamps.size();
-    assert(length == cumulativeDifficulties.size());
-    assert(length <= m_difficultyWindow);
-    if (length <= 1) {
-        return 1;
-    }
-
-    sort(timestamps.begin(), timestamps.end());
-
-    size_t cutBegin, cutEnd;
-    assert(2 * m_difficultyCut <= m_difficultyWindow - 2);
-    if (length <= m_difficultyWindow - 2 * m_difficultyCut) {
-        cutBegin = 0;
-        cutEnd = length;
-    } else {
-        cutBegin = (length - (m_difficultyWindow - 2 * m_difficultyCut) + 1) / 2;
-        cutEnd = cutBegin + (m_difficultyWindow - 2 * m_difficultyCut);
-    }
-    assert(/*cut_begin >= 0 &&*/ cutBegin + 2 <= cutEnd && cutEnd <= length);
-    uint64_t timeSpan = timestamps[cutEnd - 1] - timestamps[cutBegin];
-    if (timeSpan == 0) {
-        timeSpan = 1;
-    }
-
-    difficulty_type totalWork = cumulativeDifficulties[cutEnd - 1]-cumulativeDifficulties[cutBegin];
-    assert(totalWork > 0);
-
-    uint64_t low, high;
-    low = mul128(totalWork, m_difficultyTarget, &high);
-    if (high != 0 || low + timeSpan - 1 < low) {
-        return 0;
-    }
-
-    return (low + timeSpan - 1) / timeSpan;
-}
-
-// difficulty for block version 3.0 EPOW
-difficulty_type Currency::nextDifficultyV3(uint8_t blockMajorVersion,
     std::vector<uint64_t> timestamps,
     std::vector<difficulty_type> cumulativeDifficulties,
     uint32_t height) const
 {
-    if(isTestnet()){
+    if(isTestnet() || timestamps.empty()){
         return CryptoNote::parameters::DEFAULT_DIFFICULTY;
     }
 
-    if (timestamps.empty()) {
-        return CryptoNote::parameters::DEFAULT_DIFFICULTY;
-    }
     // Dynamic difficulty calculation window
     uint32_t diffWindow = timestamps.size() - 1;
 
-    difficulty_type nextDiffV6 = CryptoNote::parameters::DEFAULT_DIFFICULTY;
+    difficulty_type nextEPoWDiff = CryptoNote::parameters::DEFAULT_DIFFICULTY;
     difficulty_type min_difficulty = CryptoNote::parameters::DEFAULT_DIFFICULTY;
     // Condition #1 When starting a chain or a working testnet requiring
     // block sample gathering until enough blocks are available (Kick-off Scenario)
@@ -793,18 +695,18 @@ difficulty_type Currency::nextDifficultyV3(uint8_t blockMajorVersion,
     // Consider this as a service or trial period.
     // With EPoW reward algo in place, we don't really need to worry about attackers
     // or large miners taking advanatage of our system.
-    if (height < CryptoNote::parameters::UPGRADE_HEIGHT_V3 + diffWindow) {
-        return nextDiffV6;
+    if (height < CryptoNote::parameters::UPGRADE_HEIGHT_V1 + diffWindow) {
+        return nextEPoWDiff;
     }
 
     // check all values in input vectors greater than previous value to calc adjacent differences later
     if (std::adjacent_find(timestamps.begin(), timestamps.end(), std::greater<uint64_t>()) != timestamps.end()) {
         logger (ERROR) << "Invalid timestamps for difficulty calculation";
-        return nextDiffV6;
+        return nextEPoWDiff;
     }
     if (std::adjacent_find(cumulativeDifficulties.begin(), cumulativeDifficulties.end(), std::greater_equal<difficulty_type>()) != cumulativeDifficulties.end()) {
         logger (ERROR) << "Invalid cumulativeDifficulties for difficulty calculation";
-        return nextDiffV6;
+        return nextEPoWDiff;
     }
 
     uint64_t difficulty_target = CryptoNote::parameters::DIFFICULTY_TARGET;
@@ -839,20 +741,24 @@ difficulty_type Currency::nextDifficultyV3(uint8_t blockMajorVersion,
     uint64_t invalid_solvetime_sum = 0;
     std::for_each(solveTimes.begin(), solveTimes.end(),
                   [solvetime_lowborder, solvetime_highborder,
-                   &valid_solvetime_number, &valid_solvetime_sum,
-                   &invalid_solvetime_number, &invalid_solvetime_sum] (uint64_t st) {
-        if ((st >= solvetime_lowborder) && (st <= solvetime_highborder)) {
-            valid_solvetime_number++;
-            valid_solvetime_sum += st;
-        } else {
-            invalid_solvetime_number++;
-            invalid_solvetime_sum += st;
-        }
-    });
+                          &valid_solvetime_number, &valid_solvetime_sum,
+                          &invalid_solvetime_number, &invalid_solvetime_sum] (uint64_t st) {
+                      if ((st >= solvetime_lowborder) && (st <= solvetime_highborder)) {
+                          valid_solvetime_number++;
+                          valid_solvetime_sum += st;
+                      } else {
+                          invalid_solvetime_number++;
+                          invalid_solvetime_sum += st;
+                      }
+                  });
 
     // if there is no "invalid" solvetimes we can use previous difficulty value
     if (invalid_solvetime_number == 0) {
-        return std::max(prev_difficulty, min_difficulty);
+        if (difficulties.size() > 0) {
+            return std::max(prev_difficulty, min_difficulty);
+        } else {
+            return std::max(nextEPoWDiff, min_difficulty);
+        }
     }
 
     // process data with "invalid" solvetimes
@@ -864,25 +770,25 @@ difficulty_type Currency::nextDifficultyV3(uint8_t blockMajorVersion,
         if (valid_solvetime_mean >= invalid_solvetime_mean) {
             double coef = double(difficulty_target) / double(valid_solvetime_mean);
             if (valid_solvetime_mean < difficulty_target) {
-                nextDiffV6 = prev_difficulty * std::min(1.01, coef) + 0.5;
+                nextEPoWDiff = prev_difficulty * std::min(1.01, coef) + 0.5;
             } else {
-                nextDiffV6 = prev_difficulty * std::max(0.99, coef) + 0.5;
+                nextEPoWDiff = prev_difficulty * std::max(0.99, coef) + 0.5;
             }
         } else {
             double coef = double(difficulty_target) / double(invalid_solvetime_mean);
             if (invalid_solvetime_mean < difficulty_target) {
-                nextDiffV6 = prev_difficulty * std::min(1.01, coef) + 0.5;
+                nextEPoWDiff = prev_difficulty * std::min(1.01, coef) + 0.5;
             } else {
-                nextDiffV6 = prev_difficulty * std::max(0.99, coef) + 0.5;
+                nextEPoWDiff = prev_difficulty * std::max(0.99, coef) + 0.5;
             }
         }
     } else if (window_time < window_target * 0.97) {
-        nextDiffV6 = prev_difficulty * 1.02 + 0.5;
+        nextEPoWDiff = prev_difficulty * 1.02 + 0.5;
     } else {
-        nextDiffV6 = prev_difficulty * 0.98 + 0.5;
+        nextEPoWDiff = prev_difficulty * 0.98 + 0.5;
     }
 
-    return std::max(nextDiffV6, min_difficulty);
+    return std::max(nextEPoWDiff, min_difficulty);
 }
 
 difficulty_type Currency::getClifDifficulty(uint32_t height,
@@ -952,98 +858,17 @@ difficulty_type Currency::getClifDifficulty(uint32_t height,
     return new_diff;
 }
 
-bool Currency::checkProofOfWorkV1(
-    Crypto::cn_context &context,
-    const Block &block,
-    difficulty_type currentDiffic,
-    Crypto::Hash &proofOfWork) const
-{
-    if (BLOCK_MAJOR_VERSION_2 == block.majorVersion) {
-        return false;
-    }
-
-    if (!get_block_longhash(context, block, proofOfWork)) {
-        return false;
-    }
-
-    return check_hash(proofOfWork, currentDiffic);
-}
-
-bool Currency::checkProofOfWorkV2(
-    Crypto::cn_context &context,
-    const Block &block,
-    difficulty_type currentDiffic,
-    Crypto::Hash &proofOfWork) const
-{
-    if (block.majorVersion < BLOCK_MAJOR_VERSION_2) {
-        return false;
-    }
-
-    if (!get_block_longhash(context, block, proofOfWork)) {
-        return false;
-    }
-
-    if (!check_hash(proofOfWork, currentDiffic)) {
-        return false;
-    }
-
-    TransactionExtraMergeMiningTag mmTag;
-    if (!getMergeMiningTagFromExtra(block.parentBlock.baseTransaction.extra, mmTag)) {
-        logger(ERROR)
-            << "merge mining tag wasn't found in extra of the parent block miner transaction";
-        return false;
-    }
-
-    if (8 * sizeof(m_genesisBlockHash) < block.parentBlock.blockchainBranch.size()) {
-        return false;
-    }
-
-    Crypto::Hash auxBlockHeaderHash;
-    if (!get_aux_block_header_hash(block, auxBlockHeaderHash)) {
-        return false;
-    }
-
-    Crypto::Hash auxBlocksMerkleRoot;
-    Crypto::tree_hash_from_branch(
-        block.parentBlock.blockchainBranch.data(),
-        block.parentBlock.blockchainBranch.size(),
-        auxBlockHeaderHash,
-        &m_genesisBlockHash,
-        auxBlocksMerkleRoot
-    );
-
-    if (auxBlocksMerkleRoot != mmTag.merkleRoot) {
-        logger(ERROR, BRIGHT_YELLOW) << "Aux block hash wasn't found in merkle tree";
-        return false;
-    }
-
-    return true;
-}
-
 bool Currency::checkProofOfWork(
     Crypto::cn_context &context,
     const Block &block,
     difficulty_type currentDiffic,
     Crypto::Hash &proofOfWork) const
 {
-    switch (block.majorVersion) {
-    case BLOCK_MAJOR_VERSION_1:
-    case BLOCK_MAJOR_VERSION_3:
-    case BLOCK_MAJOR_VERSION_4:
-    case BLOCK_MAJOR_VERSION_5:
-    case BLOCK_MAJOR_VERSION_6:
-        return checkProofOfWorkV1(context, block, currentDiffic, proofOfWork);
-    case BLOCK_MAJOR_VERSION_2:
-        return checkProofOfWorkV2(context, block, currentDiffic, proofOfWork);
+    if (!get_block_longhash(context, block, proofOfWork)) {
+        return false;
     }
 
-    logger(ERROR, BRIGHT_RED)
-        << "Unknown block major version: "
-        << block.majorVersion
-        << "."
-        << block.minorVersion;
-
-    return false;
+    return check_hash(proofOfWork, currentDiffic);
 }
 
 size_t Currency::getApproximateMaximumInputCount(
@@ -1088,7 +913,7 @@ CurrencyBuilder::CurrencyBuilder(Logging::ILogger &log)
     maxBlockBlobSize(parameters::CRYPTONOTE_MAX_BLOCK_BLOB_SIZE);
     maxTxSize(parameters::CRYPTONOTE_MAX_TX_SIZE);
     publicAddressBase58Prefix(parameters::CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX);
-    minedMoneyUnlockWindow(parameters::CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW);
+    minedMoneyUnlockWindow(parameters::CRYPTONOTE_TX_SPENDABLE_AGE);
     transactionSpendableAge(parameters::CRYPTONOTE_TX_SPENDABLE_AGE);
     safeTransactionSpendableAge(parameters::CRYPTONOTE_SAFE_TX_SPENDABLE_AGE);
     expectedNumberOfBlocksPerDay(parameters::EXPECTED_NUMBER_OF_BLOCKS_PER_DAY);

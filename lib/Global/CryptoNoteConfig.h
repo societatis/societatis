@@ -1,6 +1,5 @@
 // Copyright (c) 2012-2017, The CryptoNote developers, The Bytecoin developers
-// Copyright (c) 2014-2018, The Monero project
-// Copyright (c) 2014-2018, The Forknote developers
+// Copyright (c) 2014-2018, The Monero project, The Forknote developers
 // Copyright (c) 2018, Ryo Currency Project
 // Copyright (c) 2016-2018, The Karbowanec developers
 // Copyright (c) 2018-2020, The Qwertycoin Group.
@@ -44,12 +43,13 @@ const size_t   CRYPTONOTE_TX_SPENDABLE_AGE                    = 10;
 const size_t   CRYPTONOTE_SAFE_TX_SPENDABLE_AGE               = 1;
 
 const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT             = DIFFICULTY_TARGET * 60; // 7200
+const size_t   BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW              = DIFFICULTY_TARGET / 2;
 
-const size_t   BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW              = 60;
 
+const size_t   CRYPTONOTE_DISPLAY_DECIMAL_POINT               = 8;
 // MONEY_SUPPLY - total number coins to be generated
 const uint64_t MONEY_SUPPLY                                   = uint64_t(800000000000000000); // 8bn * 8decimals
-const uint64_t TAIL_EMISSION_REWARD                           = 10000000000; // 10 Coins
+const uint64_t TAIL_EMISSION_REWARD                           = 10000000000; // 100 Coins
 const size_t CRYPTONOTE_COIN_VERSION                          = 1;
 
 const unsigned EMISSION_SPEED_FACTOR                          = 17;
@@ -59,7 +59,6 @@ const size_t   CRYPTONOTE_REWARD_BLOCKS_WINDOW                = 100;
 const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE      = 1000000;
 const size_t   CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE         = 600;
 
-const size_t   CRYPTONOTE_DISPLAY_DECIMAL_POINT               = 8;
 
 /* This section defines our minimum fee count required for transactions */
 const uint64_t MINIMUM_FEE                                    = UINT64_C(10000);
@@ -83,7 +82,7 @@ const size_t   DIFFICULTY_WINDOW                              = EXPECTED_NUMBER_
 const size_t   DIFFICULTY_CUT                                 = 60;  // timestamps to cut after sorting
 const size_t   DIFFICULTY_LAG                                 = 15;  // !!!
 static_assert(2 * DIFFICULTY_CUT <= DIFFICULTY_WINDOW - 2, "Bad DIFFICULTY_WINDOW or DIFFICULTY_CUT");
-const size_t DEFAULT_DIFFICULTY                               = 100;
+const size_t DEFAULT_DIFFICULTY                               = 1;
 const size_t FIXED_DIFFICULTY                                 = 0;
 
 static constexpr uint64_t POISSON_CHECK_TRIGGER               = 10;   // Reorg size that triggers poisson timestamp check
@@ -107,9 +106,9 @@ const size_t   FUSION_TX_MAX_SIZE                             = CRYPTONOTE_BLOCK
 const size_t   FUSION_TX_MIN_INPUT_COUNT                      = 12;
 const size_t   FUSION_TX_MIN_IN_OUT_COUNT_RATIO               = 4;
 
-
-const uint32_t UPGRADE_HEIGHT_V2                              = 20;
-const uint32_t UPGRADE_HEIGHT_V3                              = 61;
+const uint32_t UPGRADE_HEIGHT_V1                              = 1;
+const uint32_t UPGRADE_HEIGHT_V2                              = 2000000;
+const uint32_t UPGRADE_HEIGHT_V3                              = 3000000;
 const uint32_t UPGRADE_HEIGHT_V4                              = 4000000;
 const uint32_t UPGRADE_HEIGHT_V5                              = 5000000;
 const uint32_t UPGRADE_HEIGHT_V6                              = 6000000;
@@ -128,15 +127,15 @@ const char     P2P_NET_DATA_FILENAME[]                       = "p2pstate.dat";
 const char     CRYPTONOTE_BLOCKCHAIN_INDICES_FILENAME[]      = "blockchainindices.bin";
 const char     MINER_CONFIG_FILE_NAME[]                      = "miner_conf.json";
 
-/* Governance Fee and range // The SCTS Foundation */
+/* Governance Fee and range // The QWC Foundation */
 const uint16_t GOVERNANCE_PERCENT_FEE                        = 10; // 10 percent of base block reward
-const uint32_t GOVERNANCE_HEIGHT_START                       = UPGRADE_HEIGHT_V3;
-const uint32_t GOVERNANCE_HEIGHT_END                         = 10000000;
+const uint32_t GOVERNANCE_HEIGHT_START                       = UPGRADE_HEIGHT_V1 + 60;
+const uint32_t GOVERNANCE_HEIGHT_END                         = UPGRADE_HEIGHT_V6;
 
 } // namespace parameters
 
 const char     CRYPTONOTE_NAME[]                             = "Societatis";
-const char     GENESIS_COINBASE_TX_HEX[]                     = "013c01ff0001a8ec85afd1b101029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd0880712101cbb224f2a2379fac0dc7b3f31393d078a6850bcc33033bb899a8f8a67db89e2f";
+const char     GENESIS_COINBASE_TX_HEX[]                     = "010a01ff0001a8ec85afd1b101029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd0880712101f0858d359a5821639c72c52ec704da9b37e1d91a946c1d7a851b2288a474bd88";
 const char     DNS_CHECKPOINTS_HOST[]                        = "checkpoints.societatis.io";
 
 const uint8_t  TRANSACTION_VERSION_1                         =  1;
@@ -198,9 +197,9 @@ const std::string LICENSE_URL                                = "https://github.c
 const bool     P2P_MESSAGES                                  =  true;
 const uint16_t P2P_MESSAGES_CHAR_COUNT                       =  160;
 
-/* Governance Fee Wallets // The Qwertycoin Foundation */
-const std::string GOVERNANCE_WALLET_ADDRESS                  = "SCTSBAPNxveG2Vhg8arxSCd1c8VACofFAXCKBieY8AbeAzaEZfhBdgoenS3aDTqLJX3pGaz8HKTWaJTtcCE7U9pY3bWjGxPMTv";
-const std::string GOVERNANCE_VIEW_SECRET_KEY                 = "3c0dc33dd6d37d27887f29418f7156c3517652256e5fb601aa9c679807c2460a";
+/* Governance Fee Wallets // The SCTS Foundation */
+const std::string GOVERNANCE_WALLET_ADDRESS                  = "SCTSPQxza4eDjkzJBvkMUgZ8Zytj2w9HQLR6udpuJUJ6gChRRrC5KMQJRiChsiVMi59tdqFJ7cX2t6poDZx41Dgn5s4KfYHLRc";
+const std::string GOVERNANCE_VIEW_SECRET_KEY                 = "4aeab444358a49340d697c6721626f65b71ac5b6d63f4859b5821460290e750f";
 
 const char *const SEED_NODES[] = {
 	"holon-00.societatis.io:7294", //holon-00

@@ -796,7 +796,7 @@ namespace CryptoNote {
 
 		if (amount != 0) {
 			logger(INFO) << "Masternode received relayed transaction fee: "
-						 << m_core.currency().formatAmount(amount) << " SCTS";
+						 << m_core.currency().formatAmount(amount) << " "+WalletConfig::ticker;
 			return true;
 		}
 
@@ -2059,7 +2059,7 @@ namespace CryptoNote {
 			}
 		}
 
-		if (res.block.height >= CryptoNote::parameters::UPGRADE_HEIGHT_V3) {
+		if (res.block.height > CryptoNote::parameters::UPGRADE_HEIGHT_V1) {
 			m_core.getBlockHeight(blk.previousBlockHash, previousBlockHeight);
 			blockTarget = blk.timestamp - m_core.getBlockTimestamp(previousBlockHeight);
 		}
