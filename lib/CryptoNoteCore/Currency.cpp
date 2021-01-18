@@ -756,8 +756,6 @@ difficulty_type Currency::nextDifficulty(
     if (invalid_solvetime_number == 0) {
         if (difficulties.size() > 0) {
             return std::max(prev_difficulty, min_difficulty);
-        } else {
-            return std::max(nextEPoWDiff, min_difficulty);
         }
     }
 
