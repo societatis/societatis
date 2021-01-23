@@ -18,7 +18,7 @@
 // along with Societatis.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <unordered_set>
-#include <crypto/crypto.h>
+#include <crypto/Crypto.h>
 #include <CryptoNoteCore/Account.h>
 #include <CryptoNoteCore/CryptoNoteFormatUtils.h>
 #include <CryptoNoteCore/TransactionExtra.h>
@@ -136,7 +136,7 @@ bool isOutToKey(
     size_t keyIndex)
 {
     Crypto::PublicKey pk;
-    derive_public_key(derivation, keyIndex, spendPublicKey, pk);
+    derivePublicKey(derivation, keyIndex, spendPublicKey, pk);
 
     return pk == outKey;
 }
@@ -160,7 +160,7 @@ bool findOutputsToAccount(
     uint32_t outputIndex = 0;
 
     Crypto::KeyDerivation derivation;
-    generate_key_derivation(txPubKey, keys.viewSecretKey, derivation);
+    generateKeyDerivation(txPubKey, keys.viewSecretKey, derivation);
 
     for (const TransactionOutput &o : transaction.outputs) {
         assert(o.target.type() == typeid(KeyOutput)

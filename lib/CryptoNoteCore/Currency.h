@@ -78,6 +78,8 @@ public:
         uint64_t avgHistoricalDifficulty,
         uint64_t medianHistoricalReward,
         uint32_t height) const;
+    uint64_t getFeePerByte(const uint64_t txExtraSize, const uint64_t minFee) const;
+
     uint64_t defaultDustThreshold() const { return m_defaultDustThreshold; }
 
     uint64_t difficultyTarget() const { return m_difficultyTarget; }
@@ -86,9 +88,15 @@ public:
     size_t difficultyCut() const { return m_difficultyCut; }
     size_t difficultyBlocksCountByBlockVersion(uint8_t blockMajorVersion) const
     {
-        return difficultyBlocksCount();
+        if (blockMajorVersion >= BLOCK_MAJOR_VERSION_3) {
+            return difficultyBlocksCount2();
+        }
+        else {
+            return difficultyBlocksCount();
+        }
     };
     size_t difficultyBlocksCount() const { return m_difficultyWindow + m_difficultyLag; }
+    size_t difficultyBlocksCount2() const { return CryptoNote::parameters::DIFFICULTY_WINDOW_V2; }
 
     size_t maxBlockSizeInitial() const { return m_maxBlockSizeInitial; }
     uint64_t maxBlockSizeGrowthSpeedNumerator() const { return m_maxBlockSizeGrowthSpeedNumerator; }
@@ -136,6 +144,7 @@ public:
     const Block &genesisBlock() const { return m_genesisBlock; }
     const Crypto::Hash &genesisBlockHash() const { return m_genesisBlockHash; }
 
+    uint64_t getBaseReward(uint64_t alreadyGeneratedCoins, uint32_t height) const;
     bool getBlockReward(
         uint8_t blockMajorVersion,
         size_t medianSize,
@@ -215,7 +224,7 @@ public:
     bool isGovernanceEnabled(uint32_t height) const;
     bool getGovernanceAddressAndKey(AccountKeys& m_account_keys) const;
     uint64_t getGovernanceReward(uint64_t base_reward) const;
-    bool validate_government_fee(const Transaction& baseTx) const;
+    bool validateGovernmentFee(const Transaction& baseTx) const;
 
     static const std::vector<uint64_t> PRETTY_AMOUNTS;
 

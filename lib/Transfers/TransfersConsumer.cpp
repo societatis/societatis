@@ -53,7 +53,7 @@ void checkOutputKey(
     std::unordered_map<PublicKey, std::vector<uint32_t>> &outputs)
 {
     PublicKey spendKey;
-    underive_public_key(derivation, keyIndex, key, spendKey);
+    underivePublicKey(derivation, keyIndex, key, spendKey);
 
     if (spendKeys.find(spendKey) != spendKeys.end()) {
         outputs[spendKey].push_back(static_cast<uint32_t>(outputIndex));
@@ -70,7 +70,7 @@ void findMyOutputs(
 
     KeyDerivation derivation;
 
-    if (!generate_key_derivation( txPublicKey, viewSecretKey, derivation)) {
+    if (!generateKeyDerivation(txPublicKey, viewSecretKey, derivation)) {
         return;
     }
 

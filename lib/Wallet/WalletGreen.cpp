@@ -36,7 +36,7 @@
 #include <Common/StreamTools.h>
 #include <Common/StringOutputStream.h>
 #include <Common/StringTools.h>
-#include <crypto/crypto.h>
+#include <crypto/Crypto.h>
 #include <CryptoNoteCore/Account.h>
 #include <CryptoNoteCore/Currency.h>
 #include <CryptoNoteCore/CryptoNoteBasicImpl.h>
@@ -184,7 +184,7 @@ void WalletGreen::initialize(const std::string &path, const std::string &passwor
 {
     Crypto::PublicKey viewPublicKey;
     Crypto::SecretKey viewSecretKey;
-    Crypto::generate_keys(viewPublicKey, viewSecretKey);
+    Crypto::generateKeys(viewPublicKey, viewSecretKey);
 
     initWithKeys(path, password, viewPublicKey, viewSecretKey);
     m_logger(INFO, BRIGHT_WHITE) << "New container initialized, public view key " << viewPublicKey;
@@ -195,7 +195,7 @@ void WalletGreen::initializeWithViewKey(const std::string &path,
                                         const Crypto::SecretKey &viewSecretKey)
 {
     Crypto::PublicKey viewPublicKey;
-    if (!Crypto::secret_key_to_public_key(viewSecretKey, viewPublicKey)) {
+    if (!Crypto::secretKeyToPublicKey(viewSecretKey, viewPublicKey)) {
         m_logger(ERROR, BRIGHT_RED)
             << "initializeWithViewKey("
             << viewSecretKey
@@ -216,7 +216,7 @@ void WalletGreen::initializeWithViewKeyAndTimestamp(
     const uint64_t &creationTimestamp)
 {
     Crypto::PublicKey viewPublicKey;
-    if (!Crypto::secret_key_to_public_key(viewSecretKey, viewPublicKey)) {
+    if (!Crypto::secretKeyToPublicKey(viewSecretKey, viewPublicKey)) {
         m_logger(ERROR, BRIGHT_RED)
             << "initializeWithViewKey("
             << viewSecretKey
@@ -371,7 +371,7 @@ Crypto::chacha8_iv WalletGreen::getNextIv() const
 
 void WalletGreen::incIv(Crypto::chacha8_iv &iv)
 {
-    static_assert(sizeof(uint64_t) == sizeof(Crypto::chacha8_iv), "Bad Crypto::chacha8_iv size");
+    static_assert(sizeof(uint64_t) == sizeof(Crypto::chacha8_iv), "Bad crypto::chacha8_iv size");
     uint64_t* i = reinterpret_cast<uint64_t*>(&iv);
     if (*i < std::numeric_limits<uint64_t>::max()) {
         ++(*i);
@@ -382,7 +382,7 @@ void WalletGreen::incIv(Crypto::chacha8_iv &iv)
 
 void WalletGreen::incNextIv()
 {
-    static_assert(sizeof(uint64_t) == sizeof(Crypto::chacha8_iv), "Bad Crypto::chacha8_iv size");
+    static_assert(sizeof(uint64_t) == sizeof(Crypto::chacha8_iv), "Bad crypto::chacha8_iv size");
     auto *prefix = reinterpret_cast<ContainerStoragePrefix *>(m_containerStorage.prefix());
     incIv(prefix->nextIv);
 }
@@ -1009,7 +1009,7 @@ void WalletGreen::loadSpendKeys()
                 "Restored spend public key doesn't correspond to secret key"
             );
         } else {
-            if (!Crypto::check_key(wallet.spendPublicKey)) {
+            if (!Crypto::checkKey(wallet.spendPublicKey)) {
                 throw std::system_error(
                     make_error_code(error::WRONG_PASSWORD),
                     "Public spend key is incorrect"
@@ -1264,7 +1264,7 @@ KeyPair WalletGreen::getViewKey() const
 std::string WalletGreen::createAddress()
 {
     KeyPair spendKey;
-    Crypto::generate_keys(spendKey.publicKey, spendKey.secretKey);
+    Crypto::generateKeys(spendKey.publicKey, spendKey.secretKey);
     uint64_t creationTimestamp = static_cast<uint64_t>(time(nullptr));
 
     return doCreateAddress(spendKey.publicKey, spendKey.secretKey, creationTimestamp);
@@ -1273,7 +1273,7 @@ std::string WalletGreen::createAddress()
 std::string WalletGreen::createAddress(const Crypto::SecretKey &spendSecretKey, bool reset)
 {
     Crypto::PublicKey spendPublicKey;
-    if (!Crypto::secret_key_to_public_key(spendSecretKey, spendPublicKey)) {
+    if (!Crypto::secretKeyToPublicKey(spendSecretKey, spendPublicKey)) {
         m_logger(ERROR, BRIGHT_RED)
             << "createAddress("
             << spendSecretKey
@@ -1289,7 +1289,7 @@ std::string WalletGreen::createAddressWithTimestamp(const Crypto::SecretKey &spe
                                                     const uint64_t &creationTimestamp)
 {
     Crypto::PublicKey spendPublicKey;
-    if (!Crypto::secret_key_to_public_key(spendSecretKey, spendPublicKey)) {
+    if (!Crypto::secretKeyToPublicKey(spendSecretKey, spendPublicKey)) {
         m_logger(ERROR, BRIGHT_RED)
             << "createAddress("
             << spendSecretKey
@@ -1302,7 +1302,7 @@ std::string WalletGreen::createAddressWithTimestamp(const Crypto::SecretKey &spe
 
 std::string WalletGreen::createAddress(const Crypto::PublicKey &spendPublicKey)
 {
-    if (!Crypto::check_key(spendPublicKey)) {
+    if (!Crypto::checkKey(spendPublicKey)) {
         m_logger(ERROR, BRIGHT_RED)
             << "createAddress("
             << spendPublicKey
@@ -1320,7 +1320,7 @@ std::vector<std::string> WalletGreen::createAddressList(
     std::vector<NewAddressData> addressDataList(spendSecretKeys.size());
     for (size_t i = 0; i < spendSecretKeys.size(); ++i) {
         Crypto::PublicKey spendPublicKey;
-        if (!Crypto::secret_key_to_public_key(spendSecretKeys[i], spendPublicKey)) {
+        if (!Crypto::secretKeyToPublicKey(spendSecretKeys[i], spendPublicKey)) {
             m_logger(ERROR, BRIGHT_RED)
                 << "createAddressList(): failed to convert secret key to public key, secret key "
                 << spendSecretKeys[i];
@@ -2936,7 +2936,7 @@ uint64_t WalletGreen::selectTransfers(uint64_t neededMoney,
         }
     }
 
-    ShuffleGenerator<size_t, Crypto::random_engine<size_t>> indexGenerator(walletOuts.size());
+    ShuffleGenerator<size_t, Crypto::RandomEngine<size_t>> indexGenerator(walletOuts.size());
     while (foundMoney < neededMoney && !indexGenerator.empty()) {
         auto &out = walletOuts[indexGenerator()];
         foundMoney += out.second.amount;
@@ -2947,7 +2947,7 @@ uint64_t WalletGreen::selectTransfers(uint64_t neededMoney,
 
     if (dust && !dustOutputs.empty()) {
         auto dustOutputsSize = dustOutputs.size();
-        ShuffleGenerator<size_t, Crypto::random_engine<size_t>> dustIndexGenerator(dustOutputsSize);
+        ShuffleGenerator<size_t, Crypto::RandomEngine<size_t>> dustIndexGenerator(dustOutputsSize);
         do {
             auto &out = dustOutputs[dustIndexGenerator()];
             foundMoney += out.second.amount;
@@ -4179,7 +4179,7 @@ std::vector<WalletGreen::OutputToTransfer> WalletGreen::pickRandomFusionInputs(
         return selectedOuts;
     }
 
-    ShuffleGenerator<size_t, Crypto::random_engine<size_t>> generator(selectedOuts.size());
+    ShuffleGenerator<size_t, Crypto::RandomEngine<size_t>> generator(selectedOuts.size());
     std::vector<WalletGreen::OutputToTransfer> trimmedSelectedOuts;
     trimmedSelectedOuts.reserve(maxInputCount);
     for (size_t i = 0; i < maxInputCount; ++i) {

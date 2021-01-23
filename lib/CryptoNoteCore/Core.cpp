@@ -26,7 +26,7 @@
 #include <Common/Math.h>
 #include <Common/StringTools.h>
 #include <Common/Util.h>
-#include <crypto/crypto.h>
+#include <crypto/Crypto.h>
 #include <CryptoNoteCore/Core.h>
 #include <CryptoNoteCore/CoreConfig.h>
 #include <CryptoNoteCore/CryptoNoteFormatUtils.h>
@@ -575,7 +575,7 @@ bool core::check_tx_inputs_keyimages_diff(const Transaction &tx)
 
             // Additional key_image check.
             // Fix discovered by Monero Lab and suggested by "fluffypony" (bitcointalk.org)
-            if (!(scalarmultKey(in.keyImage, L) == I)) {
+            if (!(scalarMultKey(in.keyImage, L) == I)) {
                 logger(ERROR) << "Transaction uses key image not in the valid domain";
                 return false;
             }
@@ -646,7 +646,7 @@ bool core::get_block_template(
                 ? BLOCK_MINOR_VERSION_1
                 : BLOCK_MINOR_VERSION_0;
         }
-        else if (b.majorVersion==BLOCK_MAJOR_VERSION_2) {
+        else if (b.majorVersion == BLOCK_MAJOR_VERSION_2) {
             b.minorVersion =
                     m_currency.upgradeHeight(BLOCK_MAJOR_VERSION_2) == UpgradeDetectorBase::UNDEF_HEIGHT
                     ? BLOCK_MINOR_VERSION_1
@@ -727,7 +727,7 @@ bool core::get_block_template(
     if (height > CryptoNote::parameters::UPGRADE_HEIGHT_V1) {
         getBlockHeight(b.previousBlockHash, previousBlockHeight);
         uint64_t prev_timestamp = getBlockTimestamp(previousBlockHeight);
-        if(prev_timestamp >= b.timestamp) {
+        if(prev_timestamp > b.timestamp) {
             logger(ERROR, BRIGHT_RED) << "incorrect timestamp, prev = "
                << prev_timestamp << ",  new = " << b.timestamp;
             return false;

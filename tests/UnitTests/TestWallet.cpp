@@ -935,7 +935,7 @@ TEST_F(WalletApi, transferNegativeAmount) {
 //
 //  params.fee = FEE;
 //
-//  auto secretKey = Crypto::SecretKey();
+//  auto secretKey = crypto::SecretKey();
 //
 //  ASSERT_ANY_THROW(wallet.transfer(params, secretKey));
 //}
@@ -975,7 +975,7 @@ TEST_F(WalletApi, transferNegativeAmount) {
 //  params.changeDestination = src;
 //  params.fee = currency.minimumFee();
 //
-//  auto secretKey = Crypto::SecretKey();
+//  auto secretKey = crypto::SecretKey();
 //
 //  // Make sure, that transaction will contain dust
 //  try {
@@ -1951,7 +1951,7 @@ TEST_F(WalletApi, initializeWithKeysSucceded) {
   CryptoNote::WalletGreen wallet(dispatcher, currency, node, logger);
 
   CryptoNote::KeyPair viewKeys;
-  Crypto::generate_keys(viewKeys.publicKey, viewKeys.secretKey);
+  Crypto::generateKeys(viewKeys.publicKey, viewKeys.secretKey);
   ASSERT_NO_THROW(wallet.initializeWithViewKey(BOB_WALLET_PATH, "pass", viewKeys.secretKey));
 
   wallet.shutdown();
@@ -1959,7 +1959,7 @@ TEST_F(WalletApi, initializeWithKeysSucceded) {
 
 TEST_F(WalletApi, initializeWithKeysThrowsIfAlreadyInitialized) {
   CryptoNote::KeyPair viewKeys;
-  Crypto::generate_keys(viewKeys.publicKey, viewKeys.secretKey);
+  Crypto::generateKeys(viewKeys.publicKey, viewKeys.secretKey);
 
   ASSERT_ANY_THROW(alice.initializeWithViewKey(ALICE_WALLET_PATH, "pass", viewKeys.secretKey));
 }
@@ -1969,7 +1969,7 @@ TEST_F(WalletApi, initializeWithKeysThrowsIfStopped) {
   wallet.stop();
 
   CryptoNote::KeyPair viewKeys;
-  Crypto::generate_keys(viewKeys.publicKey, viewKeys.secretKey);
+  Crypto::generateKeys(viewKeys.publicKey, viewKeys.secretKey);
   ASSERT_ANY_THROW(wallet.initializeWithViewKey(ALICE_WALLET_PATH, "pass", viewKeys.secretKey));
 }
 
@@ -1977,7 +1977,7 @@ TEST_F(WalletApi, getViewKeyReturnsProperKey) {
   CryptoNote::WalletGreen wallet(dispatcher, currency, node, logger);
 
   CryptoNote::KeyPair viewKeys;
-  Crypto::generate_keys(viewKeys.publicKey, viewKeys.secretKey);
+  Crypto::generateKeys(viewKeys.publicKey, viewKeys.secretKey);
   wallet.initializeWithViewKey(BOB_WALLET_PATH, "pass", viewKeys.secretKey);
 
   CryptoNote::KeyPair retrievedKeys = wallet.getViewKey();
@@ -2000,7 +2000,7 @@ TEST_F(WalletApi, getViewKeyThrowsIfStopped) {
 
 TEST_F(WalletApi, getAddressSpendKeyReturnsProperKey) {
   CryptoNote::KeyPair spendKeys;
-  Crypto::generate_keys(spendKeys.publicKey, spendKeys.secretKey);
+  Crypto::generateKeys(spendKeys.publicKey, spendKeys.secretKey);
 
   alice.createAddress(spendKeys.secretKey);
 
@@ -2025,7 +2025,7 @@ TEST_F(WalletApi, getAddressSpendKeyThrowsIfStopped) {
 
 Crypto::PublicKey generatePublicKey() {
   CryptoNote::KeyPair spendKeys;
-  Crypto::generate_keys(spendKeys.publicKey, spendKeys.secretKey);
+  Crypto::generateKeys(spendKeys.publicKey, spendKeys.secretKey);
 
   return spendKeys.publicKey;
 }
@@ -3973,7 +3973,7 @@ TEST_F(WalletApi, getDelayedTransactionIdsThrowsIfInTrackingMode) {
 
   Crypto::PublicKey pub;
   Crypto::SecretKey sec;
-  Crypto::generate_keys(pub, sec);
+  Crypto::generateKeys(pub, sec);
 
   bob.createAddress(pub);
   ASSERT_ANY_THROW(bob.getDelayedTransactionIds());

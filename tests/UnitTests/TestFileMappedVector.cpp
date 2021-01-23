@@ -26,7 +26,7 @@
 
 #include "Common/FileMappedVector.h"
 #include "Common/StringTools.h"
-#include "crypto/crypto.h"
+#include "crypto/Crypto.h"
 
 using namespace Common;
 

@@ -2044,11 +2044,11 @@ bool simple_wallet::new_wallet(
         AccountKeys wallet_keys;
         wallet_keys.spendSecretKey = secret_key;
         wallet_keys.viewSecretKey = view_key;
-        Crypto::secret_key_to_public_key(
+        Crypto::secretKeyToPublicKey(
             wallet_keys.spendSecretKey,
             wallet_keys.address.spendPublicKey
         );
-        Crypto::secret_key_to_public_key(
+        Crypto::secretKeyToPublicKey(
             wallet_keys.viewSecretKey,
             wallet_keys.address.viewPublicKey
         );
@@ -3321,9 +3321,14 @@ bool simple_wallet::consolidate(const std::vector<std::string> &args)
 
             WalletHelper::IWalletRemoveObserverGuard removeGuard(*m_wallet, sent);
 
+            uint64_t feePerByte = m_currency.getFeePerByte(to_send, getMinimalFee());
+
+            logger(DEBUGGING, BRIGHT_CYAN) << "Consolidate: feePerByte: " << feePerByte;
+
             CryptoNote::TransactionId tx = m_wallet->sendFusionTransaction(
                 transferInputs,
-                CryptoNote::parameters::MINIMUM_FEE,
+                // CryptoNote::parameters::MINIMUM_FEE,
+                feePerByte,
                 extraString,
                 mixIn,
                 0
