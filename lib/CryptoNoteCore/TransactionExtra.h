@@ -53,7 +53,7 @@ struct TransactionExtraPublicKey
 
 struct TransactionExtraNonce
 {
-    std::vector<uint8_t> nonce;
+    BinaryArray nonce;
 };
 
 struct TransactionExtraMergeMiningTag

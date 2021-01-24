@@ -140,7 +140,7 @@ void TransactionBuilder::fillOutputs(Transaction& tx) const {
 
   for (const auto& mdst : m_msigDestinations) {
     TransactionOutput out;
-    MultisignatureOutput target;
+    MultiSignatureOutput target;
 
     target.requiredSignatureCount = mdst.requiredSignatures;
 

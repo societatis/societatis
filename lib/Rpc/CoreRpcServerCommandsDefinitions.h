@@ -960,7 +960,7 @@ namespace CryptoNote {
 
 		struct response
 		{
-			BlockDetails2 block;
+			BlockDetails block;
 			std::string status;
 
 			void serialize(ISerializer &s)
@@ -1351,7 +1351,7 @@ namespace CryptoNote {
 				KV_MEMBER(blocks)
 			}
 
-			std::vector<BlockDetails2> blocks;
+			std::vector<BlockDetails> blocks;
 			std::string status;
 		};
 	};
@@ -1373,7 +1373,7 @@ namespace CryptoNote {
 				KV_MEMBER(blocks)
 			}
 
-			std::vector<BlockDetails2> blocks;
+			std::vector<BlockDetails> blocks;
 			std::string status;
 		};
 	};
@@ -1395,7 +1395,7 @@ namespace CryptoNote {
 				KV_MEMBER(block)
 			}
 
-			BlockDetails2 block;
+			BlockDetails block;
 			std::string status;
 		};
 	};
@@ -1470,7 +1470,7 @@ namespace CryptoNote {
 				KV_MEMBER(transactions)
 			}
 
-			std::vector<TransactionDetails2> transactions;
+			std::vector<TransactionDetails> transactions;
 			std::string status;
 		};
 	};
@@ -1486,7 +1486,7 @@ namespace CryptoNote {
 
 		struct response
 		{
-			TransactionDetails2 transaction;
+			TransactionDetails transaction;
 			std::string status;
 
 			void serialize(ISerializer &s)

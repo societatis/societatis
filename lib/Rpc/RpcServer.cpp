@@ -432,7 +432,7 @@ namespace CryptoNote {
 						logger(DEBUGGING) << "Found " << txs.size() << "/" << vh.size()
 										  << " transactions on the blockchain.";
 
-						TransactionDetails2 transactionsDetails;
+						TransactionDetails transactionsDetails;
 
 						bool r = m_core.fillTransactionDetails(txs.back(), transactionsDetails);
 						if (r) {
@@ -773,8 +773,8 @@ namespace CryptoNote {
 
 		// always relay fusion transactions
 		uint64_t inputs_amount = 0;
-		get_inputs_money_amount(tx, inputs_amount);
-		uint64_t outputs_amount = get_outs_money_amount(tx);
+                getInputsMoneyAmount(tx, inputs_amount);
+		uint64_t outputs_amount = getOutsMoneyAmount(tx);
 
 		const uint64_t fee = inputs_amount - outputs_amount;
 		bool isFusionTransaction = m_core.currency().isFusionTransaction(
@@ -914,7 +914,7 @@ namespace CryptoNote {
 								 COMMAND_RPC_GET_TX_GLOBAL_OUTPUTS_INDEXES::response &res)
 	{
 		std::vector<uint32_t> outputIndexes;
-		if (!m_core.get_tx_outputs_gindexs(req.txid, outputIndexes)) {
+		if (!m_core.getTxOutputsGlobalIndexes(req.txid, outputIndexes)) {
 			res.status = "Failed";
 			return true;
 		}
@@ -993,7 +993,7 @@ namespace CryptoNote {
 			COMMAND_RPC_GET_BLOCKS_DETAILS_BY_HEIGHTS::response &rsp)
 	{
 		try {
-			std::vector<BlockDetails2> blockDetails;
+			std::vector<BlockDetails> blockDetails;
 			for (const uint32_t &height : req.blockHeights) {
 				if (m_core.get_current_blockchain_height() <= height) {
 					throw JsonRpc::JsonRpcError{
@@ -1010,7 +1010,7 @@ namespace CryptoNote {
 												"Internal error: can't get block by height "
 												+ std::to_string(height) + '.'};
 				}
-				BlockDetails2 detail;
+				BlockDetails detail;
 				if (!m_core.fillBlockDetails(blk, detail)) {
 					throw JsonRpc::JsonRpcError{CORE_RPC_ERROR_CODE_INTERNAL_ERROR,
 												"Internal error: can't fill block details."};
@@ -1036,7 +1036,7 @@ namespace CryptoNote {
 			COMMAND_RPC_GET_BLOCKS_DETAILS_BY_HASHES::response &rsp)
 	{
 		try {
-			std::vector<BlockDetails2> blockDetails;
+			std::vector<BlockDetails> blockDetails;
 			for (const Crypto::Hash &hash : req.blockHashes) {
 				Block blk;
 				if (!m_core.getBlockByHash(hash, blk)) {
@@ -1045,7 +1045,7 @@ namespace CryptoNote {
 					//    "Internal error: can't get block by hash " + Common::PodToHex(hash) + '.'
 					//};
 				}
-				BlockDetails2 detail;
+				BlockDetails detail;
 				if (!m_core.fillBlockDetails(blk, detail)) {
 					throw JsonRpc::JsonRpcError{CORE_RPC_ERROR_CODE_INTERNAL_ERROR,
 												"Internal error: can't fill block details."};
@@ -1071,7 +1071,7 @@ namespace CryptoNote {
 			COMMAND_RPC_GET_BLOCK_DETAILS_BY_HEIGHT::response &rsp)
 	{
 		try {
-			BlockDetails2 blockDetails;
+			BlockDetails blockDetails;
 			if (m_core.get_current_blockchain_height() <= req.blockHeight) {
 				throw JsonRpc::JsonRpcError{
 						CORE_RPC_ERROR_CODE_TOO_BIG_HEIGHT,
@@ -1109,7 +1109,7 @@ namespace CryptoNote {
 											COMMAND_RPC_GET_BLOCK_DETAILS_BY_HASH::response &rsp)
 	{
 		try {
-			BlockDetails2 blockDetails;
+			BlockDetails blockDetails;
 			Crypto::Hash block_hash;
 
 			if (!parse_hash256(req.hash, block_hash)) {
@@ -1174,7 +1174,7 @@ namespace CryptoNote {
 			COMMAND_RPC_GET_TRANSACTIONS_DETAILS_BY_HASHES::response &rsp)
 	{
 		try {
-			std::vector<TransactionDetails2> transactionsDetails;
+			std::vector<TransactionDetails> transactionsDetails;
 			transactionsDetails.reserve(req.transactionHashes.size());
 
 			std::list<Crypto::Hash> missed_txs;
@@ -1183,7 +1183,7 @@ namespace CryptoNote {
 
 			if (!txs.empty()) {
 				for (const Transaction &tx : txs) {
-					TransactionDetails2 txDetails;
+					TransactionDetails txDetails;
 					if (!m_core.fillTransactionDetails(tx, txDetails)) {
 						throw JsonRpc::JsonRpcError{
 								CORE_RPC_ERROR_CODE_INTERNAL_ERROR,
@@ -1240,7 +1240,7 @@ namespace CryptoNote {
 											"transaction wasn't found. Hash = " + hash_str + '.'};
 			}
 
-			TransactionDetails2 transactionsDetails;
+			TransactionDetails transactionsDetails;
 			if (!m_core.fillTransactionDetails(txs.back(), transactionsDetails)) {
 				throw JsonRpc::JsonRpcError{CORE_RPC_ERROR_CODE_INTERNAL_ERROR,
 											"Internal error: can't fill transaction details."};
@@ -1584,13 +1584,14 @@ namespace CryptoNote {
 				Crypto::Hash blockHash;
 				uint32_t blockHeight;
 				uint64_t fee;
-				get_tx_fee(tx, fee);
+                                getTxFee(tx, fee);
 
 				Crypto::Hash txHash = *vHi++;
 				e.tx_hash = *txHi++;
 
 				bool r = m_core.getBlockContainingTx(txHash, blockHash, blockHeight);
-				bool oR = m_core.get_tx_outputs_gindexs(txHash, e.output_indices);
+				bool oR =
+                                        m_core.getTxOutputsGlobalIndexes(txHash, e.output_indices);
 
 				if (req.as_json) {
 					e.as_json = tx;
@@ -2097,7 +2098,7 @@ namespace CryptoNote {
 		TRANSACTION_SHORT_RESPONSE transaction_short;
 		transaction_short.hash = Common::podToHex(getObjectHash(blk.baseTransaction));
 		transaction_short.fee = 0;
-		transaction_short.amount_out = get_outs_money_amount(blk.baseTransaction);
+		transaction_short.amount_out = getOutsMoneyAmount(blk.baseTransaction);
 		transaction_short.size = getObjectBinarySize(blk.baseTransaction);
 		res.block.transactions.push_back(transaction_short);
 
@@ -2110,8 +2111,8 @@ namespace CryptoNote {
 		for (const Transaction &tx : txs) {
 			TRANSACTION_SHORT_RESPONSE tr_short;
 			uint64_t amount_in = 0;
-			get_inputs_money_amount(tx, amount_in);
-			uint64_t amount_out = get_outs_money_amount(tx);
+                        getInputsMoneyAmount(tx, amount_in);
+			uint64_t amount_out = getOutsMoneyAmount(tx);
 
 			tr_short.hash = Common::podToHex(getObjectHash(tx));
 			tr_short.fee = amount_in - amount_out;
@@ -2176,8 +2177,8 @@ namespace CryptoNote {
 		}
 
 		uint64_t amount_in = 0;
-		get_inputs_money_amount(res.tx, amount_in);
-		uint64_t amount_out = get_outs_money_amount(res.tx);
+                getInputsMoneyAmount(res.tx, amount_in);
+		uint64_t amount_out = getOutsMoneyAmount(res.tx);
 
 		res.txDetails.hash = Common::podToHex(getObjectHash(res.tx));
 		res.txDetails.fee = amount_in - amount_out;
@@ -2320,8 +2321,8 @@ namespace CryptoNote {
 		for (const Transaction &tx : transactions) {
 			TRANSACTION_SHORT_RESPONSE transaction_short;
 			uint64_t amount_in = 0;
-			get_inputs_money_amount(tx, amount_in);
-			uint64_t amount_out = get_outs_money_amount(tx);
+                        getInputsMoneyAmount(tx, amount_in);
+			uint64_t amount_out = getOutsMoneyAmount(tx);
 
 			transaction_short.hash = Common::podToHex(getObjectHash(tx));
 			transaction_short.fee = amount_in - amount_out;
