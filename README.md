@@ -53,7 +53,7 @@ git clone --recurse-submodules https://github.com/societatis/societatis
 cd ./societatis
 mkdir ./build
 cd ./build
-cmake -DBUILD_ALL:BOOL=TRUE ..
+cmake -DBUILD_WITH_TOOLS:BOOL=TRUE ..
 cmake --build . --config Release
 ```
 - If all went well, it will complete successfully, and you will find all your binaries in the `./build/src` directory.
@@ -97,7 +97,7 @@ git clone https://github.com/societatis/societatis
 cd ./societatis
 mkdir ./build
 cd ./build
-cmake -DBUILD_ALL:BOOL=TRUE ..
+cmake -DBUILD_WITH_TOOLS:BOOL=TRUE ..
 cmake --build . --config Release
 ```
 - If all went well, it will complete successfully, and you will find all your binaries in the `./build/src` directory.
@@ -150,7 +150,7 @@ git clone --recurse-submodules https://github.com/societatis/societatis
 cd ./societatis
 mkdir ./build
 cd ./build
-cmake -DBUILD_ALL:BOOL=TRUE ..
+cmake -DBUILD_WITH_TOOLS:BOOL=TRUE ..
 cmake --build . --config Release
 ```
 - If all went well, it will complete successfully, and you will find all your binaries in the `./build/src` directory.

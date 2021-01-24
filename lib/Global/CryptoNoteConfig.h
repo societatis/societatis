@@ -226,10 +226,14 @@ const bool     P2P_MESSAGES                                  =  true;
 const uint16_t P2P_MESSAGES_CHAR_COUNT                       =  160;
 
 const char *const SEED_NODES[] = {
-	"holon-00.societatis.io:7294", //holon-00
-	 "135.181.27.29:7294", //holon-01
-	"159.89.132.110:7294", //02
-	"206.189.156.12:7294"  //03
+	"holon-00.societatis.io:7294",
+			 "135.181.27.29:7294",
+			"159.89.132.110:7294",
+			"206.189.156.12:7294",
+	"holon-04.societatis.io:7294",
+	"holon-05.societatis.io:7294",
+	"holon-06.societatis.io:7294",
+			"207.154.213.60:7294"
 };
 
 } // namespace CryptoNote
