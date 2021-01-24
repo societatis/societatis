@@ -603,6 +603,8 @@ bool RpcServer::processJsonRpcRequest(const HttpRequest &request, HttpResponse &
                       { makeMemberMethod(&RpcServer::onGetBlockHeaderByHeight), false } },
                     { "getblockbyhash",
                       { makeMemberMethod(&RpcServer::onGetBlockDetailsByHash), true } },
+                    { "getaltblockslist",
+                      { makeMemberMethod(&RpcServer::onAltBlocksListJson), true } },
                     { "f_blocks_list_json",
                       { makeMemberMethod(&RpcServer::onBlocksListJson), false } },
                     { "f_block_json", { makeMemberMethod(&RpcServer::onBlockJson), false } },
@@ -1917,6 +1919,41 @@ bool RpcServer::onBlocksListJson(const COMMAND_RPC_GET_BLOCKS_LIST::request &req
 
     res.status = CORE_RPC_STATUS_OK;
 
+    return true;
+}
+
+bool RpcServer::onAltBlocksListJson(const COMMAND_RPC_GET_ALT_BLOCKS_LIST::request& req,
+                                    COMMAND_RPC_GET_ALT_BLOCKS_LIST::response& res)
+{
+    std::list<Block> alt_blocks;
+
+    if (m_core.get_alternative_blocks(alt_blocks) && !alt_blocks.empty()) {
+        for (const auto & b : alt_blocks) {
+            Crypto::Hash block_hash = get_block_hash(b);
+            uint32_t block_height = boost::get<BaseInput>(b.baseTransaction.inputs.front()).blockIndex;
+            size_t tx_cumulative_block_size;
+            m_core.getBlockSize(block_hash, tx_cumulative_block_size);
+            size_t blokBlobSize = getObjectBinarySize(b);
+            size_t minerTxBlobSize = getObjectBinarySize(b.baseTransaction);
+            difficulty_type blockDiff;
+            m_core.getBlockDifficulty(static_cast<uint32_t>(block_height), blockDiff);
+
+            BLOCK_SHORT_RESPONSE block_short;
+            BLOCK_HEADER_RESPONSE_ENTRY blockHeaderResponse;
+
+            block_short.timestamp = b.timestamp;
+            block_short.height = block_height;
+            block_short.hash = Common::podToHex(block_hash);
+            block_short.cumul_size = blokBlobSize + tx_cumulative_block_size - minerTxBlobSize;
+            block_short.tx_count = b.transactionHashes.size() + 1;
+            block_short.difficulty = blockDiff;
+            block_short.min_tx_fee = m_core.getMinimalFeeForHeight(block_height);
+
+            res.alt_blocks.push_back(block_short);
+        }
+    }
+
+    res.status = CORE_RPC_STATUS_OK;
     return true;
 }
 

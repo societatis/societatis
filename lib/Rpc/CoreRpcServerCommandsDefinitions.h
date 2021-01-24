@@ -715,6 +715,20 @@ struct COMMAND_RPC_GET_BLOCKS_LIST {
     };
 };
 
+struct COMMAND_RPC_GET_ALT_BLOCKS_LIST {
+  typedef EMPTY_STRUCT request;
+
+  struct response {
+    std::vector<BLOCK_SHORT_RESPONSE> alt_blocks;
+    std::string status;
+
+    void serialize(ISerializer &s) {
+      KV_MEMBER(alt_blocks)
+      KV_MEMBER(status)
+    }
+  };
+};
+
 struct COMMAND_RPC_GET_BLOCK_DETAILS {
     struct request {
         void serialize(ISerializer &s) { KV_MEMBER(hash) }
