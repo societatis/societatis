@@ -71,7 +71,7 @@ const uint64_t BASE_FEE                                       = UINT64_C(25000);
 const double   REMOTE_NODE_FEE_FACTOR                         = 0.25; // percent
 const uint64_t MAX_REMOTE_NODE_FEE                            = UINT64_C(10000000000);
 
-const uint64_t DEFAULT_DUST_THRESHOLD                         = UINT64_C(100000);
+const uint64_t DEFAULT_DUST_THRESHOLD                         = UINT64_C(1000);
 
 /* This section defines our minimum and maximum mixin counts required for transactions */
 const uint64_t MIN_TX_MIXIN_SIZE                              = 0;
@@ -148,11 +148,11 @@ const uint32_t TESTNET_GOVERNANCE_HEIGHT_START               = 100;
 const uint32_t TESTNET_GOVERNANCE_HEIGHT_END                 = 10000000;
 
 /* Governance Fee Wallets // The QWC Foundation */
-const std::string GOVERNANCE_WALLET_ADDRESS                  = "SCTSbCnUspcW78846Vx8rmh8MGWwAsdDnKnr7k2k3SC36ftfPrRBiyTakc5GmsbLFGFNaCTZSejfWEQqenchULSzAJ5Wi7cT2M";
-const std::string GOVERNANCE_VIEW_SECRET_KEY                 = "9811c8461c6f59bb1ed7b3903f8f9abf85104665fc5347c49dcdc05206c6bb0a";
+const std::string GOVERNANCE_WALLET_ADDRESS                  = "SCTSWG4YNrAji9xN8dxY5T94hox3Yz2LTgP3BJTJTFVxPorRmCLVQ61g9sCbnK67umjoGrhEdhPoSEPBUGsnYhLC8216QXb2dh";
+const std::string GOVERNANCE_VIEW_SECRET_KEY                 = "fae37799748dd475e3c8a7c2e8da3e8ee409a61f1427b31bd474a6afe27f2d0d";
 
-const std::string TESTNET_GOVERNANCE_WALLET_ADDRESS          = "SCTSbCnUspcW78846Vx8rmh8MGWwAsdDnKnr7k2k3SC36ftfPrRBiyTakc5GmsbLFGFNaCTZSejfWEQqenchULSzAJ5Wi7cT2M";
-const std::string TESTNET_GOVERNANCE_VIEW_SECRET_KEY         = "9811c8461c6f59bb1ed7b3903f8f9abf85104665fc5347c49dcdc05206c6bb0a";
+const std::string TESTNET_GOVERNANCE_WALLET_ADDRESS          = "SCTSWG4YNrAji9xN8dxY5T94hox3Yz2LTgP3BJTJTFVxPorRmCLVQ61g9sCbnK67umjoGrhEdhPoSEPBUGsnYhLC8216QXb2dh";
+const std::string TESTNET_GOVERNANCE_VIEW_SECRET_KEY         = "fae37799748dd475e3c8a7c2e8da3e8ee409a61f1427b31bd474a6afe27f2d0d";
 
 // Fixed rewarding
 const bool FIXED_REWARDING                                   = false;
@@ -163,7 +163,8 @@ const uint64_t REWARD_HALVING_INTERVAL                       = UINT64_C(11000);
 } // namespace parameters
 
 const char     CRYPTONOTE_NAME[]                             = "Societatis";
-const char     GENESIS_COINBASE_TX_HEX[]                     = "010a01ff000194f6c2d7e858029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd088071210186fd4240ac2ba5a24b67c135045d0067a2e3c0cb57b464e8113a911ec30b4df2";
+const char     GENESIS_COINBASE_TX_HEX[]                     = "010a01ff000194f6c2d7e858029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd0880712101a22cb86abbe3ce813ee64727f6a50eb31df4fcf2a59f2913d691616746914080";
+const char     NETWORK_ID_BASE[]                             = "beef";
 const char     DNS_CHECKPOINTS_HOST[]                        = "checkpoints.societatis.io";
 
 const uint8_t  TRANSACTION_VERSION_1                         =  1;
